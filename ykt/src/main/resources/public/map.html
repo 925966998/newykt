@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>map</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <div data-options="region:'center',split:true" >
+<div class="floatLeft mapTit">
+    <div class="floatRight" id="mapTool">
+        <a href="javascript:void(0)" id="mb" class="easyui-menubutton"data-options="menu:'#mm',iconCls:'icon-edit'">图层选择</a>
+        <div id="mm" class="selectBox">
+            <ul id="tree"></ul>
+        </div>
+        <i class="map_i mapTool_i01"></i><a href="javascript:void(0)">拉框查询</a>
+        <i class="map_i mapTool_i02"></i><a href="javascript:void(0)">对比</a>
+        <i class="map_i mapTool_i03"></i><a href="javascript:void(0)">测距</a>
+        <i class="map_i mapTool_i04"></i><a href="javascript:void(0)">测面</a>
+        <i class="map_i mapTool_i05"></i> <a href="javascript:void(0)">全屏</a>
+        <i class="map_i mapTool_i06"></i> <a href="javascript:void(0)">清除</a></div>
+</div>
+        <div class="floatLeft mapCon" id="mapCon01">
+            <div class="floatLeft maginTop easyui-accordion mapPanle easyui-draggable" data-options="border:false" >
+                <div title="功能操作" data-options="iconCls:'icon-tip'"  class="mapPan01">
+                    <ul>
+                        <li><i  class="ul_div01"></i><a href="#">天气</a> </li>
+                        <li><i  class="ul_div02"></i><a href="#">环境</a> </li>
+                        <li><i  class="ul_div03"></i><a href="#">路况</a> </li>
+                        <li><i  class="ul_div04"></i><a href="#">景点</a> </li>
+                        <li><i  class="ul_div05"></i><a href="#">视频</a> </li>
+                        <li><i  class="ul_div06"></i><a href="#">图片</a> </li>
+                        <li><i  class="ul_div07"></i><a href="#">人口</a> </li>
+                        <li><i  class="ul_div08"></i><a href="#">经济</a> </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="floatRight maginTop"><a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-left05'">矢量地图</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ph01'">影像地图</a></div>
+
+        </div>
+    </div>
+    <div data-options="region:'east',split:true" style="width:250px;">
+        <div class="easyui-tabs" data-options="border:false">
+            <div title="预警作息">
+
+                <p class="pChart01" id="chart02"></p>
+                <div class="line">警情统计</div>
+                <p class="pChart02" id="chart01"></p>
+                <div class="line">预警信息<a href="#" class="floatRight" title="查看更多"><img src="img/more.png"/> </a> </div>
+                <table class="mapTable">
+                    <tr>
+                        <th>级别</th>
+                        <th>简介</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr>
+                        <td style="color: red">一级</td>
+                        <td>一号仓库性火灾</td>
+                        <td><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">处理</a> </td>
+                    </tr>
+                    <tr>
+                        <td style="color: red">一级</td>
+                        <td>一号仓库性火灾</td>
+                        <td><a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">处理</a> </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff4646">二级</td>
+                        <td>一号仓库性火灾</td>
+                        <td><a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">处理</a> </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff9223">三级</td>
+                        <td>一号仓库性火灾</td>
+                        <td><a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">处理</a> </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #3b9eff">四级</td>
+                        <td>一号仓库性火灾</td>
+                        <td><a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">处理</a> </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div title="专题">
+                <div class="floatLeft mapFind maginTop">
+                    <label>分类查询：</label>  <input class="easyui-searchbox" data-options="prompt:'请输入关键字',"/>
+                </div>
+                <div class="floatLeft maginTop mapText" id="con02">
+                    <ul class="mapfind01Ul">
+                        <li><p><span class="mapicon mapIcon01"></span></p>
+                            <p><div class="mapText">便民服务</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon02"></span></p>
+                            <p><div class="mapText">宾馆酒店</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon04"></span></p>
+                            <p><div class="mapText">房产小区</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon05"></span></p>
+                            <p><div class="mapText">机关团体</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon06"></span></p>
+                            <p><div class="mapText">金融保险</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon07"></span></p>
+                            <p><div class="mapText">科研教育</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon08"></span></p>
+                            <p><div class="mapText">旅游景点</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon09"></span></p>
+                            <p><div class="mapText">企业实体</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon10"></span></p>
+                            <p><div class="mapText">医疗救援</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon11"></span></p>
+                            <p><div class="mapText">汽车服务</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon12"></span></p>
+                            <p><div class="mapText">购物商城</div> </p>
+                        </li>
+                        <li><p><span class="mapicon mapIcon13"></span></p>
+                            <p><div class="mapText">娱乐休闲</div> </p>
+                        </li>
+
+                    </ul>
+                    </div>
+                    <div class="floatLeft divDispay" id="con01" style="width: 100%">
+                        <div class="floatLeft mapFindTit">
+                            <span class="spanMap">查询结果</span>
+                            <a class="easyui-linkbutton floatRight " data-options="iconCls:'icon-redo',split:true" onclick="redo()">返回</a>
+                        </div>
+                        <ul class="mapUl">
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/><a href="javascript:void (0)" class="mapAtext">轨迹</a> </p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+                            <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                                <p>地址：成都市高新区天华路211号</p></li>
+
+                        </ul>
+                        <div class="easyui-panel mapPastion" >
+                            <div class="easyui-pagination" data-options="
+					total: 114,
+					showPageList: false,
+					showRefresh: false,
+					displayMsg: ''
+				">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            <div title="信息界面">
+                <div class="floatLeft mapFind">
+                  <label>模糊查询：</label>  <input class="easyui-searchbox" data-options="prompt:'请输入关键字',"/>
+                </div>
+                <div class="floatLeft mapFindTit">
+                   <span class="spanMap">查询结果</span>
+                    <a class="easyui-linkbutton floatRight " data-options="iconCls:'icon-reload',split:true">刷新</a>
+                </div>
+               <ul class="mapUl">
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/><a href="javascript:void (0)" class="mapAtext">轨迹</a> </p>
+                   <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/><a href="javascript:void (0)" class="mapAtext">轨迹</a> </p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/><a href="javascript:void (0)" class="mapAtext">轨迹</a> </p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/> <a href="javascript:void (0)" class="mapAtext">轨迹</a></p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+                   <li><p><a href="#">梦想生活超市</a><img src="img/find01.png" class="floatRight"/><a href="javascript:void (0)" class="mapAtext">轨迹</a> </p>
+                       <p>地址：成都市高新区天华路211号</p></li>
+
+               </ul>
+                <div class="easyui-panel mapPastion" >
+                    <div class="easyui-pagination" data-options="
+					total: 114,
+					showPageList: false,
+					showRefresh: false,
+					displayMsg: ''
+				"></div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<div class="mapLine easyui-panel easyui-draggable" id="mapLine" data-options="closed:true" style="width: 800px" >
+    <label>开始时间：</label><input type="text" class="easyui-datebox" name="time" data-options="required:true">
+    <label>结束时间：</label><input type="text" class="easyui-datebox" name="time" data-options="required:true">
+    <label>卡号：</label><input type="text"  id="parentPart"><a class="easyui-linkbutton floatRight " data-options="iconCls:'icon-search',split:true" onclick="mapLinefind()">查询</a>
+
+
+
+</div>
+<!--地址详情-->
+<div class="mapTail">
+    <h5 class="mapTailLine">地址详情</h5>
+    <div class="mapTailIMg maginRt"><img src="img/imgbox1.jpg"/> </div>
+    <div class="floatLeft ">
+        <h5 class="colorGreen">天华公园</h5>
+        <p>成都市高新区122号一段</p>
+        <p>经度：22.123651,纬度：362.12</p>
+        <p>联系人：xxxxxxxxx</p>
+        <p>联系电话：xxxxxxxxx</p>
+
+
+    </div>
+    <div class="clear"></div>
+    <div class="mapTailEnd"><h5 class="mapTailLine"></h5>
+        <p><a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">查看详情</a>
+            <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true">定位</a>
+            <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-sum',plain:true">查看轨迹</a>
+        </p></div>
+    <div class="mapLinClose" onclick="closeTail()"><img src="img/cancel.png"/> </div>
+
+</div>
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/echarts/echarts-all.js"></script>
+<script src="js/map.js"></script>
+
+
+
+</body>
+</html>

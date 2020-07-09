@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <!--左侧树-->
+
+    <div data-options="region:'center',split:true">
+
+        <!--表格查询-->
+        <form id="tableFindForm">
+            <input type="hidden" name="flag" value="person">
+            <div class="staAn05">
+                <label class="labeStyle">姓名</label> <input class="inputSelf" type="text" name="name"/>
+                <label class="labeStyle">手机号</label><input class="inputSelf" type="text" name="phone"/>
+                <label class="labeStyle">身份证号</label><input class="inputSelf" type="text" name="idCardNo"/>
+                <br>
+                <label class="labeStyle">所属区域:</label><input class="inputSelf" type="text" id="areaId" name="areaId" />
+               <!-- <label class="labeStyle">项目类别:</label><input class="inputSelf" type="text" id="projectType" name="projectType"/>-->
+                <label class="labeStyle">开户行</label><input class="inputSelf" type="text" name="openingBank"/>
+                <a id="btn" href="javascript:" class="easyui-linkbutton tableFindBut"
+                   data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a>
+            </div>
+        </form>
+
+        <!--表格列表-->
+        <div class="tableCon">
+            <div id="tabelBut">
+                <a style="float: left;cursor: pointer" href="project.html" class="easyui-linkbutton" plain="true" iconCls="icon-back">返回</a>
+            </div>
+            <table id="table" class="tableStyle"></table>
+        </div>
+    </div>
+</div>
+</div>
+<!--//新增上传弹出框-->
+<div id="addUploadBox">
+    <form id="uploadDialogForm">
+        <div class="formDiv">
+            <span style="height:30px;weight:15px;margin: 1%">请选择项目资金：</span>
+            <select name="projectId" class="easyui-combobox easyui-validatebox" required="required"
+                    style="height: 26px; width: 50%;"
+                    id="projectCombo"></select>
+        </div>
+        <div class="forSubmint" style="margin: 10px 0px;"><a href="#" class="easyui-linkbutton" iconCls="icon-ok"
+                                                             onclick="obj.reloadPull()">确认提交</a>
+            <a href="#" class="easyui-linkbutton" id="canUpload" iconCls="icon-cancel" onclick="obj.canUpload()">取消</a>
+        </div>
+    </form>
+</div>
+
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/personName.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <!--左侧树-->
+
+    <div data-options="region:'center',split:true">
+        <!--表格查询-->
+        <div class="tableFind">
+            <p><label>用户名;</label><input type="text" id="user"/><label>日期;</label><input type="text" id="dd" class="easyui-datebox"style="width: 16%;height:26px;"/><label>类型;</label><select>
+                <option>全部</option>
+            </select><label>关键字;</label><input type="text"/></p>
+            <p><label>部门;</label><input type="text" id="part" /><label>选择种类：</label><input type="text" id="combox"><a id="btn" href="javascript:" class="easyui-linkbutton tableFindBut" data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a></p>
+        </div>
+        <div id="sp">
+            <div style="color:#99BBE8;background:#fafafa;padding:5px;">Select a language</div>
+            <div style="padding-top:10px">
+                <input type="radio" name="lang" value="01"><span>Java</span><br/>
+                <input type="radio" name="lang" value="02"><span>C#</span><br/>
+                <input type="radio" name="lang" value="03"><span>Ruby</span><br/>
+                <input type="radio" name="lang" value="04"><span>Basic</span><br/>
+                <input type="radio" name="lang" value="05"><span>Fortran</span>
+            </div>
+        </div>
+        <!--表格列表-->
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+            <div id="tabelBut">
+                <div>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" onclick="obj.addBox()">新增</a>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit">修改</a>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" onclick="obj.del()">删除</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--//新增弹出框-->
+<div id="addBox" >
+    <form id="addForm" method="post">
+       <div class="formDiv"><label>用户名称:</label><input type="text" id="name" class="easyui-validatebox" name="name" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>密码:</label><input type="password" id="pass" class="easyui-validatebox" name="pass" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>入职时间:</label><input type="text" id="time" class="easyui-datebox" name="time" style="width: 70%;height: 26px"></div>
+        <div class="formDiv"><label>所属部门:</label><input type="text" id="part01" /></div>
+        <div class="formDiv"><label>所属角色:</label><select id="role"><option>xxxx</option></select></div>
+        <div class="forSubmint"> <a href="#" class="easyui-linkbutton"  iconCls="icon-ok" onclick="obj.sum()" >提交</a><a href="#" class="easyui-linkbutton"  iconCls="icon-redo" >重置</a> </div>
+
+    </form>
+</div>
+<!--物流详情查看-->
+<div id="lookTail">
+    <div class="floatLeft maginTop " >
+        <div class="lookTailDiv01">2017-12-18</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle01"></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="lookTailDiv02">16:22:35</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle02 backGreen "></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+        <div class="clear"></div>
+        <div class="lookTailDiv02">16:22:35</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle02 backRed "></span>
+        </div>
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+        <div class="clear"></div>
+        <div class="lookTailDiv01">2017-12-19</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle01"></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="lookTailDiv02">16:22:35</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle02 backGreen "></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+        <div class="clear"></div>
+        <div class="lookTailDiv01">2017-12-20</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle01"></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+
+        <div class="clear"></div>
+        <div class="lookTailDiv02">16:22:35</div>
+        <div class="floatRight maginRt">
+            <span class="circleStyle02 backGreen "></span>
+        </div>
+        <div class="clear"></div>
+        <div class="floatRight maginRt">
+            <span class="lineH magingLeft"></span>
+        </div>
+    </div>
+
+    <div class="floatLeft maginTop">
+        <div class="divBorder magintTop01 floatLeft borderGreen"><span class="footBlood">张立新</span><span class="colorCCC">(买方)</span><span class="footBlood">下单</span></div>
+        <div class="clear"></div>
+        <div class="divBorder magintTop02  floatLeft borderRed"><span class="footBlood">刘强</span><span class="colorCCC">(卖方)</span><span class="footBlood">确认订单</span></div>
+        <div class="clear"></div>
+        <div class="divBorder magintTop03  floatLeft borderGreen"><span class="footBlood">罗林</span><span class="colorCCC">(配送员)</span><span class="footBlood">确认订单</span><span>成都市高新区西南仓库中心</span><span class="colorGreen">13695632156</span></div>
+        <div class="clear"></div>
+        <div class="divBorder magintTop03  floatLeft borderGreen"><span class="footBlood">罗林</span><span class="colorCCC">(配送员)</span><span class="footBlood">确认订单</span><span>成都市高新区西南仓库中心</span><span class="colorGreen">13695632156</span></div>
+    </div>
+    </div>
+
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/table.js"></script>
+
+
+</body>
+</html>

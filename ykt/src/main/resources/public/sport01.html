@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>news</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+
+
+    <div data-options="region:'center',split:true">
+       <div class="sportAll">
+           <div class="sportTop">
+            <span><input type="text"/></span><label>类</label><span><input type="text"/></span><label>号</label>
+        </div>
+           <div class="sportTit"><label>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</label><span><input type="text"/></span><label>报告</label></div>
+           <div class="sportTable"><table border="1">
+               <tr>
+                   <td class="TailLabel01">提案类型<span class="formSpan">*</span></td>
+                   <td colspan="5"><input type="radio" name="type" checked/><span>集体提案</span><input name="type"  type="radio"/><span>联名提案</span><input name="type"  type="radio"/><span>个人提案</span></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01">案由<span class="formSpan">*</span></td>
+                   <td colspan="5"><input type="text" class="easyui-validatebox tableInput" name="name" data-options="required:true,validType:['length[1,200]']"/></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01">第一提案人<span class="formSpan">*</span></td>
+                   <td ><input type="text" class="easyui-validatebox tableInput" name="name" data-options="required:true,validType:['length[1,100]']"/></td>
+                   <td class="TailLabel01">名次</td>
+                   <td ><input type="text" class="easyui-validatebox tableInput" name="name" /></td>
+                   <td class="TailLabel01">党派</td>
+                   <td ><input type="text" class="easyui-validatebox tableInput" name="name" /></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01">委员证号</td>
+                   <td ><input type="text" class=" tableInput" name="name" /></td>
+                   <td class="TailLabel01">邮政编码</td>
+                   <td ><input type="text" class="tableInput" name="name" /></td>
+                   <td class="TailLabel01">联系电话</td>
+                   <td ><input type="number" class=" tableInput" name="name" /></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01">单位及职务</td>
+                   <td colspan="2" ><input type="text" style="border:none" id="addr" /></td>
+                   <td class="TailLabel01">邮箱</td>
+                   <td colspan="2" ><input type="text" class="tableInput easyui-validatebox" data-options="validType:'email'" /></td>
+
+               </tr>
+               <tr>
+                   <td class="TailLabel01">通讯地址</td>
+                   <td colspan="5"><input type="text" class="tableInput"/></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01">主题词</td>
+                   <td colspan="5"><input  id="fileId" class="easyui-filebox" style="width: 90%;height: 26px" name="file01" ></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01" colspan="6">提案内容（包括案由、案据和方案）</td>
+
+               </tr>
+               <tr>
+                   <td class="TailLabel01" colspan="6"><textarea class="tableArea" id="con"  >请输入提案内容</textarea></td>
+
+               </tr>
+               <tr>
+                   <td  style="text-align: right;padding-right: 5px" colspan="5">提案日期</td>
+                   <td ><input type="text" class=" easyui-datebox"/></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01" rowspan="4">附件</td>
+                   <td colspan="5"><input  id="fileId01" class="easyui-filebox" style="width: 90%;height: 26px" name="file01" ></td>
+               </tr>
+               <tr>
+
+                   <td colspan="5"><input  id="fileId02" class="easyui-filebox" style="width: 90%;height: 26px" name="file01" ></td>
+               </tr>
+               <tr>
+
+                   <td colspan="5"><input  id="fileId03" class="easyui-filebox" style="width: 90%;height: 26px" name="file01" ></td>
+
+               </tr>
+               <tr>
+                   <td colspan="5" style="color: red">附件总大小不能超过200M，超过限制,将不能发送</td>
+               </tr>
+               <tr>
+                   <td  class="TailLabel01">相关情况</td>
+                   <td colspan="5" ><input type="radio" name="type" checked/><span>同意公开发表</span><input name="type"  type="radio"/><span>同意其它委员借阅</span></td>
+               </tr>
+               <tr>
+                   <td class="TailLabel01">希望办理的承办单位（供参考）</td>
+                   <td colspan="5" ><input type="text"  /></td>
+
+
+               </tr>
+               <tr>
+                   <td class="TailLabel01">提案联系人</td>
+                   <td colspan="4" ><input type="text" placeholder="输入姓名" class="tableInput01" />
+                       <input type="text" placeholder="输入单位" class="tableInput01" />
+                       <input type="text" placeholder="联系电话"  class="tableInput01"/>
+                   </td>
+                   <td style="padding-left: 5px"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加联系人</a></td>
+
+
+               </tr>
+               <tr>
+                   <td class="TailLabel01">添加提案联名人</td>
+                   <td colspan="4"><input type="text" class="tableInput"/></td>
+                   <td  ><a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加提案联名人</a></td>
+
+
+               </tr>
+
+           </table></div>
+           <div class="sportFoot">
+               <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存提案</a>
+               <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交提案</a>
+               <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'">重置提案</a>
+           </div>
+
+       </div>
+        </div>
+</div>
+
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/sport01.js"></script>
+
+
+</body>
+</html>

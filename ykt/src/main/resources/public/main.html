@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>寿阳县惠民惠农财政补贴资金发放监管平台</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+
+<div class="easyui-layout" id="mainBox">
+    <div data-options="region:'north',split:true" style="height: 80px" class="mainTop">
+        <div class="topLogin"><img src="img/logoImg.png"/>
+            <div class="topLongRight">寿阳县惠民惠农财政补贴资金发放监管平台</div>
+        </div>
+        <div class="topText">
+            <a href="home.html" class="textActive" target="frameName">
+                <p style="margin-top: 10px"><img src="img/home.png"/></p>
+                <p style="margin-top: 5px">系统首页</p>
+            </a>
+<!--            <a href="low.html" target="frameName">-->
+<!--                <p style="margin-top: 10px"><img src="img/computer.png"/></p>-->
+<!--                <p style="margin-top: 5px">流程图</p>-->
+<!--            </a>-->
+<!--            <a href="staAnalysis1.html" target="frameName">-->
+<!--                <p style="margin-top: 10px"><img src="img/ogrn.png"/></p>-->
+<!--                <p style="margin-top: 5px">统计分析</p>-->
+<!--            </a>-->
+<!--            <a href="sport01.html" target="frameName">-->
+<!--                <p style="margin-top: 10px"><img src="img/action.png"/></p>-->
+<!--                <p style="margin-top: 5px">报表填写</p>-->
+<!--            </a>-->
+        </div>
+        <div href="javascript:void(0)" id="mb" class="easyui-menubutton topMean"
+             data-options="menu:'#mm',iconCls:'icon-admin'">个人中心
+        </div>
+        <div class="topMean">
+            <span><label class="diaLable">操作单位：</label></span><span id="operateName" disabled="disabled"></span>
+        </div>
+        <div id="mm">
+            <div data-options="iconCls:'icon-man'"><a href="javascript:void(0)" onclick="openMes()">个人信息</a></div>
+            <div data-options="iconCls:'icon-man'"><a href="javascript:void(0)" onclick="openPas()">修改密码</a></div>
+            <div data-options="iconCls:'icon-redo'"><a href="javascript:void(0) " onclick="loginOut()">安全退出</a></div>
+
+        </div>
+    </div>
+    <div data-options="region:'south'" style="height:40px;" class="footStyle">
+
+    </div>
+    <div data-options="region:'west',title:'功能菜单',split:true,iconCls:'icon-left01'" style="width:200px;">
+        <div id="left01" class="easyui-accordion">
+            <!--<script id="authTemplate" type="text/html">
+                <% for(i in list){ %>
+                <div title="<%=list[i].menuName%>"
+                     data-options="iconCls:'<%=list[i].menuIcon%>',selected:true" class="mainPanle">                  <% for(j in list[i].menuChildren){ %>
+                <p><i class="i_a <%=list[i].menuChildren[j].menuIcon%>"></i> <a
+                        href="<%=list[i].menuChildren[j].menuUrl%>" target="frameName"><%=list[i].menuChildren[j].menuName%></a>
+                </p>
+                <% } %>
+                </div>
+                <% } %>
+            </script>-->
+
+            <!--
+
+
+
+            <div title="权限管理" data-options="iconCls:'icon-left05',selected:true" class="mainPanle">
+                <p><i class="i_a i_user"></i> <a href="/web/user.html" target="frameName">用户管理</a></p>
+                <p><i class="i_a i_part"></i> <a href="/web/department.html" target="frameName">部门管理</a></p>
+                <p><i class="i_a i_rol"></i> <a href="/web/role.html" target="frameName">角色管理</a></p>
+                <p><i class="i_a i_areas"></i> <a href="/web/areas.html" target="frameName">区域管理</a> </p>
+                <p><i class="i_a i_menu"></i> <a href="/web/menu.html" target="frameName">菜单管理</a></p>
+                <p><i class="i_a i_log"></i> <a href="/web/log.html" target="frameName">日志管理</a></p>
+            </div>
+            <div title="业务中心" data-options="iconCls:'icon-left04'" class="mainPanle">
+                <p><i class="i_a i_table"></i><a href="/web/person.html" target="frameName">人员信息</a></p>
+                &lt;!&ndash;<p><i class="i_a i_audit"></i><a href="/web/audit.html" target="frameName">审计信息</a></p>&ndash;&gt;
+                <p><i class="i_a i_rol"></i> <a href="/web/projectlist.html" target="frameName">资金来源</a></p>
+                <p><i class="i_a i_rol"></i> <a href="/web/project.html" target="frameName">审核管理</a></p>
+                <p><i class="i_a i_rol"></i> <a href="/web/projectPull.html" target="frameName">发放管理</a></p>
+                &lt;!&ndash;<p><i class="i_a i_table01"></i><a href="table01.html" target="frameName">树表格</a> </p>
+                <p><i class="i_a i_neesTable"></i><a href="newTable.html" target="frameName">新闻管理</a> </p>
+                <p><i class="i_a i_ph"></i><a href="ph.html" target="frameName">图片管理</a> </p>&ndash;&gt;
+            </div>
+            <div title="表单管理" data-options="iconCls:'icon-left04'" class="mainPanle">
+                <p><i class="i_a i_news"></i><a href="news.html" target="frameName">新闻表单</a></p>
+                <p><i class="i_a i_con"></i><a href="Tail.html" target="frameName">一般表单</a></p>
+
+            </div>
+            <div title="报表管理" data-options="iconCls:'icon-left02'" class="mainPanle">
+                <p><i class="i_a i_sport"></i><a href="sport01.html" target="frameName">报表样式一</a></p>
+                <p><i class="i_a i_sport01"></i><a href="sport02.html" target="frameName">报表样式二管理</a></p>
+                <p><i class="i_a i_sport02"></i><a href="sport03.html" target="frameName">报表样式三管理</a></p>
+            </div>
+            <div title="统计分析" data-options="iconCls:'icon-left03'" class="mainPanle">
+                <p><i class="i_a i_sta"></i><a href="staAnalysis.html" target="frameName">统计分析一</a></p>
+                <p><i class="i_a i_sta"></i><a href="staAnalysis1.html" target="frameName">统计分析二</a></p>
+            </div>
+            <div title="流程图" data-options="iconCls:'icon-low'" class="mainPanle">
+                <p><i class="i_a i_low"></i><a href="low.html" target="frameName">流程图</a></p>
+                <p><i class="i_a i_low"></i><a href="lowDemo.html" target="frameName">流程图生成器</a></p>
+            </div>-->
+        </div>
+
+
+    </div>
+    <div data-options="region:'center'" style="padding:5px;background:#eee;">
+        <div id="con">
+            <div title="系统首页">
+                <iframe frameborder="0" width="100%" height="100%" name="frameName" src="home.html" scrolling="auto"
+                        id="ifDiv"></iframe>
+            </div>
+            <a style="float: right;cursor: pointer" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-no"
+               onclick="closeAllTabs()">关闭全部</a>
+        </div>
+
+    </div>
+</div>
+<div id="myMes">
+
+    <p><label class="diaLable">用户名：</label><input class="easyui-validatebox TailInput" id="userName"
+                                                  disabled="disabled"></p>
+    <p><label class="diaLable">姓名：</label><input class="easyui-validatebox TailInput" id="fullName" disabled="disabled">
+    </p>
+    <p><label class="diaLable">用户角色：</label><input class="easyui-validatebox TailInput" id="roleName"
+                                                   disabled="disabled"></p>
+    <p><label class="diaLable">所属部门：</label><input class="easyui-validatebox TailInput" id="departmentName"
+                                                   disabled="disabled"></p>
+    <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                               onclick="return $('#myMes').dialog('close')">关闭</a></div>
+</div>
+
+<div id="myPas" class="formDiv">
+
+    <p><label class="diaLable">原始密码：</label><input type="password" class="easyui-validatebox TailInput" id="oldPass"></p>
+    <p><label class="diaLable">新密码：</label><input type="password" class="easyui-validatebox TailInput" id="newPass" onblur="obi.chenkPass()"></p>
+    <p><label class="diaLable">确认密码：</label><input type="password" class="easyui-validatebox TailInput" id="newPassCheck"></p>
+    <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="savePass()">保存</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                               onclick="return $('#myPas').dialog('close')">关闭</a></div>
+</div>
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

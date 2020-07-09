@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <!--左侧树-->
+
+    <div data-options="region:'center',split:true">
+        <!--表格查询-->
+        <form id="tableFindForm">
+            <input type="hidden" name="flag" value="person">
+            <div class="staAn05">
+                <label class="labeStyle">姓名</label> <input class="inputSelf"  type="text" name="name"/>
+                <label class="labeStyle">手机号</label><input class="inputSelf"  type="text" name="phone"/>
+                <label class="labeStyle">身份证号</label><input  class="inputSelf" type="text" name="idCardNo"/>
+                <!-- <label class="labeStyle">项目资金</label>
+                 <select name="projectId" id="findProjectId" class="easyui-combobox" style="height: 26px;width: 15%;">
+                 </select>-->
+                <a id="btn" href="javascript:" class="easyui-linkbutton tableFindBut"
+                   data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a>
+                &nbsp;&nbsp;
+                <a class="easyui-linkbutton" iconCls="icon-redo" onclick="return $('#tableFindForm').form('clear')">重置</a>
+            </div>
+        </form>
+
+        <!--表格列表-->
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+            <div id="tabelBut">
+                <div>
+                    <!--
+                   <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" onclick="obj.addBox()">新增</a>
+                   <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" onclick="obj.edit()">修改</a>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                       onclick="obj.del()">删除</a>
+
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-ok"
+                       onclick="obj.uploadBox()">批量提交</a>
+                    <br>
+                    -->
+                    <!--
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input id="file" name="file" class="easyui-filebox"
+                               data-options="prompt:'请选择Excel文件',buttonText:'浏览'" style="width:200px">
+                        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-upload"
+                           onclick="obj.upload()">上传</a>
+                    </form>
+                    -->
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--//新增弹出框-->
+<div id="addBox">
+    <form id="addForm" method="post">
+        <input type="hidden" name="id" id="id" value="">
+        <div class="formDiv"><label>姓名</label><input type="text" id="name" class="easyui-validatebox" name="name"
+                                                     required="required" validType="name"><span
+                class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>身份证号</label><input type="text" id="idCardNo" class="easyui-validatebox"
+                                                       name="idCardNo"
+                                                       required="required" validType="idCard" maxlength="18"
+                                                       onblur=""><span class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>手机号</label><input type="text" class="easyui-validatebox" name="phone" id="phone"
+                                                      required="required" validType="mobile" maxlength="11"><span
+                class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>社保卡号</label><input type="text" class="easyui-validatebox" name="bankCardNo"
+                                                       id="bankCardNo"
+        ><span class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>发放金额</label><input type="text" class="easyui-validatebox"
+                                                       required="required" validType="currency" name="grantAmount"
+                                                       id="grantAmount"><span class="formSpan">*</span>
+        </div>
+
+        <div class="formDiv"><label>所属区县</label><select name="county" class="easyui-combobox"
+                                                        style="width:327px;height: 30px"
+                                                        id="countCombo"></select><span class="formSpan">*</span>
+        </div>
+
+        <div class="formDiv"><label>详细地址</label><input type="text" name="address" id="address"><span
+                class="formSpan">*</span>
+
+        </div>
+        <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="obj.sum()">保存</a><a
+                href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="obj.res()">重置</a>
+            <a href="#" class="easyui-linkbutton" id="can" iconCls="icon-cancel" onclick="obj.can()">取消</a></div>
+    </form>
+</div>
+
+<!--//新增上传弹出框-->
+<div id="addUploadBox">
+    <form id="uploadDialogForm">
+        <div class="formDiv">
+            <span style="height:30px;weight:15px;margin: 1%">请选择项目资金：</span>
+            <select name="projectId" class="easyui-combobox easyui-validatebox" required="required"
+                    style="height: 26px; width: 50%;"
+                    id="projectCombo"></select>
+        </div>
+        <div class="forSubmint" style="margin: 10px 0px;"><a href="#" class="easyui-linkbutton" iconCls="icon-ok"
+                                                             id="comsub">确认提交</a>
+            <a href="#" class="easyui-linkbutton" id="canUpload" iconCls="icon-cancel" onclick="obj.canUpload()">取消</a>
+        </div>
+    </form>
+</div>
+
+<div id="showBox">
+    <table class="TailTable01" border="1" style="width: 100%;margin-left: 0px">
+        <tr>
+            <td colspan="9" style="border: #4c4c4c"></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;text-align: right;width: 10%">姓名：</td>
+            <td colspan="2" id="showName"></td>
+            <td style="font-weight: bold;text-align: right;width: 10%">手机号：</td>
+            <td colspan="2" style="color: red;font-weight: bold" id="showPhone"></td>
+            <td style="font-weight: bold;text-align: right;width: 10%">身份证号：</td>
+            <td colspan="2" id="showIdCardNo"></td>
+        </tr>
+
+        <tr>
+            <td style="font-weight: bold;text-align: right;width: 10%">项目资金名称：</td>
+            <td colspan="2" id="showProjectName"></td>
+
+            <td style="font-weight: bold;text-align: right;width: 10%">发放部门：</td>
+            <td colspan="2" id="showDepartmentName"></td>
+
+            <td style="font-weight: bold;text-align: right;width: 10%">发放金额：</td>
+            <td colspan="2" id="showGrantAmount"></td>
+        </tr>
+
+        <tr>
+            <td style="font-weight: bold;text-align: right;width: 10%">社保卡号：</td>
+            <td colspan="2" id="showBankCardNo"></td>
+            <td style="font-weight: bold;text-align: right;width: 10%">所属区县：</td>
+            <td colspan="2" id="showCounty"></td>
+            <td style="font-weight: bold;text-align: right;width: 10%">详细地址：</td>
+            <td colspan="2" id="showAddress"></td>
+        </tr>
+    </table>
+</div>
+
+
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/pushRecord.js"></script>
+
+</body>
+</html>

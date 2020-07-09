@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>news</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+    <link href='js/fullcalendar-1.6.4/fullcalendar/fullcalendar.css' rel='stylesheet' />
+    <link href='js/fullcalendar-1.6.4/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
+
+</head>
+<body>
+<div class="floatLeft"><a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="addNew()">新建</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a></div>
+<div id="calePan" class="maginTop">
+</div>
+
+
+<!--//新增弹出框-->
+<div id="addPan" class="easyui-dialog" title="新建事件" data-options="modal:true,closed:true" style="width: 500px;height: 300px" >
+    <form id="addForm" method="post">
+        <div class="formDiv"><label>标题:</label><input type="text" class="easyui-validatebox" name="name" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>开始时间:</label><input type="text" class="easyui-datebox" name="time" style="width: 70%;height: 26px" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>结束时间:</label><input type="text" class="easyui-datebox" name="time" style="width: 70%;height: 26px" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label style="top:-33px;position: relative">内容:</label><textarea></textarea></div>
+        <div class="forSubmint"> <a href="#" class="easyui-linkbutton"  iconCls="icon-ok" >提交</a><a href="#" class="easyui-linkbutton"  iconCls="icon-redo" >取消</a> </div>
+
+    </form>
+</div>
+
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src='js/fullcalendar-1.6.4/fullcalendar/fullcalendar.min.js'></script>
+<script src="js/calendar.js"></script>
+
+
+</body>
+</html>

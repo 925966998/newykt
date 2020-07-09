@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+<div class="allBox">
+    <!--<div class="homeLeft01" id="ddddd">
+        <script id="toDoTemplate" type="text/html">
+            <% for(i in list){ %>
+            <% for(j in list[i].menuChildren){ %>
+            <% if(list[i].menuChildren[j].menuUrl=='/web/project.html'){%>
+            <a onclick="changeTabs('<%=list[i].menuChildren[j].menuName%>','<%=list[i].menuChildren[j].menuUrl%>')" href="#" class="homeUpaBox">
+                <div class="aLeft"><img src="img/computer.png"/></div>
+                <div class="aRight">
+                    <p class="fontSizeMin">您有发放数据需要审核请点击</p>
+                </div>
+            </a>
+            <%}%>
+            <% if(list[i].menuChildren[j].menuUrl=='/web/projectAudit.html'){%>
+            <a onclick="changeTabs('<%=list[i].menuChildren[j].menuName%>','<%=list[i].menuChildren[j].menuUrl%>')" href="#" class="homeUpaBox">
+                <div class="aLeft"><img src="img/computer.png"/></div>
+                <div class="aRight">
+                    <p class="fontSizeMin">您有数据审核失败需要处理请点击</p>
+                </div>
+            </a>
+            <%}%>
+
+            <% if(list[i].menuChildren[j].menuUrl=='/web/projectpull.html'){%>
+            <a onclick="changeTabs('<%=list[i].menuChildren[j].menuName%>','<%=list[i].menuChildren[j].menuUrl%>')" href="#" class="homeUpaBox">
+                <div class="aLeft"><img src="img/computer.png"/></div>
+                <div class="aRight">
+                    <p class="fontSizeMin">您有资金需要发放请点击</p>
+                </div>
+            </a>
+            <%}%>
+
+            <% if(list[i].menuChildren[j].menuUrl=='/web/dealFail.html'){%>
+            <a onclick="changeTabs('<%=list[i].menuChildren[j].menuName%>','<%=list[i].menuChildren[j].menuUrl%>')" href="#" class="homeUpaBox">
+                <div class="aLeft"><img src="img/computer.png"/></div>
+                <div class="aRight">
+                    <p class="fontSizeMin">您有发放失败的记录需要处理请点击</p>
+                </div>
+            </a>
+            <%}%>
+
+            <%}%>
+            <%}%>
+        </script>
+    </div>-->
+    <div class="homeLeft01" id="div1" style="display: none">
+        <a href="web/project.html" class="homeUpaBox">
+            <div class="aLeft"><img src="img/computer.png"/></div>
+            <div class="aRight">
+                <p class="fontSizeBig" style="margin-top: 10px"><span id="span1">1</span><span
+                        class="fontSizeMin">个</span></p>
+                <p class="fontSizeMin">您有发放资金需要审核请点击</p>
+            </div>
+        </a>
+    </div>
+    <div class="homeLeft01" id="div2" style="display: none">
+        <a href="web/projectPull.html" class="homeUpaBule">
+            <div class="aLeft"><img src="img/computer.png"/></div>
+            <div class="aRight">
+                <p class="fontSizeBig" style="margin-top: 10px"><span id="span2">1</span><span
+                        class="fontSizeMin">个</span></p>
+                <p class="fontSizeMin">您有资金需要发放请点击</p>
+            </div>
+        </a>
+    </div>
+    <div class="homeLeft01" id="div3" style="display: none">
+        <a href="web/person.html" class="homeUpaBule01">
+            <div class="aLeft"><img src="img/computer.png"/></div>
+            <div class="aRight">
+                <p class="fontSizeBig" style="margin-top: 10px"><span id="span3">1</span><span
+                        class="fontSizeMin">个</span></p>
+                <p class="fontSizeMin">您有下达的资金项目需要处理请点击</p>
+            </div>
+        </a>
+    </div>
+    <div class="homeLeft01" id="div4" style="display: none">
+        <a href="web/dealFail.html" class="homeUpaBule02">
+            <div class="aLeft"><img src="img/computer.png"/></div>
+            <div class="aRight">
+                <p class="fontSizeBig" style="margin-top: 10px"><span id="span4">1</span><span
+                        class="fontSizeMin">个</span></p>
+                <p class="fontSizeMin">您有发放失败的记录需要处理请点击</p>
+            </div>
+        </a>
+    </div>
+    <!--    <div id="calder" class="homeLeft02"></div>-->
+    <!--    <div class="homeLeft03">-->
+    <!--        <h5 class="hStyle"><span>通知公告</span><a href="#">更多</a></h5>-->
+    <!--        <ul class="orderUl" id="notic">-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--        </ul>-->
+    <!--    </div>-->
+    <!--    <div class="clear"></div>-->
+    <!--    <div class="homeLeft04">-->
+    <!--        <h5 class="hStyle"><span>风险分析</span></h5>-->
+    <!--        <p class="stataAny" id="chart01"></p>-->
+    <!--    </div>-->
+    <!--    <div class="homeLeft04">-->
+    <!--        <h5 class="hStyle"><span>交货分析</span></h5>-->
+    <!--        <p class="stataAny" id="chart02"></p>-->
+    <!--    </div>-->
+    <!--    <div class="homeLeft03" style="margin-top: 5px">-->
+    <!--        <h5 class="hStyle"><span>公开底价</span><a href="#">更多</a></h5>-->
+    <!--        <ul class="orderUl">-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--        </ul>-->
+    <!--    </div>-->
+    <!--    <div class="clear"></div>-->
+    <!--    <div class="homeLeft05">-->
+    <!--        <h5 class="hStyle"><span>交货分析</span></h5>-->
+    <!--        <p class="stataAny" style="height: 220px" id="chart03"></p>-->
+    <!--    </div>-->
+    <!--    <div class="homeLeft06" id="rightTab">-->
+    <!--        <div title="待办信息" style="display:none;">-->
+    <!--            <ul class="orderUl">-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            </ul>-->
+    <!--            <p class="tabConP"><a href="#">更多</a></p>-->
+    <!--        </div>-->
+    <!--        <div title="已办信息" style="overflow:auto;display:none;">-->
+    <!--            <ul class="orderUl">-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--                <li><a href="#">2017年中国最具有竞争力的手机厂商</a><span>05-13</span></li>-->
+    <!--            </ul>-->
+    <!--            <p class="tabConP"><a href="#">更多</a></p>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <div class="clear"></div>
+
+</div>
+
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/echarts/echarts-all.js"></script>
+<script src="js/template.js"></script>
+<script src="js/home.js"></script>
+
+</body>
+</html>

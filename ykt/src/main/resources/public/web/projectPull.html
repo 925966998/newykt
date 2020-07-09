@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <!--左侧树-->
+
+    <div data-options="region:'center',split:true">
+        <div class="staAn05">
+            <label class="labeStyle">项目名称：</label><input type="text"  class="inputSelf" id="projectNameSearch"/>
+            <!-- <label class="labeStyle">开户行</label><input type="text" name="openingBank"/>-->
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a>
+        </div>
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+        </div>
+        <div id="tabelBut">
+            <div>
+                <a id="pullAId" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit"
+                   onclick="obj.pull()">发放</a>
+            </div>
+
+        </div>
+        <!--        <div class="staAn02"  >-->
+        <!--            <h5 class="staAn_h5">资金发放情况分析</h5>-->
+        <!--            <p id="chart01" class="pChart"></p>-->
+        <!--        </div>-->
+    </div>
+
+
+</div>
+<div id="pullLookBox">
+    <table class="TailTable01" style="width: 100%;margin-left: 0px">
+        <tr>
+            <td style="font-weight: bold;text-align: center;width: 10%">项目名称：</td>
+            <td colspan="2" id="projectName"></td>
+            <td style="font-weight: bold;text-align: center;width: 10%">发放金额：</td>
+            <td colspan="2" id="paymentAmount"></td>
+            <td style="font-weight: bold;text-align: center;width: 10%">总金额：</td>
+            <td colspan="2" id="totalAmount"></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;text-align: center;width: 10%">发放人数：</td>
+            <td colspan="2" id="pullNum"></td>
+            <td style="font-weight: bold;text-align: center;width: 10%">提交人：</td>
+            <td colspan="2" id="operUser"></td>
+            <td style="font-weight: bold;text-align: center;width: 10%">提交单位：</td>
+            <td colspan="2" id="operDepartment"></td>
+        </tr>
+    </table>
+</div>
+<!--物流详情查看-->
+<!--<div id="lookTail">-->
+<!--    <div class="floatLeft maginTop " id="topDetail">-->
+<!--    </div>-->
+
+<!--    <div class="floatLeft maginTop" id="downDetail">-->
+<!--    </div>-->
+</div>
+
+
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/echarts.js"></script>
+<script src="../js/projectPull.js"></script>
+<script src="../js/common.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>news</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+
+
+    <div data-options="region:'center',split:true">
+       <div class="sportAll">
+
+           <div class="sportTit"><span><input type="text"/></span><label>申请书</label></div>
+           <div class="sportTable">
+               <div class="sport02Con">
+                 <input type="text" class="bootomInput"/>：
+               </div>
+               <div class="sport02Con">
+                   <p class="textIdent"><input type="text" class="bootomInput"/>(以下简称我单位)的<input type="text" class="bootomInput01"/>活动需要在<input type="text" class="bootomInput01"/></p>
+                   <p>做<input type="text" class="bootomInput01"/>，详见如下：</p>
+                   <p>竖幅内容：<input type="text" class="bootomInput02"/></p>
+                   <p>竖幅数量：<input type="text" class="bootomInput02"/></p>
+                   <p>竖幅尺寸：<input type="text" class="bootomInput02"/></p>
+                   <p>挂设时间：<input type="text" class="bootomInput02"/></p>
+                   <p>立面效果详见效果图。</p>
+                   <p class="textIdent">特此申请！恳盼批准！</p>
+                   <p class="textAginRight"> <input type="text" class="bootomInput01"/> </p>
+                   <p class="textAginRight" style="padding-right: 10px"> <input type="text" class="easyui-datebox"/> </p>
+               </div>
+           </div>
+           <div class="sportFoot">
+               <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存申请</a>
+               <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交申请</a>
+               <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'">重置申请</a>
+           </div>
+
+       </div>
+        </div>
+</div>
+
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+
+    <script>
+    $.fn.datebox.defaults.formatter = function(date){
+        var y = date.getFullYear();
+        var m = date.getMonth()+1;
+        var d = date.getDate();
+        return y+'年'+m+'月'+d+'日';
+    }
+</script>
+
+
+</body>
+</html>

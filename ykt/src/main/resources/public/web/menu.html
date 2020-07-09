@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <div data-options="region:'center',split:true">
+        <div class="staAn05">
+            <form id="tableFindForm">
+                    <label class="labeStyle">菜单名称</label> <input class="inputSelf"  type="text" name="menuName"/>
+                <a id="btn" href="javascript:" class="easyui-linkbutton tableFindBut"
+                      data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a>
+            </form>
+        </div>
+
+        <!--表格列表-->
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+            <div id="tabelBut">
+                <div>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" onclick="obj.addBox()">新增</a>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" onclick="obj.edit()">修改</a>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                       onclick="obj.del()">删除</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--//新增弹出框-->
+<div id="addBox">
+    <form id="addForm" method="post">
+        <input type="hidden" name="id" id="id">
+        <div class="formDiv"><label>菜单名称</label><input type="text" id="menuName" class="easyui-validatebox"
+                                                       name="menuName"
+                                                       required="true" validType="name"><span class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>一级菜单</label> 是 : <input type="radio" name="isFirstMenu"
+                                                            onclick="obj.hideOrShowSomeTab(1)" value="1"><span
+                style="margin-right: 20px"></span>否 :
+            <input name="isFirstMenu" type="radio" checked value="0" onclick="obj.hideOrShowSomeTab(0)"></div>
+        <div class="formDiv" id="displayMenuName"><label>菜单链接</label><input type="text"
+                                                                            id="menuUrl"
+                                                                            name="menuUrl">
+        </div>
+        <div class="formDiv"><label>菜单图标</label><input type="text" name="menuIcon" id="menuIcon"></div>
+        <div class="formDiv"><label>菜单样式</label><input type="text" name="menuClass" id="menuClass"></div>
+        <div class="formDiv" id="displayParentId">
+            <label>上级菜单</label>
+            <select name="parentId" class="easyui-combobox"
+                    style="width:200px"
+                    id="parentIdCombo"></select>
+        </div>
+        <div class="formDiv"><label>菜单顺序</label><input type="text" name="menuSort" id="menuSort"></div>
+        <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="obj.sum()">保存</a><a
+                href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="obj.res()">重置</a>
+            <a href="#" class="easyui-linkbutton" id="can" iconCls="icon-cancel" onclick="obj.can()">取消</a></div>
+    </form>
+</div>
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <div data-options="region:'center',split:true">
+        <div class="staAn05">
+            <label class="labeStyle">补贴项目：</label><input class="inputSelf"  type="projectType" id="projectType"/>
+            <label class="labeStyle">所属部门：</label><input  class="inputSelf" type="paymentDepartment" id="paymentDepartment"/>
+            <label class="labeStyle">开始时间：</label><input type="text" id="startTime" name="startTime"
+                                                         class="easyui-datebox"/>
+            <label class="labeStyle">结束时间：</label><input type="text" id="endTime" name="endTime"
+                                                         class="easyui-datebox"/>
+            <a href="#" class="easyui-linkbutton" onclick="obj.find()" data-options="iconCls:'icon-search'">查询</a>
+        </div>
+        <div class="sportAll">
+            <div class="tongji">
+                <div class="backGround">
+                    <p><img src="../img/low01.png"/></p>
+                    <p>资金下达</p>
+                </div>
+                <div>
+                    <p class="fontSizeBig colorGreen" id="totalNum">0</p>
+                    <p>资金下发数</p>
+                </div>
+                <div>
+                    <p class="fontSizeBig colorGreen" id="finishNum">0</p>
+                    <p>资金下发完成</p>
+                </div>
+                <div>
+                    <p class="fontSizeBig colorGreen" id="paymentAmount">0</p>
+                    <p>资金发放总金额</p>
+                </div>
+                <div>
+                    <p class="fontSizeBig colorRed" id="ingNum">0</p>
+                    <p>资金下发未完成</p>
+                </div>
+            </div>
+        </div>
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+        </div>
+        <div class="sportAll">
+            <div class="clear"></div>
+
+            <div class="staAn02">
+                <h5 class="staAn_h5">资金发放情况分析</h5>
+                <p id="chart01" class="pChart"></p>
+            </div>
+            <div class="staAn02">
+                <h5 class="staAn_h5">资金属性情况分析</h5>
+                <p id="chart03" class="pChart"></p>
+            </div>
+            <div class="staAn02">
+                <h5 class="staAn_h5">资金发放情况分析</h5>
+                <p id="chart02" class="pChart"></p>
+            </div>
+            <div class="staAn02">
+                <h5 class="staAn_h5">近半年资金发放统计分析</h5>
+                <p id="chart04" class="pChart"></p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/echarts.js"></script>
+<script src="../js/statistics.js"></script>
+<script src="../js/common.js"></script>
+
+
+</body>
+</html>

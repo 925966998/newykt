@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格列表</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <!--左侧树-->
+
+    <div data-options="region:'center',split:true">
+        <!--表格列表-->
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+            <div id="tabelBut">
+                <div>
+                    <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                       onclick="obj.reSubmitAudit()">提交审核</a>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--//新增弹出框-->
+<div id="addBox">
+    <form id="addForm" method="post">
+        <input type="hidden" name="id" id="id">
+        <input type="hidden" name="projectId" id="projectId">
+        <input type="hidden" name="departmentId" id="departmentId">
+        <div class="formDiv"><label>姓名</label><input type="text" id="name" class="easyui-validatebox" name="name"
+                                                     required="required" validType="name"><span
+                class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>身份证号</label><input type="text" id="idCardNo" class="easyui-validatebox"
+                                                       name="idCardNo"
+                                                       required="required" validType="idCard" maxlength="18"><span
+                class="formSpan">*</span>
+        </div>
+        <div class="formDiv"><label>手机号</label><input type="text" lass="easyui-validatebox" name="phone" id="phone"
+                                                      required="required" validType="mobile" maxlength="11"></div>
+        <div class="formDiv"><label>开户行</label><input type="text" lass="easyui-validatebox" name="openingBank"
+                                                      id="openingBank"
+                                                      required="required" maxlength="20"></div>
+        <div class="formDiv"><label>社保卡号</label><input type="text" lass="easyui-validatebox" name="bankCardNo"
+                                                       id="bankCardNo"
+                                                       required="required" maxlength="20"></div>
+        <div class="formDiv"><label>发放金额</label><input type="text" class="easyui-validatebox"
+                                                       required="required" validType="currency" name="grantAmount"
+                                                       id="grantAmount"></div>
+        <div class="formDiv"><label>所属区县</label><input type="text" name="county" id="county"></div>
+        <div class="formDiv"><label>所属乡镇</label><input type="text" name="county" id="town"></div>
+        <div class="formDiv"><label>所属村组</label><input type="text" name="county" id="village"></div>
+        <div class="formDiv"><label>详细地址</label><input type="text" name="address" id="address"></div>
+        <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="obj.sum()">保存</a><a
+                href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="obj.res()">重置</a>
+            <a href="#" class="easyui-linkbutton" id="can" iconCls="icon-cancel" onclick="obj.can()">取消</a></div>
+    </form>
+</div>
+
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/dealFail.js"></script>
+</body>
+</html>

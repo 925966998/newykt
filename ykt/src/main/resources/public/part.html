@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>部门管理</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body onload="init()">
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+    <!--左侧树-->
+    <div data-options="region:'west',split:true,title:'部门管理'", style="width: 200px">
+        <ul id="tree"></ul>
+    </div>
+    <div data-options="region:'center',split:true">
+       <form id="formBox">
+           <div class="formDiv01">
+               <label>部门编号：</label><input type="text"  id="partId" class="easyui-validatebox" data-options="required:true"><span class="formSpan">*</span>
+           </div>
+           <div class="formDiv01">
+               <label>部门名称：</label><input type="text" id="partName" class="easyui-validatebox" data-options="required:true"><span class="formSpan">*</span>
+           </div>
+           <div class="formDiv01">
+               <label>上级部门：</label><input type="text"  id="parentPart"><span class="formSpan"></span>
+           </div>
+           <div class="formDiv01">
+               <label>部门负责人：</label><input type="text" id="partPer" ><span class="formSpan"></span>
+           </div>
+           <div class="formDiv01">
+           <label>部门邮箱地址：</label><input type="text" id="partEmail" class="easyui-validatebox" data-options="validType:'email'" ><span class="formSpan"></span>
+       </div>
+           <div class="formDiv01">
+               <label>联系电话：</label><input type="text" class="easyui-validatebox" id="partTele" data-options="validType:'length[7,11]'" ><span class="formSpan"></span>
+           </div>
+           <div class="formDiv01">
+               <label class="textarea">部门简介：</label><textarea id="note"></textarea></span>
+           </div>
+           <div class="forSubmint"><a href="#" class="easyui-linkbutton" id="save" style="display: none" iconCls="icon-save" onclick="saveForm()">保存</a> <a href="#" class="easyui-linkbutton"  iconCls="icon-edit" id="edit" onclick="editForm()">修改</a><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" >取消</a> </div>
+       </form>
+        <div class="formFoot">
+            <p><span>注意事项：</span></p>
+            <p>1,该界面为详情界面，当新增的时候，部门编号为自动生成，其中部门名称为必填写项</p>
+            <p>2,该界面为详情界面，当新增的时候，部门编号为自动生成，其中部门名称为必填写项</p>
+            <p>3,该界面为详情界面，当新增的时候，部门编号为自动生成，其中部门名称为必填写项</p>
+        </div>
+
+    </div>
+</div>
+<div id="mean" class="easyui-menu treemenu" >
+    <div data-options="iconCls:'icon-add'" onclick="addPart()">新增部门</div>
+    <div data-options="iconCls:'icon-edit'" onclick="editForm()">修改部门</div>
+    <div data-options="iconCls:'icon-cancel'" onclick="delPart()">删除部门</div>
+</div>
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/part.js"></script>
+
+
+</body>
+</html>

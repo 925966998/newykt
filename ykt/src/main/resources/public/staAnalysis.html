@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>news</title>
+
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+
+
+    <div data-options="region:'center',split:true">
+       <div class="sportAll">
+           <div class="staAna01">
+               <div class="backGround">
+                   <p><img src="img/an01%20(1).png"/> </p>
+                   <p>高管局</p>
+               </div>
+               <div>
+                   <p class="fontSizeBig colorGreen">100台</p>
+                   <p>正常服务</p>
+
+               </div>
+               <div>
+                   <p class="fontSizeBig colorRed">10台</p>
+                   <p>异常服务</p>
+
+               </div>
+           </div>
+           <div class="staAna01">
+               <div class="backGround">
+                   <p><img src="img/an01%20(4).png"/> </p>
+                   <p>房管局</p>
+               </div>
+               <div>
+                   <p class="fontSizeBig colorGreen">100台</p>
+                   <p>正常服务</p>
+
+               </div>
+               <div>
+                   <p class="fontSizeBig colorRed">10台</p>
+                   <p>异常服务</p>
+
+               </div>
+           </div>
+           <div class="staAna01">
+               <div class="backGround">
+                   <p><img src="img/an01%20(2).png"/> </p>
+                   <p>交管局</p>
+               </div>
+               <div>
+                   <p class="fontSizeBig colorGreen">100台</p>
+                   <p>正常服务</p>
+
+               </div>
+               <div>
+                   <p class="fontSizeBig colorRed">10台</p>
+                   <p>异常服务</p>
+
+               </div>
+           </div>
+           <div class="staAna01">
+               <div class="backGround">
+                   <p><img src="img/an01%20(3).png"/> </p>
+                   <p>统计局</p>
+               </div>
+               <div>
+                   <p class="fontSizeBig colorGreen">100台</p>
+                   <p>正常服务</p>
+
+               </div>
+               <div>
+                   <p class="fontSizeBig colorRed">10台</p>
+                   <p>异常服务</p>
+
+               </div>
+           </div>
+<div class="clear"></div>
+           <div class="staAn02"  >
+           <h5 class="staAn_h5">服务器正异常情况分析</h5>
+           <p id="chart01" class="pChart"></p>
+               <p>
+               <table class="TailTable01">
+                   <tr>
+                       <td class="TailLabel">统计项</td>
+                       <td>周一</td>
+                       <td>周二</td>
+                       <td>周三</td>
+                       <td>周四</td>
+                       <td>周五</td>
+                       <td>周六</td>
+                   </tr>
+                   <tr>
+                       <td class="TailLabel">正常</td>
+                       <td>周一</td>
+                       <td>周二</td>
+                       <td>周三</td>
+                       <td>周四</td>
+                       <td>周五</td>
+                       <td>周六</td>
+                   </tr>
+                   <tr>
+                       <td class="TailLabel"> 异常</td>
+                       <td>周一</td>
+                       <td>周二</td>
+                       <td>周三</td>
+                       <td>周四</td>
+                       <td>周五</td>
+                       <td>周六</td>
+                   </tr>
+               </table>
+               </p>
+       </div>
+           <div class="staAn02"  >
+               <h5 class="staAn_h5">服务器异常情况分析</h5>
+               <p id="chart02" class="pChart"></p>
+               <p>
+               <table class="TailTable01">
+                   <tr>
+                       <td class="TailLabel">统计项</td>
+                       <td>周一</td>
+                       <td>周二</td>
+                       <td>周三</td>
+                       <td>周四</td>
+                       <td>周五</td>
+                       <td>周六</td>
+                   </tr>
+                   <tr>
+                       <td class="TailLabel">正常</td>
+                       <td>周一</td>
+                       <td>周二</td>
+                       <td>周三</td>
+                       <td>周四</td>
+                       <td>周五</td>
+                       <td>周六</td>
+                   </tr>
+                   <tr>
+                       <td class="TailLabel"> 异常</td>
+                       <td>周一</td>
+                       <td>周二</td>
+                       <td>周三</td>
+                       <td>周四</td>
+                       <td>周五</td>
+                       <td>周六</td>
+                   </tr>
+               </table>
+               </p>
+           </div>
+           <div class="staAn03">
+               <h5 class="staAn_h5">服务器异常情况分析</h5>
+               <p id="chart03" class="pChart"></p>
+               <p>
+                   <table class="TailTable01">
+               <tr>
+                   <td class="TailLabel">统计项</td>
+                   <td>周一</td>
+                   <td>周二</td>
+                   <td>周三</td>
+                   <td>周四</td>
+                   <td>周五</td>
+                   <td>周六</td>
+               </tr>
+               <tr>
+                   <td class="TailLabel">最高温</td>
+                   <td>周一</td>
+                   <td>周二</td>
+                   <td>周三</td>
+                   <td>周四</td>
+                   <td>周五</td>
+                   <td>周六</td>
+               </tr>
+               <tr>
+                   <td class="TailLabel"> 最低温</td>
+                   <td>周一</td>
+                   <td>周二</td>
+                   <td>周三</td>
+                   <td>周四</td>
+                   <td>周五</td>
+                   <td>周六</td>
+               </tr>
+           </table>
+               </p>
+           </div>
+
+
+
+
+
+       </div>
+        </div>
+</div>
+
+
+<script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="js/echarts/echarts-all.js"></script>
+<script src="js/staAnalysis.js"></script>
+
+
+</body>
+</html>
