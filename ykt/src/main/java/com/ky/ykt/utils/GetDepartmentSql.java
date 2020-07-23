@@ -17,7 +17,7 @@ public class GetDepartmentSql {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         StringBuilder builder = new StringBuilder("");
-        if (user.getUserName().equals("admin") || user.getUserName().equals("syxczjczj")) {
+        if (user.getUserName().equals("admin") || user.getUserName().equals("syxczj")) {
             return builder;
         } else {
             // and  p.operDepartment = '" + user.getDepartmentId()+"'

@@ -56,31 +56,31 @@
                                                        class="easyui-validatebox"
                                                        required="required" validType="chinese"><span
                 class="formSpan">*</span></div>
-        <div class="formDiv"><label>手机号</label><input type="text" name="phone" id="phone"
-                                                      class="easyui-validatebox"
-                                                      required="required" validType="mobile" maxlength="11"><span
-                class="formSpan">*</span></div>
         <!--
-        <div class="formDiv"><label>身份证号</label><input type="text" name="idCardNo" id="idCardNo"
-                                                        validType="idCard" maxlength="18"></div>
-        -->
+       <div class="formDiv"><label>手机号</label><input type="text" name="phone" id="phone"
+                                                     class="easyui-validatebox"
+                                                     required="required" validType="mobile" maxlength="11"><span
+               class="formSpan">*</span></div>
+         <div class="formDiv"><label>身份证号</label><input type="text" name="idCardNo" id="idCardNo"
+                                                       validType="idCard" maxlength="18"></div>
+       -->
         <div class="formDiv"><label>所属角色</label> <select class="easyui-combobox" name="roleId" id="roleByDialog"
-                                                         style="width: 200px">
+                                                         style="width: 70%">
         </select></div>
-        <div class="formDiv"><label>所属部门</label> <select class="easyui-combobox" style="width: 200px"
+        <div class="formDiv"><label>所属部门</label> <select class="easyui-combobox" style="width: 70%"
                                                          name="departmentId" id="departmentByDialog">
         </select></div>
 
-        <div class="formDiv" style="color: red;font-size: smaller;font-weight:bold; text-align: center"><label>注
-            : </label>新增用户密码默认为123456,请用户登录后自行修改密码
+        <div class="formDiv"><label>备注</label><input type="text" name="userNote" id="userNote"></div>
+    </form>
+    <!--<div class="formDiv"><label>负责项目</label><input id="userProjectList" name="userProjectIdList"  style="width: 70%;"  class="easyui-combobox" ></div>-->
+    <ul id="tree" class="easyui-tree"></ul>
+        <div class="formDiv" style="color: red;font-size: smaller;font-weight:bold; text-align: center"><label>注 : </label>新增用户密码默认为123456,请用户登录后自行修改密码
         </div>
         <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="obj.sum()">保存</a>
             <a href="#" class="easyui-linkbutton" id="res" iconCls="icon-redo" onclick="obj.res()">重置</a>
             <a href="#" class="easyui-linkbutton" id="can" iconCls="icon-cancel" onclick="obj.can()">取消</a>
         </div>
-
-
-    </form>
 </div>
 <script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
 <script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>

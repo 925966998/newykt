@@ -363,7 +363,10 @@
     background-image: url("../img/pdf.png");
     margin-right: 3px;
 }
-
+.i_money {
+    background-image: url("../img/projectMoney.png");
+    margin-right: 3px;
+}
 .i_audit {
     background-image: url("../img/audit.png");
     margin-right: 3px;

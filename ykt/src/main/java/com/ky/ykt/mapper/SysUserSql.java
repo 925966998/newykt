@@ -15,7 +15,7 @@ public class SysUserSql extends BaseProvider {
     // 涉及到插入和更新的字段，不在该定义中的字段不会被操作
     @Override
     protected String[] getColumns() {
-        return new String[]{"userName", "password", "status", "fullName", "phone", "roleId", "departmentId","idCardNo"};
+        return new String[]{"userName", "password", "status", "fullName", "phone", "roleId", "departmentId","idCardNo","userNote"};
     }
 
     @Override
@@ -36,6 +36,9 @@ public class SysUserSql extends BaseProvider {
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentId"))) {
             builder.append(" and departmentId = #{departmentId}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userNote"))) {
+            builder.append(" and userNote = #{userNote}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "roleId"))) {
             builder.append(" and roleId = #{roleId}");

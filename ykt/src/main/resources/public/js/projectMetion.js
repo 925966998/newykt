@@ -131,58 +131,52 @@ obj = {
         })
     },
     // 乡镇回显
-    detail: function (id) {
+    detail: function () {
+        id = $("#table").datagrid('getSelected').id;
         $("#detailForm").form('clear');
-        var rows = $("#table").datagrid("getSelections");
-        if (rows.length > 0) {
-            $("#detailBox").dialog({
-                closed: false
-            });
-            $("#projectId").val(rows[0].id);
-            $.ajax({
-                url: '/ky-ykt/project/projectAreasSelect?projectId='+id,
-                type: 'get',
-                dataType: 'json',
-                data: {id: id},
-                success: function (res) {
-                    if (res != null) {
-                        console.log(res);
-                        if(res.length>0){
-                            for (var i = 0; i < res.length; i++) {
-                                var a = res[i].areaId;
-                                console.log(a);
-                                var b = res[i].areaAmount;
-                                console.log(b);
-                                $("#"+a).numberbox('setValue',b);
-                                //$("#2").numberbox('setValue','100');
-                            }
-                        }else{
-                            for (var i = 2; i < 16; i++) {
-                                $("#"+i).numberbox('setValue','0.00');
-                            }
-                        }
+        $("#detailBox").dialog({
+            closed: false
+        })
+        $.ajax({
+            url: '/ky-ykt/project/projectAreasSelect?projectId='+id,
+            type: 'get',
+            dataType: 'json',
+            data: {id: id},
+            success: function (res) {
+                if (res != null) {
+                  console.log(res);
+                  if(res.length>0){
+                      for (var i = 0; i < res.length; i++) {
+                          var a = res[i].areaId;
+                          //console.log(a);
+                          var b = res[i].areaAmount;
+                          //console.log(b);
+                          $("#"+a).numberbox('setValue',b);
+                          //$("#2").numberbox('setValue','100');
+                      }
+                  }else{
+                      for (var i = 2; i < 16; i++) {
+                          $("#"+i).numberbox('setValue','0.00');
+                      }
+                  }
+                } else {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '更新失败'
 
-                    } else {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '更新失败'
-
-                        })
-                    }
-                },
-                error: function (request) {
-                    if (request.status == 401) {
-                        $.messager.confirm('登录失效', '您的身份信息已过期请重新登录', function (r) {
-                            if (r) {
-                                parent.location.href = "/login.html";
-                            }
-                        });
-                    }
+                    })
                 }
-            })
-        }else {
-            $.messager.alert('提示', '请选择一条项目记录', 'info');
-        }
+            },
+            error: function (request) {
+                if (request.status == 401) {
+                    $.messager.confirm('登录失效', '您的身份信息已过期请重新登录', function (r) {
+                        if (r) {
+                            parent.location.href = "/login.html";
+                        }
+                    });
+                }
+            }
+        })
     },
     // 乡镇资金明细
     addDetail: function () {
@@ -389,7 +383,7 @@ obj = {
             }
         })
     },
-    detailSum: function (id) {
+    detailSum: function () {
         var id = $("#projectId").val();
         console.log(id);
         var areaAmountLength = document.getElementsByName("areaAmount").length;
@@ -550,7 +544,7 @@ obj = {
 $("#table").datagrid({
     title: "数据列表",
     iconCls: "icon-left02",
-    url: '/ky-ykt/project/queryPage',
+    url: '/ky-ykt/project/queryMetionPage',
     fitColumns: true,
     striped: true,
     queryParams: { flag: 1},
@@ -598,14 +592,6 @@ $("#table").datagrid({
             width: 100,
             align: 'center'
         },
-        /*
-        {
-            field: 'projectTypeName',
-            title: '资金类型',
-            width: 100,
-            align: 'center',
-        },
-        */
         {
             field: 'startTime',
             title: '开始发放时间',
@@ -619,40 +605,10 @@ $("#table").datagrid({
             }
         },
         {
-            field: 'totalAmount',
-            title: '总金额',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'zijin',
-            title: '资金占比',
-            width: 100,
-            align: 'center',
-            formatter: function (value, row, index) {
-                return '中央：'+row.centerAmount+'<br>省：'+row.provinceAmount+'<br>市：'+row.cityAmount+'<br>区县：'+row.countyAmount;
-            }
-        },
-        {
-            field: 'paymentAmountResult',
+            field: 'areaAmount',
             title: '发放金额',
             width: 100,
             align: 'center',
-            formatter: function (value, row, index) {
-                if (value == null || value == '') {
-                    return 0;
-                } else {
-                    return value;
-                }
-            }
-        }, {
-            field: 'surplusAmount',
-            title: '剩余金额',
-            width: 100,
-            align: 'center',
-            formatter: function (value, row, index) {
-                return (row.totalAmount - row.paymentAmountResult)
-            }
         }, {
             field: 'state',
             title: '发放状态',
@@ -667,6 +623,7 @@ $("#table").datagrid({
                 }
             }
         },
+        /*
         {
             field: "opr",
             title: '操作',
@@ -677,10 +634,9 @@ $("#table").datagrid({
                 a = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                 b = '<a  id="detail" data-id="98" class=" operA"  onclick="obj.detail(\'' + row.id + '\')">明细</a> ';
                 return a+b+c;
-
             }
-
         }
+        */
     ]]
 })
 // 弹出框加载
@@ -717,15 +673,3 @@ Date.prototype.Format = function (fmt) { //author: meizz
     return fmt;
 }
 
-// 弹出框加载
-$("#detailBox").dialog({
-    title: "乡镇发放明细",
-    width: 600,
-    height: 450,
-    resizable: true,
-    minimizable: true,
-    maximizable: true,
-    closed: true,
-    modal: true,
-    shadow: true
-})

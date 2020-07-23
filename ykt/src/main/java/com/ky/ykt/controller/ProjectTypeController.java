@@ -1,21 +1,28 @@
 package com.ky.ykt.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ky.ykt.entity.MenuEntity;
 import com.ky.ykt.entity.ProjectTypeEntity;
+import com.ky.ykt.entity.TreeNode;
 import com.ky.ykt.logUtil.Log;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
 import com.ky.ykt.service.ProjectTypeService;
+import com.ky.ykt.service.UserProjectTypeService;
 import com.ky.ykt.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +40,8 @@ public class ProjectTypeController {
     @Autowired
     ProjectTypeService projectTypeService;
 
+    @Autowired
+    UserProjectTypeService userProjectTypeService;
     /**
      * 查询全部数据不分页
      */
@@ -120,5 +129,50 @@ public class ProjectTypeController {
         jsonObj.put("total", data.getTotalItemsCount());
         jsonObj.put("rows", data.getItems());
         return jsonObj;
+    }
+
+    @RequestMapping(value = "/queryProjectTree/{userId}", method = RequestMethod.GET)
+    public Object queryProjectTree(HttpServletRequest request, @PathVariable String userId) {
+        Map params = HttpUtils.getParams(request);
+        //找见所有项目类型
+        List<ProjectTypeEntity> projectTypeEntities = projectTypeService.queryAll(params);
+        List<String> ProjectTypeIds = new ArrayList<>();
+        if (userId != null) {
+            ProjectTypeIds = userProjectTypeService.queryByprojectTypeId(userId);
+        }
+        //树
+        List<TreeNode> treeNodes = new ArrayList();
+        for (ProjectTypeEntity projectTypeEntity : projectTypeEntities) {
+            TreeNode treeNode = new TreeNode();
+            List<TreeNode> children = new ArrayList();
+            treeNode.setId(projectTypeEntity.getId());
+            treeNode.setParentId(projectTypeEntity.getParentId());
+            treeNode.setText(projectTypeEntity.getName());
+            List<ProjectTypeEntity> projectTypeEntities1 = projectTypeService.queryByProjectTypeId(projectTypeEntity.getId());
+            if (ProjectTypeIds.size() > 0) {
+                if (StringUtils.isEmpty(projectTypeEntity.getParentId())) {
+                    //返回时父节点不需要设置Checked如有有子节点默认为模糊选中
+                    /*if (roleIds.contains(menuEntity.getId())) {
+                        treeNode.setChecked(true);
+                    } else {
+                        treeNode.setChecked(false);
+                    }*/
+                    for (ProjectTypeEntity projectTypeEntity1 : projectTypeEntities1) {
+                        if (ProjectTypeIds.contains(projectTypeEntity1.getId())) {
+                            treeNode.setChecked(true);
+                        } else {
+                            treeNode.setChecked(false);
+                        }
+                    }
+                    treeNodes.add(treeNode);
+                }
+            } else {
+                if (StringUtils.isEmpty(projectTypeEntity.getParentId())) {
+                    treeNodes.add(treeNode);
+                }
+            }
+        }
+        logger.info("The convert treeNode is {}", JSON.toJSONString(treeNodes));
+        return treeNodes;
     }
 }

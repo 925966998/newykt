@@ -26,6 +26,7 @@
             <div id="tabelBut">
                 <div>
                     <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" onclick="obj.addBox()">新增</a>
+                   <!-- <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" onclick="obj.addDetail()">乡镇明细</a>-->
                     <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" onclick="obj.del()">删除</a>
                     <a id="pullAId" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" onclick="obj.upstate()">结束发放</a>
                 </div>
@@ -45,6 +46,7 @@
 <div id="addBox" >
     <form id="addForm" method="post">
         <div class="formDiv"><label>资金项目名称:</label><input type="text" id="projectName" class="easyui-validatebox" name="projectName" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>批次号:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;"  id="batchNumber" name="batchNumber"></div>
         <div class="formDiv"><label>文号:</label><input type="text" id="documentNum" class="easyui-validatebox" name="documentNum" data-options="required:true"><span class="formSpan">*</span></div>
         <div class="formDiv"><label>开始发放时间:</label><input type="text" class="easyui-datetimebox" data-options="required:true,showSeconds:false"  style="width: 70%;height:26px;" name="startTime" id="startTime"/></div>
         <div class="formDiv"><label>发放总金额:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" value="100" data-options="min:0,precision:2" id="totalAmount" name="totalAmount"></div>
@@ -64,8 +66,31 @@
         </div><div > <input type="file" id="file" name="file"  onchange="fileupload(this)" />
         </div>
     </form>
-    <div class="forSubmint"> <a href="#" class="easyui-linkbutton"  iconCls="icon-ok" onclick="obj.sum()" >提交</a><a href="#" class="easyui-linkbutton"  iconCls="icon-redo" onclick="obj.reset()" >重置</a> </div>
+    <div class="forSubmint"> <a href="#" class="easyui-linkbutton"  iconCls="icon-ok" onclick="obj.sum()" >提交</a><a href="#" class="easyui-linkbutton"  iconCls="icon-redo" onclick="obj.res()" >重置</a> </div>
+</div>
 
+<div id="detailBox" >
+    <form id="detailForm" method="post">
+        <input type="hidden" name = "projectId" id="projectId">
+        <div class="formDiv"><label>西洛镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"  name="areaAmount" id="2"></div>
+        <div class="formDiv"><label>平头镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="3"></div>
+        <div class="formDiv"><label>宗艾镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="4"></div>
+        <div class="formDiv"><label>平舒乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="5"></div>
+        <div class="formDiv"><label>马首乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="6"></div>
+        <div class="formDiv"><label>解愁乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="7"></div>
+        <div class="formDiv"><label>上湖乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="8"></div>
+        <div class="formDiv"><label>尹灵芝镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2" name="areaAmount" id="9"></div>
+        <div class="formDiv"><label>温家庄乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"   name="areaAmount"  id="10"></div>
+        <div class="formDiv"><label>松塔镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"  name="areaAmount" id="11"></div>
+        <div class="formDiv"><label>景尚乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"  name="areaAmount" id="12"></div>
+        <div class="formDiv"><label>羊头崖乡:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"  name="areaAmount" id="13"></div>
+        <div class="formDiv"><label>南燕竹镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"  name="areaAmount" id="14"></div>
+        <div class="formDiv"><label>朝阳镇:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" data-options="min:0,precision:2"  name="areaAmount" id="15"></div>
+    </form>
+    <div class="forSubmint">
+        <a href="#" class="easyui-linkbutton"  iconCls="icon-ok" onclick="obj.detailSum()" >提交</a>
+        <a href="#" class="easyui-linkbutton"  iconCls="icon-redo" onclick="obj.detailRes()" >重置</a>
+    </div>
 </div>
 <script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
 <script src="../js/ace-elements.min.js"></script>

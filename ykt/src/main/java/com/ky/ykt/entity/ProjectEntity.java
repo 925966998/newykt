@@ -43,6 +43,15 @@ public class ProjectEntity extends BaseEntity {
     private String paymentDepartment;
     private String departmentName;
     private String projectTypeName;
+    private Integer batchNumber;
+
+    public Integer getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(Integer batchNumber) {
+        this.batchNumber = batchNumber;
+    }
 
     public String getProjectSourceId() {
         return projectSourceId;

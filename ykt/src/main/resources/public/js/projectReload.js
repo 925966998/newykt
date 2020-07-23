@@ -254,7 +254,7 @@ $("#table").datagrid({
         },
         {
             field: 'bankCardNo',
-            title: '社保卡号',
+            title: '银行卡号',
             width: 100,
             align: 'center'
         },

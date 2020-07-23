@@ -13,7 +13,7 @@ $("#areaId").combotree({
     url: '/ky-ykt/areas/queryByParentId',
     method: "get",
     height: 26,
-    width: '50%',
+    width: '70%',
     valueField: 'id',
     //state:'closed',
     textField: 'text',

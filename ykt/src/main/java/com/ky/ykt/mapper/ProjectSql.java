@@ -23,17 +23,27 @@ public class ProjectSql extends BaseProvider {
     @Override
     protected String[] getColumns() {
         return new String[]{"id", "projectName", "startTime", "projectCode", "lastTime", "endTime", "totalAmount", "paymentAmount"
-                , "surplusAmount", "remark", "projectSourceId", "projectType", "countyAmount", "cityAmount", "provinceAmount", "centerAmount", "reason", "state", "fileId", "operDepartment", "operUser", "type", "documentNum", "paymentDepartment"};
+                , "surplusAmount", "remark", "projectSourceId", "projectType", "countyAmount", "cityAmount", "provinceAmount", "centerAmount", "reason", "state", "fileId", "operDepartment", "operUser", "type", "documentNum", "paymentDepartment","batchNumber"};
     }
 
     @Override
     protected String _query(Map map) {
-        StringBuilder builder = new StringBuilder("select p.*,pt.name  as projectTypeName ,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=1) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId where 1=1  and p.logicalDel=0");
+        StringBuilder builder = new StringBuilder("select p.*,CONCAT_WS('-',pt.name,p.batchNumber) as projectTypeName,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=1) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId ");
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
+            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
+        }
+        builder.append(" where 1=1  and p.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and p.projectName = #{projectName}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "state"))) {
             builder.append(" and p.state = #{state}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and p.batchNumber = #{batchNumber}");
+        }
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" and upt.userId = #{userId}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("1")) {
             builder.append(GetDepartmentSql.getUserBuilder("p.operDepartment"));
@@ -50,9 +60,19 @@ public class ProjectSql extends BaseProvider {
 
     @Override
     public String _queryPage(Map map) {
-        StringBuilder builder = new StringBuilder("select p.*,pt.name  as projectTypeName ,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=3) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId where 1=1  and p.logicalDel=0");
+        StringBuilder builder = new StringBuilder("select p.*,CONCAT_WS('-',pt.name,p.batchNumber)  as projectTypeName ,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=3) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId");
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
+            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
+        }
+        builder.append(" where 1=1  and p.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and p.projectName = #{projectName}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and p.batchNumber = #{batchNumber}");
+        }
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" and upt.userId = #{userId}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("1")) {
             builder.append(GetDepartmentSql.getUserBuilder("p.operDepartment"));

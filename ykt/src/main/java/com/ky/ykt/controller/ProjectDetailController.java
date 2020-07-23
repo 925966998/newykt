@@ -94,6 +94,7 @@ public class ProjectDetailController {
                 params.put("projectStatus", "0");
             }else if(params.get("state").equals("3")){
                 params.put("projectStatus", "3");
+                params.put("userDepartment",user.getDepartmentId());
             }
         }
         if(params.get("projectName") != null){
@@ -187,7 +188,7 @@ public class ProjectDetailController {
             });
         }
         resultMap.put("header",
-                new String[]{"姓名", "手机号", "身份证号", "开户行", "社保卡号", "项目资金名称", "发放金额", "所属区县", "所属乡镇", "所属村组", "详细地址", "流水号", "回执状态","失败原因"});
+                new String[]{"姓名", "手机号", "身份证号", "开户行", "银行卡号", "项目资金名称", "发放金额", "所属区县", "所属乡镇", "所属村组", "详细地址", "流水号", "回执状态","失败原因"});
         resultMap.put("data", data);
         resultMap.put("style", style);
         return resultMap;

@@ -26,6 +26,15 @@ public class PersonEntity extends BaseEntity {
     private String townName;
     private String villageName;
     private String openingBank;
+    private String issuingUnit;
+
+    public String getIssuingUnit() {
+        return issuingUnit;
+    }
+
+    public void setIssuingUnit(String issuingUnit) {
+        this.issuingUnit = issuingUnit;
+    }
 
     public String getOpeningBank() {
         return openingBank;

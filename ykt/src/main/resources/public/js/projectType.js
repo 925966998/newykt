@@ -291,6 +291,7 @@ $("#table").datagrid({
             width: 100,
             align: 'center',
         },
+        /*
         {
             field: 'projectTypeParentName',
             title: '项目类别',
@@ -312,6 +313,7 @@ $("#table").datagrid({
 
             }
         },
+        */
         {
             field: 'policyBasis',
             title: '政策依据',

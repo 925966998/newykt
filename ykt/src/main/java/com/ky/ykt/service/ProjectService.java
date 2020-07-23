@@ -1,13 +1,7 @@
 package com.ky.ykt.service;
 
-import com.ky.ykt.entity.DepartmentEntity;
-import com.ky.ykt.entity.ProjectEntity;
-import com.ky.ykt.entity.StatisticEntity;
-import com.ky.ykt.entity.SysUserEntity;
-import com.ky.ykt.mapper.DepartmentMapper;
-import com.ky.ykt.mapper.PersonMapper;
-import com.ky.ykt.mapper.ProjectDetailMapper;
-import com.ky.ykt.mapper.ProjectMapper;
+import com.ky.ykt.entity.*;
+import com.ky.ykt.mapper.*;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
 import org.apache.commons.collections.MapUtils;
@@ -17,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +36,8 @@ public class ProjectService {
     ProjectDetailMapper projectDetailMapper;
     @Autowired
     PersonMapper personMapper;
+    @Autowired
+    ProjectAreaMapper projectAreaMapper;
 
     public Object queryAll(Map params, HttpServletRequest request) {
         Object roleCodeSession = request.getSession().getAttribute("roleCode");
@@ -52,6 +49,7 @@ public class ProjectService {
                 DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
                 params.put("DJFlag", "4J");
                 params.put("departmentId", departmentEntity.getParentId());
+                params.put("userId",user.getId());
             }
         }
         List<ProjectEntity> projectDetailEntities = projectMapper._queryAll(params);
@@ -168,5 +166,12 @@ public class ProjectService {
         return projectDetailEntities;
     }
 
+    public RestResult queryMetionPage(Map params) {
+        List<ProjectAreaEntity> list = projectAreaMapper._queryPage(params);
+        long count = projectAreaMapper._queryCount(params);
+        PagerResult pagerResult = new PagerResult(list, count, MapUtils.getLongValue(params, "page"),
+                MapUtils.getLongValue(params, "rows"));
+        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, pagerResult);
+    }
 
 }

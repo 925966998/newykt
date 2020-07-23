@@ -29,7 +29,7 @@ public class ProjectDetailSql extends BaseProvider {
 
     @Override
     protected String _query(Map map) {
-        StringBuilder builder = new StringBuilder("select pd.*,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id  where 1=1  and pd.logicalDel=0");
+        StringBuilder builder = new StringBuilder("select pd.*,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id where 1=1  and pd.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectId"))) {
             builder.append(" and pd.projectId = #{projectId}");
         }
@@ -46,6 +46,9 @@ public class ProjectDetailSql extends BaseProvider {
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "operUser"))) {
             builder.append(" and pd.operUser = #{operUser}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userDepartment"))) {
+            builder.append(" and pd.paymentDepartment = #{userDepartment}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "paymentDepartment"))) {
             builder.append(" and pd.paymentDepartment = #{paymentDepartment}");
@@ -80,6 +83,9 @@ public class ProjectDetailSql extends BaseProvider {
             builder.append(" and pd.state = #{state}");
         }
         */
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userDepartment"))) {
+            builder.append(" and pd.paymentDepartment = #{userDepartment}");
+        }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and pd.projectName = #{projectName}");
         }

@@ -18,7 +18,7 @@ public class PersonSql extends BaseProvider {
     @Override
     protected String[] getColumns() {
         return new String[]{"name", "phone", "idCardNo", "projectId", "itemId",
-                "grantAmount", "county", "town", "village", "address", "bankCardNo", "status", "failReason", "departmentId", "puid", "userId", "openingBank"
+                "grantAmount", "county", "town", "village", "address", "bankCardNo", "status", "failReason", "departmentId", "puid", "userId", "openingBank","issuingUnit"
         };
     }
 
@@ -28,6 +28,9 @@ public class PersonSql extends BaseProvider {
         builder.append(" left join areas a1 on a1.id=p.county left join areas a2 on a2.id=p.town  left join areas a3 on a3.id=p.village ");
         builder.append(" left join project_detail pd on pd.id=p.projectId");
         builder.append(" left join project_type pt on pd.projectName=pt.id");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userProjectType")) && map.get("userProjectType").equals("userProjectType")) {
+            builder.append(" left join user_projecttype upt on p.userId=upt.userId");
+        }
         builder.append(" WHERE 1 = 1");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "phone"))) {
             builder.append(" and p.phone = #{phone}");
@@ -92,23 +95,44 @@ public class PersonSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("1")) {
             builder.append(GetDepartmentSql.getUserBuilder("d.departmentId"));
         } else if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("2")) {
-            if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag")) && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {
-                if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdList"))) {
-                    builder.append(" and p.departmentId in (");
-                    if (map.get("departmentIdList") instanceof List) {
-                        List<String> departmentIdList = (List) map.get("departmentIdList");
-                        for (String id : departmentIdList) {
-                            if (departmentIdList.indexOf(id) > 0)
-                                builder.append(",");
-                            builder.append("'").append(id).append("'");
+            if (StringUtils.isNotBlank(MapUtils.getString(map, "issuingUnit"))) {
+                if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag")) && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {
+                    if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdList"))) {
+                        builder.append(" and p.issuingUnit in (");
+                        if (map.get("departmentIdList") instanceof List) {
+                            List<String> departmentIdList = (List) map.get("departmentIdList");
+                            for (String id : departmentIdList) {
+                                if (departmentIdList.indexOf(id) > 0)
+                                    builder.append(",");
+                                builder.append("'").append(id).append("'");
+                            }
+                        } else {
+                            builder.append(map.get("departmentIdList"));
                         }
-                    } else {
-                        builder.append(map.get("departmentIdList"));
+                        builder.append(")");
                     }
-                    builder.append(")");
+                } else {
+                    builder.append(GetDepartmentSql.getUserBuilder("p.issuingUnit"));
                 }
-            } else {
-                builder.append(GetDepartmentSql.getUserBuilder("p.departmentId"));
+            }else{
+                if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag")) && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {
+                    if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdList"))) {
+                        builder.append(" and p.departmentId in (");
+                        if (map.get("departmentIdList") instanceof List) {
+                            List<String> departmentIdList = (List) map.get("departmentIdList");
+                            for (String id : departmentIdList) {
+                                if (departmentIdList.indexOf(id) > 0)
+                                    builder.append(",");
+                                builder.append("'").append(id).append("'");
+                            }
+                        } else {
+                            builder.append(map.get("departmentIdList"));
+                        }
+                        builder.append(")");
+                    }
+                } else {
+                    builder.append(GetDepartmentSql.getUserBuilder("p.departmentId"));
+                }
             }
         }
         builder.append(" order by p.updateTime desc");
@@ -119,6 +143,9 @@ public class PersonSql extends BaseProvider {
         StringBuilder builder = new StringBuilder("SELECT p.*,ac.cname AS cname,d.departmentName AS departmentName,pt.name as projectName,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person p LEFT JOIN areas_county ac ON p.county = ac.id LEFT JOIN department d ON d.id = p.departmentId LEFT JOIN project_detail  pd ON pd.id = p.projectId");
         builder.append(" left join areas a1 on a1.id=p.county left join areas a2 on a2.id=p.town  left join areas a3 on a3.id=p.village ");
         builder.append(" left join project_type pt on pd.projectName=pt.id");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userProjectType")) && map.get("userProjectType").equals("userProjectType")) {
+            builder.append(" left join user_projecttype upt on p.userId=upt.userId");
+        }
         builder.append(" WHERE 1 = 1");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "phone"))) {
             builder.append(" and p.phone = #{phone}");
@@ -160,7 +187,7 @@ public class PersonSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("1")) {
             builder.append(GetDepartmentSql.getUserBuilder("d.departmentId"));
         } else if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("2")) {
-            builder.append(GetDepartmentSql.getUserBuilder("p.departmentId"));
+            builder.append(GetDepartmentSql.getUserBuilder("p.issuingUnit"));
         }
         builder.append(" order by p.updateTime desc");
         return builder.toString();

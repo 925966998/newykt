@@ -1,5 +1,6 @@
 package com.ky.ykt.service;
 
+import com.ky.ykt.entity.MenuEntity;
 import com.ky.ykt.entity.ProjectTypeEntity;
 import com.ky.ykt.mapper.ProjectTypeMapper;
 import com.ky.ykt.mybatis.PagerResult;
@@ -85,5 +86,8 @@ public class ProjectTypeService {
     public Object _deleteForce(String id) {
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, projectTypeMapper._deleteForce(id));
     }
-    
+
+    public List<ProjectTypeEntity> queryByProjectTypeId(String id) {
+        return projectTypeMapper.queryByProjectTypeId(id);
+    }
 }

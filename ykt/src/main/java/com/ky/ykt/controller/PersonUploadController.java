@@ -136,7 +136,7 @@ public class PersonUploadController {
             });
         }
         resultMap.put("header",
-                new String[]{"姓名", "手机号", "身份证号", "发放金额", "所属区县", "所属乡镇", "所属村组", "详细地址", "社保卡号", "补贴类型", "开户行"});
+                new String[]{"姓名", "手机号", "身份证号", "发放金额", "所属区县", "所属乡镇", "所属村组", "详细地址", "银行卡号", "补贴类型", "开户行"});
         resultMap.put("data", data);
         resultMap.put("style", style);
         return resultMap;

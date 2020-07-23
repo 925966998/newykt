@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资金来源</title>
+
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/default/easyui.css"/>
+    <link type="text/css" rel="stylesheet" href="../js/jquery-easyui-1.5.3/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/ace.min.css" />
+    <link rel="stylesheet" href="../css/ace-skins.min.css" />
+
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true" id="useBox">
+
+
+    <div data-options="region:'center',split:true">
+        <div class="staAn05">
+            <label class="labeStyle">项目名称：</label><input class="inputSelf" type="text"   id="projectNameSearch"/>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a>
+        </div>
+        <div class="tableCon">
+            <table id="table" class="tableStyle"></table>
+        </div>
+    </div>
+    <div id="lookTail">
+        <div class="floatLeft maginTop " id="topDetail">
+
+        </div>
+
+        <div class="floatLeft maginTop" id="downDetail">
+        </div>
+    </div>
+</div>
+
+<div id="addBox" >
+    <form id="addForm" method="post">
+        <div class="formDiv"><label>资金项目名称:</label><input type="text" id="projectName" class="easyui-validatebox" name="projectName" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>批次号:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;"  id="batchNumber" name="batchNumber"></div>
+        <div class="formDiv"><label>文号:</label><input type="text" id="documentNum" class="easyui-validatebox" name="documentNum" data-options="required:true"><span class="formSpan">*</span></div>
+        <div class="formDiv"><label>开始发放时间:</label><input type="text" class="easyui-datetimebox" data-options="required:true,showSeconds:false"  style="width: 70%;height:26px;" name="startTime" id="startTime"/></div>
+        <div class="formDiv"><label>发放金额:</label><input type="text" class="easyui-numberbox" style="width: 70%;height: 26px; border: 1px solid #95B8E7;" value="100" data-options="min:0,precision:2" id="totalAmount" name="totalAmount"></div>
+        <input type="hidden" id="id"  name="id" />
+        <input type="hidden" id="fileId"  name="fileId" />
+
+    </form>
+</div>
+
+<script src="../js/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="../js/ace-elements.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script src="../js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="../js/echarts.js"></script>
+<script src="../js/projectMetion.js"></script>
+
+
+</body>
+</html>

@@ -1,11 +1,16 @@
 package com.ky.ykt.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ky.ykt.entity.RoleMenuEntity;
 import com.ky.ykt.entity.SysUserEntity;
+import com.ky.ykt.entity.TreeNode;
+import com.ky.ykt.entity.UserProjectTypeEntity;
 import com.ky.ykt.logUtil.Log;
 import com.ky.ykt.mapper.SysUserMapper;
 import com.ky.ykt.mybatis.RestResult;
 import com.ky.ykt.service.SysUserService;
+import com.ky.ykt.service.UserProjectTypeService;
 import com.ky.ykt.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,8 +39,8 @@ public class SysUserController {
 
     @Autowired
     SysUserService sysUserService;
-
-
+    @Autowired
+    UserProjectTypeService userProjectTypeService;
     @Autowired
     SysUserMapper sysUserMapper;
 
@@ -160,5 +167,33 @@ public class SysUserController {
     public Object doQueryToDo(HttpServletRequest request) {
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         return sysUserService.doQueryToDo(user);
+    }
+
+    /**
+     * 保存权限数据
+     */
+    @RequestMapping(value = "saveUserProject", method = RequestMethod.POST, produces = "application/json;UTF-8")
+    public void saveUserProject(@RequestBody String body, HttpServletRequest request) {
+        String userId = request.getParameter("userId");
+        logger.info("The RoleMenuController save method params are {} roleId is {}", body, userId);
+        List<TreeNode> treeNodes = JSONArray.parseArray(body, TreeNode.class);
+        List<UserProjectTypeEntity> list = new ArrayList<>();
+        for (TreeNode treeNode : treeNodes) {
+            UserProjectTypeEntity userProjectTypeEntity = new UserProjectTypeEntity();
+            userProjectTypeEntity.setProjectTypeId(treeNode.getId());
+            userProjectTypeEntity.setUserId(userId);
+            list.add(userProjectTypeEntity);
+            /*List<TreeNode> children = treeNode.getChildren();
+            if (children != null) {
+                for (TreeNode treeNode1 : children) {
+                    RoleMenuEntity roleMenuEntity1 = new RoleMenuEntity();
+                    roleMenuEntity1.setMenuId(treeNode1.getId());
+                    roleMenuEntity1.setRoleId(roleId);
+                    list.add(roleMenuEntity1);
+                }
+            }*/
+        }
+        logger.info("The RoleMenuController save method params list is {}", list.size());
+        userProjectTypeService.save(list, userId);
     }
 }

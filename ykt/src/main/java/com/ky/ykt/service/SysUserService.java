@@ -5,6 +5,7 @@ import com.ky.ykt.entity.SysUserEntity;
 import com.ky.ykt.mapper.MenuMapper;
 import com.ky.ykt.mapper.RoleMenuMapper;
 import com.ky.ykt.mapper.SysUserMapper;
+import com.ky.ykt.mapper.UserProjectTypeMapper;
 import com.ky.ykt.mybatis.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,12 @@ public class SysUserService {
 
     @Autowired
     SysUserMapper sysUserMapper;
-
+    @Autowired
     RoleMenuMapper roleMenuMapper;
-
+    @Autowired
     MenuMapper menuMapper;
-
+    @Autowired
+    UserProjectTypeMapper userProjectTypeMapper;
     /**
      * 查询全部
      *
@@ -99,7 +101,11 @@ public class SysUserService {
     }
 
     public Object queryById(Map params) {
-        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, sysUserMapper.queryById(params.get("id").toString()));
+        SysUserEntity sysUserEntity = sysUserMapper.queryById(params.get("id").toString());
+        List<String> userProjectList = userProjectTypeMapper.queryByprojectTypeId(params.get("id").toString());
+        String userProjectStr = String.join(",", userProjectList);
+        sysUserEntity.setUserProjectList(userProjectStr);
+        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, sysUserEntity);
     }
 
     public Object doQueryToDo(SysUserEntity user) {

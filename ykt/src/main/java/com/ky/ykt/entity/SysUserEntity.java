@@ -26,6 +26,25 @@ public class SysUserEntity extends BaseEntity {
     //as
     private String departmentName;
     private String roleName;
+    private String userNote;
+
+    private String userProjectList;
+
+    public String getUserProjectList() {
+        return userProjectList;
+    }
+
+    public void setUserProjectList(String userProjectList) {
+        this.userProjectList = userProjectList;
+    }
+
+    public String getUserNote() {
+        return userNote;
+    }
+
+    public void setUserNote(String userNote) {
+        this.userNote = userNote;
+    }
 
     private List<MenuEntity> menuEntities;
 

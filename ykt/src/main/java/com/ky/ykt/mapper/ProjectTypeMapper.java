@@ -1,11 +1,9 @@
 package com.ky.ykt.mapper;
 
+import com.ky.ykt.entity.MenuEntity;
 import com.ky.ykt.entity.ProjectTypeEntity;
 import com.ky.ykt.mybatis.BaseMapper;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -85,4 +83,6 @@ public interface ProjectTypeMapper extends BaseMapper {
      */
     @InsertProvider(type = ProjectTypeSql.class, method = "_updateEntity")
     int _updateEntity(ProjectTypeEntity bean);
+    @Select("select * from project_type where id = #{id}")
+    List<ProjectTypeEntity> queryByProjectTypeId(String id);
 }
