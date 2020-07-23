@@ -28,8 +28,11 @@ $(function () {
                 $("#parentId").combotree('setValue', node.id);
                 // $("#parentId").combobox('setValue', node .id);
             }
-
-        }
+        },
+        //默认树节点是关闭状态
+        onLoadSuccess: function () {
+            $("#cityTree").tree("collapseAll");
+        },
     });
 });
 
