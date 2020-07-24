@@ -641,7 +641,7 @@ public class PersonController {
         if (roleCode == "4") {
             params.put("userId", user.getId());
         } else {
-            if (user.getRoleId().equals("426f5a25-c237-472c-975f-9a08e93622c7") || user.getRoleId().equals("f1efcd40-eafd-436f-af4b-c337c4956262")) {
+            if (user.getRoleId().equals("426f5a25-c237-472c-975f-9a08e93622c7")) {
                 params.put("flag", "2");
                 List<DepartmentEntity> departmentEntities = departmentMapper.queryByParentId(user.getDepartmentId());
                 List<String> departmentIdList = new ArrayList<String>();

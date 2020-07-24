@@ -103,7 +103,7 @@ public class PersonUploadSql extends BaseProvider {
                 }
             }
         }
-        builder.append(" order by pu.updateTime desc");
+        builder.append(" order by pu.updateTime,pu.village desc");
         return builder.toString();
     }
 }

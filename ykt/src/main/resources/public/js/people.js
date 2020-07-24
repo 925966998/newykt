@@ -232,7 +232,7 @@ obj = {
                 $("#showPhone").text(data.phone);
                 $("#showGrantAmount").text(data.grantAmount);
                 $("#showIdCardNo").text(data.idCardNo);
-                $("#showCounty").text(data.countyName + data.townName + data.villageName);
+                $("#showCounty").text(data.countyName + data.townName + data.villageName+data.address);
                 $("#showAddress").text(data.address);
                 $('#showProjectName').text(data.projectName);
                 $("#showDepartmentName").text(data.departmentName);

@@ -253,6 +253,9 @@ public class PersonSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and pp.projectType = #{projectType}");
         }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and pp.batchNumber = #{batchNumber}");
+        }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "operDepartment"))) {
             if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag")) && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {
                 if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdList"))) {
@@ -313,6 +316,9 @@ public class PersonSql extends BaseProvider {
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and pp.projectType = #{projectType}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and pp.batchNumber = #{batchNumber}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "operDepartment"))) {
             if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag")) && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {

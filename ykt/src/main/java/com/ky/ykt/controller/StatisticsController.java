@@ -53,7 +53,7 @@ public class StatisticsController {
         Map params = HttpUtils.getParams(request);
         logger.info("The Statisticscontroller queryPage method params are {}", params);
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
-        if (user.getRoleId().equals("426f5a25-c237-472c-975f-9a08e93622c7") || user.getRoleId().equals("f1efcd40-eafd-436f-af4b-c337c4956262")) {
+        if (user.getRoleId().equals("426f5a25-c237-472c-975f-9a08e93622c7")) {
             if (params.get("operDepartment") != null) {
                 List<DepartmentEntity> departmentEntities = departmentMapper.queryByParentId(params.get("operDepartment").toString());
                 List<String> departmentIdList = new ArrayList<String>();
