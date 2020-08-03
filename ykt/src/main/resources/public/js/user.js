@@ -131,9 +131,9 @@ obj = {
     addBox: function () {
         $("#addBox").dialog({
             closed: false
-
         });
         $("#addForm").form('clear');
+        $("#tree").hide();
         queryTree(null);
         doQueryDepartAndRole('departmentByDialog', 'roleByDialog');
     },
@@ -141,7 +141,8 @@ obj = {
     edit: function (id) {
         $("#addBox").dialog({
             closed: false,
-        })
+        });
+        $("#tree").show();
         doQueryDepartAndRole('departmentByDialog', 'roleByDialog');
         $.ajax({
             url: '/ky-ykt/sysUser/queryById?id=' + id,
@@ -244,7 +245,6 @@ obj = {
                 $.messager.progress('close');
                 $("#addBox").dialog({
                     closed: true
-
                 })
                 $("#table").datagrid('reload')
             }

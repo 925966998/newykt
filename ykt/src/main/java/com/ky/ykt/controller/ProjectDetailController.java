@@ -285,15 +285,15 @@ public class ProjectDetailController {
         resultMap.put("style", style);
         return resultMap;
     }
-
-    /**
+    /*
+    *//**
      * 预览pdf文件，获取PDF需要浏览的PDF文件流
      *
      * @param request
      * @param response
      * @param fileName
      * @author chunlynn
-     */
+     *//*
     @RequestMapping(value = "/pdfStreamHandeler", method = RequestMethod.GET)
     public void pdfStreamHandeler(HttpServletRequest request, HttpServletResponse response, String fileName, String urlPath) {
 
@@ -332,5 +332,6 @@ public class ProjectDetailController {
         }
 
     }
+    */
 
 }
