@@ -320,7 +320,9 @@ public class PersonUploadController {
             //EXCAL表身份证号校验
             String idCardNoRegex = "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)|(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)";
             //EXCAL手机号校验
-            //String phoneRegex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\\d{8}$";
+            String phoneRegex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\\d{8}$";
+            //固定电话校验
+            String guPhoneregex = "^(0\\d{2}-\\d{8}(-\\d{1,4})?)|(0\\d{3}-\\d{7,8}(-\\d{1,4})?)$";
             int i = 1;
             for (PersonUploadEntity personEntity : personEntities) {
                 /*if (personEntity.getName() != null || personEntity.getBankCardNo() != null || personEntity.getAddress() != null
@@ -341,10 +343,16 @@ public class PersonUploadController {
                     if (personEntity.getIdCardNo() == null || personEntity.getIdCardNo() == "" || idCardMatches == false) {
                         return new RestResult(40000, RestResult.ERROR_MSG, "该表中第" + i + "行,"+personEntity.getName()+"身份证号有误，请重新录入");
                     }
-                    /*boolean phoneMatches = personEntity.getPhone().matches(phoneRegex);
-                    if (personEntity.getIdCardNo() == null || personEntity.getIdCardNo() == "" || phoneMatches == false) {
-                        return new RestResult(40000, RestResult.ERROR_MSG, "该表中第" + i + "行手机号有误，请重新录入");
-                    }*/
+
+                    if (personEntity.getPhone() != null) {
+                        boolean phoneMatches = personEntity.getPhone().matches(phoneRegex);
+                        if(phoneMatches == false){
+                            boolean guPhoneMatches = personEntity.getPhone().matches(guPhoneregex);
+                            if(guPhoneMatches == false){
+                                return new RestResult(40000, RestResult.ERROR_MSG, "该表中第" + i + "行,"+personEntity.getName()+"手机号有误，请重新录入");
+                            }
+                        }
+                    }
 
                     //身份账号+银行卡号+发放部门+资金项目 需要唯一
                     List<PersonUploadEntity> uploadEntity = personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
