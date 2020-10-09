@@ -90,7 +90,7 @@ public interface PersonMapper extends BaseMapper {
     @Select("SELECT COLUMN_NAME entityName,column_comment excelName FROM INFORMATION_SCHEMA.Columns WHERE table_name='person' AND table_schema='ky-ykt'")
     List<ExcelHead> _queryColumnAndComment();
 
-    @Select("select * from person where idCardNo = #{idCardNo}")
+    @Select("select * from person where idCardNo = #{idCardNo} and status = 0 ")
     List<PersonEntity> queryByIdCardNo(@Param("idCardNo") String idCardNo);
 
     @Update("update person set projectId=#{projectId},status=4 where id = #{id} ")
