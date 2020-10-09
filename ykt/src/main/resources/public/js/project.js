@@ -93,7 +93,7 @@ obj = {
                     $('#addForm').form('load', {
                         projectName: res.projectName,
                         totalAmount: res.totalAmount,
-                        batchNumber:res.batchNumber,
+                        batchNumber: res.batchNumber,
                         id: id,
                         documentNum: res.documentNum,
                         centerAmount: res.centerAmount,
@@ -130,71 +130,35 @@ obj = {
             }
         })
     },
-    // 乡镇回显
+
+    // 乡镇分配
     detail: function (id) {
-        $("#detailForm").form('clear');
+        $("#detailForm").empty();
         var rows = $("#table").datagrid("getSelections");
         if (rows.length > 0) {
             $("#detailBox").dialog({
                 closed: false
             });
-            $("#projectId").val(rows[0].id);
             $.ajax({
-                url: '/ky-ykt/project/projectAreasSelect?projectId='+id,
+                url: '/ky-ykt/areas/queryByLevel',
                 type: 'get',
                 dataType: 'json',
-                data: {id: id},
-                success: function (res) {
-                    if (res != null) {
-                        console.log(res);
-                        if(res.length>0){
-                            for (var i = 0; i < res.length; i++) {
-                                var a = res[i].areaId;
-                                console.log(a);
-                                var b = res[i].areaAmount;
-                                console.log(b);
-                                $("#"+a).numberbox('setValue',b);
-                                //$("#2").numberbox('setValue','100');
-                            }
-                        }else{
-                            for (var i = 2; i < 16; i++) {
-                                $("#"+i).numberbox('setValue','0.00');
-                            }
-                        }
-
-                    } else {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '更新失败'
-
-                        })
+                data: {level: 3},
+                success:function (res) {
+                    //console.log(res);
+                    for (var i = 0; i < res.length; i++) {
+                        $("#detailForm").append("<div class='formDiv'><label>"+res[i].name+':'+"</label> " +
+                            "<input style='width: 60%;height: 20px; border: 1px solid #95B8E7; " +
+                            "data-options='min:0,precision:2' name='areaAmount' " +
+                            "type='text' id='"+res[i].id+"' >");
+                        var newline= document.createElement("br");
+                        $("#detailForm").append(newline);
                     }
-                },
-                error: function (request) {
-                    if (request.status == 401) {
-                        $.messager.confirm('登录失效', '您的身份信息已过期请重新登录', function (r) {
-                            if (r) {
-                                parent.location.href = "/login.html";
-                            }
-                        });
-                    }
+                    getMx(rows[0].id);
                 }
             })
-        }else {
-            $.messager.alert('提示', '请选择一条项目记录', 'info');
-        }
-    },
-    // 乡镇资金明细
-    addDetail: function () {
-        $("#detailForm").form('clear');
-        var rows = $("#table").datagrid("getSelections");
-        if (rows.length > 0) {
-            $("#detailBox").dialog({
-                closed: false
-            });
-            //console.log(rows[0].id);
             $("#projectId").val(rows[0].id);
-        }else {
+        } else {
             $.messager.alert('提示', '请选择一条项目记录', 'info');
         }
     },
@@ -351,7 +315,6 @@ obj = {
             url: "/ky-ykt/project/saveOrUpdate",
             onSubmit: function () {
                 return $(this).form('validate')
-
             },
             success: function (data) {
                 if (data.code = '10000') {
@@ -389,24 +352,24 @@ obj = {
             }
         })
     },
-    detailSum: function (id) {
+    detailSum: function () {
         var id = $("#projectId").val();
-        console.log(id);
+        //console.log(id);
         var areaAmountLength = document.getElementsByName("areaAmount").length;
         //console.log(areaAmountLength);
         //读取文本中的值
         var areaAmountList = new Array();
-        for (var i = 0; i <areaAmountLength ; i++) {
+        for (var i = 0; i < areaAmountLength; i++) {
             var a = document.getElementsByName("areaAmount")[i].value;//根据name获得对象中的值
             //console.log(a);
-           areaAmountList.push({areaId: i+2, areaAmount: a})
+            areaAmountList.push({areaId: i, areaAmount: a})
         }
-        console.log(JSON.stringify(areaAmountList));
+        //console.log(JSON.stringify(areaAmountList));
         $.ajax({
-            url: "/ky-ykt/project/saveProjectAreas?projectId="+id,
-            type:"post",
+            url: "/ky-ykt/project/saveProjectAreas?projectId=" + id,
+            type: "post",
             contentType: "application/json; charset=utf-8",
-            data:JSON.stringify(areaAmountList),
+            data: JSON.stringify(areaAmountList),
             dataType: "json",
             success: function (data) {
                 if (data.code = '10000') {
@@ -553,7 +516,7 @@ $("#table").datagrid({
     url: '/ky-ykt/project/queryPage',
     fitColumns: true,
     striped: true,
-    queryParams: { flag: 1},
+    queryParams: {flag: 1},
     pagination: true,
     pageSize: 10,
     method: "GET",
@@ -630,7 +593,7 @@ $("#table").datagrid({
             width: 100,
             align: 'center',
             formatter: function (value, row, index) {
-                return '中央：'+row.centerAmount+'<br>省：'+row.provinceAmount+'<br>市：'+row.cityAmount+'<br>区县：'+row.countyAmount;
+                return '中央：' + row.centerAmount + '<br>省：' + row.provinceAmount + '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
             }
         },
         {
@@ -676,7 +639,7 @@ $("#table").datagrid({
                 c = '<a  id="look"  data-id="98" class=" operA" onclick="obj.look(\'' + row.id + '\')">查看</a> ';
                 a = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                 b = '<a  id="detail" data-id="98" class=" operA"  onclick="obj.detail(\'' + row.id + '\')">明细</a> ';
-                return a+b+c;
+                return a + b + c;
 
             }
 
@@ -720,8 +683,8 @@ Date.prototype.Format = function (fmt) { //author: meizz
 // 弹出框加载
 $("#detailBox").dialog({
     title: "乡镇发放明细",
-    width: 600,
-    height: 450,
+    width: 400,
+    height: 300,
     resizable: true,
     minimizable: true,
     maximizable: true,
@@ -729,3 +692,38 @@ $("#detailBox").dialog({
     modal: true,
     shadow: true
 })
+
+//乡镇明细回显
+function getMx(projectId){
+    //console.log(projectId);
+    $.ajax({
+        url: '/ky-ykt/project/projectAreasSelect',
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        data: {id: projectId},
+        success: function (res) {
+            if (res != null) {
+                //console.log(res);
+                if(res.length != 0){
+                    $("#detailForm").empty();
+                    for (var i = 0; i < res.length; i++) {
+                        $("#detailForm").append("<div class='formDiv'><label>"+res[i].name+':'+"</label> " +
+                            "<input style='width: 60%;height: 20px; border: 1px solid #95B8E7; " +
+                            "data-options='min:0,precision:2' name='areaAmount' " +
+                            "type='text' id='"+res[i].id+"' value='"+res[i].areaAmount+"'>");
+                        var newline= document.createElement("br");
+                        $("#detailForm").append(newline);
+                    }
+                    //console.log(projectId);
+                    $("#projectId").val(projectId);
+                }
+            } else {
+                $.messager.show({
+                    title: '提示',
+                    msg: '更新失败'
+                })
+            }
+        },
+    })
+}

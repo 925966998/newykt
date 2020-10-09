@@ -122,8 +122,8 @@ public class AreasService {
 
 
 
-    public Object queryByLevel(Map params) {
-       return areasMapper._queryAll(params);
+    public List<AreasEntity> queryByLevel(Map params) {
+       return areasMapper.queryByLevel(params);
     }
 
     public List<AreasEntity> queryByParentId(Map<String, Object> params) {

@@ -81,7 +81,7 @@ public interface ProjectAreaMapper extends BaseMapper {
      */
     @InsertProvider(type = ProjectAreaSql.class, method = "_updateEntity")
     int _updateEntity(ProjectAreaEntity bean);
-    @Select("select * from project_area where projectId = #{id}")
+    @Select("select a.`name` AS name,pa.areaAmount AS areaAmount,a.id AS id from project_area pa LEFT JOIN areas a ON pa.areaId = a.id WHERE pa.projectId = #{id} ORDER BY id ASC")
     List<ProjectAreaEntity> selectProjectId(String id);
     @Select("select * from project_area where projectId = #{projectId} and userId = #{userId} and areaId = #{areaId} ")
     ProjectAreaEntity _queryProjectAreas(Map<Object, Object> params);

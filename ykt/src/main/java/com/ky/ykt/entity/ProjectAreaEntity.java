@@ -13,6 +13,7 @@ import java.util.Date;
  * @Description:
  */
 public class ProjectAreaEntity extends BaseEntity {
+    private String name;
     private String projectId;
     private String areaId;
     private BigDecimal areaAmount;
@@ -27,6 +28,14 @@ public class ProjectAreaEntity extends BaseEntity {
     private String projectTypeName;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date startTime;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Date getStartTime() {
         return startTime;

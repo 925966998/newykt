@@ -2,15 +2,14 @@ package com.ky.ykt.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ky.ykt.entity.DepartmentEntity;
-import com.ky.ykt.entity.ProjectAreaEntity;
-import com.ky.ykt.entity.ProjectEntity;
-import com.ky.ykt.entity.SysUserEntity;
+import com.ky.ykt.entity.*;
 import com.ky.ykt.logUtil.Log;
+import com.ky.ykt.mapper.AreasMapper;
 import com.ky.ykt.mapper.DepartmentMapper;
 import com.ky.ykt.mapper.ProjectAreaMapper;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
+import com.ky.ykt.service.AreasService;
 import com.ky.ykt.service.ProjectService;
 import com.ky.ykt.utils.HttpUtils;
 import com.ky.ykt.utils.NameToCode;
@@ -27,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -47,6 +47,8 @@ public class ProjectController {
     ProjectAreaMapper projectAreaMapper;
     @Autowired
     DepartmentMapper departmentMapper;
+    @Autowired
+    AreasService areasService;
 
     @RequestMapping(value = "queryByParams", method = RequestMethod.GET, produces = "application/json;UTF-8")
     public Object queryParams(HttpServletRequest request) {
@@ -203,23 +205,33 @@ public class ProjectController {
         logger.info("The ProjectController saveProjectAreas method params are {}", areaAmountList);
         String projectId = request.getParameter("projectId");
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        Map<Object, Object> map1 = new HashMap<>();
+        map1.put("level", 3);
+        List<AreasEntity> areasEntities = areasService.queryByLevel(map1);
         for (int i = 0; i <areaAmountList.size() ; i++) {
             ProjectAreaEntity projectAreaEntity = new ProjectAreaEntity();
             Map<Object, Object> map = new HashMap<>();
             map.put("projectId",projectId);
             map.put("userId",user.getId());
-            map.put("areaId",areaAmountList.get(i).getAreaId());
-            //map.put("areaAmount",areaAmountList.get(i).getAreaAmount());
+            map.put("areaId",areasEntities.get(i).getId());
             ProjectAreaEntity projectAreaEntity1 = projectAreaMapper._queryProjectAreas(map);
             if(projectAreaEntity1 == null){
                 projectAreaEntity.setProjectId(projectId);
-                projectAreaEntity.setAreaId(areaAmountList.get(i).getAreaId());
-                projectAreaEntity.setAreaAmount(areaAmountList.get(i).getAreaAmount());
+                projectAreaEntity.setAreaId(areasEntities.get(i).getId());
+                if(areaAmountList.get(i).getAreaAmount()==null || areaAmountList.get(i).getAreaAmount().equals("")){
+                    projectAreaEntity.setAreaAmount(new BigDecimal(BigInteger.ZERO));
+                }else{
+                    projectAreaEntity.setAreaAmount(areaAmountList.get(i).getAreaAmount());
+                }
                 projectAreaEntity.setUserId(user.getId());
                 projectAreaEntity.setOperDepartment(user.getDepartmentId());
                 projectAreaMapper._addEntity(projectAreaEntity);
             }else{
-                projectAreaEntity1.setAreaAmount(areaAmountList.get(i).getAreaAmount());
+                if(areaAmountList.get(i).getAreaAmount()==null || areaAmountList.get(i).getAreaAmount().equals("") ){
+                    projectAreaEntity1.setAreaAmount(new BigDecimal(BigInteger.ZERO));
+                }else{
+                    projectAreaEntity1.setAreaAmount(areaAmountList.get(i).getAreaAmount());
+                }
                 projectAreaMapper._updateEntity(projectAreaEntity1);
             }
         }
