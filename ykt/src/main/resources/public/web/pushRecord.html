@@ -21,6 +21,16 @@
                 <label class="labeStyle">姓名</label> <input class="inputSelf"  type="text" name="name"/>
                 <label class="labeStyle">手机号</label><input class="inputSelf"  type="text" name="phone"/>
                 <label class="labeStyle">身份证号</label><input  class="inputSelf" type="text" name="idCardNo"/>
+                <label class="labeStyle">发放状态</label>
+                <select name="status" class="easyui-combobox">
+                    <option selected></option>
+                    <option value=" ">全部</option>
+                    <option value="0">未发放</option>
+                    <option value="1">发放成功</option>
+                    <option value="2">发放失败</option>
+                    <option value="3">未提交</option>
+                    <option value="4">已提交</option>
+                </select>
                 <!-- <label class="labeStyle">项目资金</label>
                  <select name="projectId" id="findProjectId" class="easyui-combobox" style="height: 26px;width: 15%;">
                  </select>-->

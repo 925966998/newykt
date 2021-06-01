@@ -55,8 +55,8 @@ function statistics1 () {
                 q.push(x)
                 qq.push(datas[i].projectType)
             }
-            console.log(q)
-            console.log(qq)
+            //console.log(q)
+            //console.log(qq)
             option = {
                 tooltip: {
                     trigger: 'item',
@@ -159,9 +159,9 @@ function statistics3() {
                 }
 
             }
-            console.log(data)
-            console.log(datas)
-            console.log(datatotal)
+            //console.log(data)
+            //console.log(datas)
+            //console.log(datatotal)
             var myChart = echarts.init($("#chart04")[0]);
             option = {
                 title: {

@@ -18,7 +18,7 @@
             <label class="labeStyle">姓名：</label><input class="inputSelf" type="text" id="userName" name="userName"/>
             <label class="labeStyle">身份证号码：</label><input class="inputSelf" type="text" id="idCardNo"/>
             <label class="labeStyle">补贴项目：</label><input class="inputSelf" type="projectType" id="projectType"/>
-            <label class="labeStyle">批次号:</label><input type="text" id="batchNumber" name="batchNumber"/>
+            <label class="labeStyle">批次号:</label><input type="text" id="batchNumber" name="batchNumber" class="inputSelf"/>
             <br>
             <!--<label class="labeStyle">所属部门：</label><input type="operDepartment" id="operDepartment"/>-->
             <label class="labeStyle">开始时间：</label><input type="text" id="startTime" name="startTime"
@@ -26,6 +26,16 @@
             <label class="labeStyle">结束时间：</label><input type="text" id="endTime" name="endTime"
                                                          class="easyui-datebox"/>
             <label class="labeStyle">所属区域:</label><input type="text" id="areaId" name="areaId"/>
+            <label class="labeStyle">发放状态</label>
+            <select name="status" id="status" class="easyui-combobox" style="width: 11%;display: inline-block;text-align: right;margin-right: 1%;font-weight: 800;">
+                <option selected></option>
+                <option value=" ">全部</option>
+                <option value="0">未发放</option>
+                <option value="1">发放成功</option>
+                <option value="2">发放失败</option>
+                <option value="3">未提交</option>
+                <option value="4">已提交</option>
+            </select>
             <a href="#" class="easyui-linkbutton" onclick="obj.find()" data-options="iconCls:'icon-search'">查询</a>
         </div>
         <div class="tableCon" id="diii">

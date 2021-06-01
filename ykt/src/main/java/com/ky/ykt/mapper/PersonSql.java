@@ -250,6 +250,9 @@ public class PersonSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "userName"))) {
             builder.append(" and p.name like concat('%',#{userName},'%')");
         }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "status"))) {
+            builder.append(" and p.status =#{status}");
+        }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and pp.projectType = #{projectType}");
         }
@@ -316,6 +319,9 @@ public class PersonSql extends BaseProvider {
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and pp.projectType = #{projectType}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "status"))) {
+            builder.append(" and p.status =#{status}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
             builder.append(" and pp.batchNumber = #{batchNumber}");

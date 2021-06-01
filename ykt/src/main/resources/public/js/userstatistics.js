@@ -59,6 +59,7 @@ obj = {
             endTime: $("#endTime").val(),
             areaId: $("#areaId").val(),
             batchNumber: $("#batchNumber").val(),
+            status: $("#status").val(),
         })
 
     },

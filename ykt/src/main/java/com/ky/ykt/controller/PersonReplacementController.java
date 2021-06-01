@@ -229,7 +229,12 @@ public class PersonReplacementController {
         }
         //String filePath = request.getSession().getServletContext().getRealPath("upload/");
         String filePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        String path = filePath + fileName;
+
+        //对文件名进行修改
+        String[] split = fileName.split("\\.");
+        fileName = UUID.randomUUID().toString()+"."+split[1];
+        String path = filePath +fileName;
+
         File uploadFile = new File(path);
         List<ExcelHead> headList = personMapper._queryColumnAndComment();
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
@@ -404,6 +409,7 @@ public class PersonReplacementController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.toString());
+            uploadFile.delete();
         } finally {
             uploadFile.delete();
         }

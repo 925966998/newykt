@@ -23,6 +23,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -97,6 +98,9 @@ public class UserLogService {
                         bf.append(strValue).append("&");
                     }
                 } else {
+                    if(entry.getValue() instanceof  HttpServletRequest || entry.getValue() instanceof HttpServletResponse){
+                        continue;
+                    }
                     String value = JSONObject.toJSONString(entry.getValue());
                     bf.append(key).append("=");
                     bf.append(value).append("&");
