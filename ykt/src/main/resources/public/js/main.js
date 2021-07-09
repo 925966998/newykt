@@ -8,7 +8,6 @@ $("#mean").menu('show', {
 })
 $("#left01").accordion({
     border: false
-
 })
 $("#con").tabs({
     fit: true,
@@ -32,7 +31,6 @@ $("#myPas").dialog({
     iconCls: 'icon-mes',
     maximizable: true,
     closed: true
-
 })
 
 function openMes() {

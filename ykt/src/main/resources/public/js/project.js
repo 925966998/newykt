@@ -444,7 +444,7 @@ obj = {
                                 $("#table").datagrid('unselectAll');
                                 $.messager.show({
                                     title: '提示',
-                                    msg: num + '个用户被删除'
+                                    msg: num + '条记录被删除'
                                 })
 
                             } else {
@@ -458,7 +458,6 @@ obj = {
                         }
                     })
                 }
-
             })
 
         } else {
@@ -496,17 +495,11 @@ obj = {
                                 title: '警示信息',
                                 msg: "信息删除失败"
                             })
-
                         }
-
                     }
                 })
-
             }
-
         })
-
-
     }
 }
 // 加载表格
@@ -524,7 +517,7 @@ $("#table").datagrid({
     rownumbers: true,
     pageList: [10, 20],
     pageNumber: 1,
-    nowrap: true,
+    nowrap: false,
     singleSelect: true,
     height: 'auto',
     sortName: 'id',
@@ -532,117 +525,41 @@ $("#table").datagrid({
     sortOrder: 'asc',
     toolbar: '#tabelBut',
     columns: [[
-        {
-            checkbox: true,
-            field: 'no',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'projectTypeName',
-            title: '项目名称',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'projectSourceName',
-            title: '资金来源',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'documentNum',
-            title: '文号',
-            width: 100,
-            align: 'center'
-        }, {
-            field: 'departmentName',
-            title: '所属单位',
-            width: 100,
-            align: 'center'
-        },
-        /*
-        {
-            field: 'projectTypeName',
-            title: '资金类型',
-            width: 100,
-            align: 'center',
-        },
-        */
-        {
-            field: 'startTime',
-            title: '开始发放时间',
-            width: 100,
-            align: 'center',
+        /*{checkbox: true, field: 'no', width: 100, align: 'center'},*/
+        {field: 'projectTypeName', title: '项目名称', width: 100, align: 'center'},
+        {field: 'projectSourceName', title: '资金来源', width: 100, align: 'center'},
+        {field: 'documentNum', title: '文号', width: 100, align: 'center'},
+        {field: 'departmentName', title: '所属单位', width: 100, align: 'center'},
+        {field: 'startTime', title: '开始发放时间', width: 100, align: 'center',
             formatter: function (value, row, index) {
-                if (value != null) {
-                    return new Date(value).Format("yyyy-MM-dd HH:mm")
-                }
-
+                if (value != null) {return new Date(value).Format("yyyy-MM-dd HH:mm")}}
+        },
+        {field: 'totalAmount', title: '总金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
+        },
+        {field: 'zijin', title: '资金占比', width: 100, align: 'left',
+            formatter: function (value, row, index) {
+                return '中央：' + row.centerAmount + '<br>省：' + row.provinceAmount+ '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
             }
         },
-        {
-            field: 'totalAmount',
-            title: '总金额',
-            width: 100,
-            align: 'center'
+        {field: 'paymentAmountResult', title: '发放金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
-        {
-            field: 'zijin',
-            title: '资金占比',
-            width: 100,
-            align: 'center',
-            formatter: function (value, row, index) {
-                return '中央：' + row.centerAmount + '<br>省：' + row.provinceAmount + '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
-            }
+        {field: 'surplusAmount', title: '剩余金额', width: 100, align: 'center',
+            formatter: function (val, row) {if ((row.totalAmount - row.paymentAmountResult) == 0) {return '0.00';} else {return toMoney((row.totalAmount - row.paymentAmountResult));}},
         },
-        {
-            field: 'paymentAmountResult',
-            title: '发放金额',
-            width: 100,
-            align: 'center',
+        {field: 'state', title: '发放状态', width: 100, align: 'center',
             formatter: function (value, row, index) {
-                if (value == null || value == '') {
-                    return 0;
-                } else {
-                    return value;
-                }
-            }
-        }, {
-            field: 'surplusAmount',
-            title: '剩余金额',
-            width: 100,
-            align: 'center',
-            formatter: function (value, row, index) {
-                return (row.totalAmount - row.paymentAmountResult)
-            }
-        }, {
-            field: 'state',
-            title: '发放状态',
-            width: 100,
-            align: 'center',
-            formatter: function (value, row, index) {
-                if (value == 0) {
-                    return '发放中';
-                }
-                if (value == 1) {
-                    return '发放完成';
-                }
-            }
+                if (value == 0) {return '发放中';}
+                if (value == 1) {return '发放完成';}}
         },
-        {
-            field: "opr",
-            title: '操作',
-            width: 100,
-            align: 'center',
+        {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {
                 c = '<a  id="look"  data-id="98" class=" operA" onclick="obj.look(\'' + row.id + '\')">查看</a> ';
                 a = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                 b = '<a  id="detail" data-id="98" class=" operA"  onclick="obj.detail(\'' + row.id + '\')">明细</a> ';
                 return a + b + c;
-
             }
-
         }
     ]]
 })
@@ -653,7 +570,10 @@ $("#addBox").dialog({
     height: 300,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 // 加载物流详情
 $("#lookTail").dialog({
@@ -662,7 +582,10 @@ $("#lookTail").dialog({
     height: 410,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 Date.prototype.Format = function (fmt) { //author: meizz
     var o = {
@@ -726,4 +649,32 @@ function getMx(projectId){
             }
         },
     })
+}
+
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
 }

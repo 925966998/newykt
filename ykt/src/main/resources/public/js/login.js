@@ -55,12 +55,20 @@ $("#btn").click(function () {
                 },
                 success: function (data) {
                     $.messager.progress('close');
+                    //console.log(data);
                     if (data.code == 10000) {
                         console.log(data.data);
                         sessionStorage.setItem("user", JSON.stringify(data.data));
                         sessionStorage.setItem("userId", data.data.id);
                         sessionStorage.setItem("userName", $("#userName").val());
-                        window.location.href = "/main.html";
+                        if($("#password").val().trim() == "123456"){
+                            //修改密码
+                            $("#myPas").dialog({
+                                closed: false
+                            })
+                        }else{
+                            window.location.href = "/main.html";
+                        }
                     } else {
                         $.messager.alert("登录失败", data.data, 'info');
                     }
@@ -140,3 +148,95 @@ function change() {
     draw();
 }
 
+$("#myPas").dialog({
+    title: "修改密码",
+    width: 400,
+    height: 280,
+    modal: true,
+    iconCls: 'icon-mes',
+    maximizable: true,
+    closed: true
+})
+
+function savePass() {
+        if($("#password").val() != $("#newPass").val()){
+            $.ajax({
+                url: '/ky-ykt/sysUser/updatePass',
+                type: 'GET',
+                data: {
+                    oldPass: $("#password").val(),
+                    newPass: $("#newPass").val(),
+                    newPassCheck: $("#newPassCheck").val()
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        $("#myPas").dialog({
+                            closed: true
+                        })
+                        $.messager.show({
+                            title: '提示',
+                            msg: '密码修改成功'
+                        })
+                        window.location.href = "/main.html";
+                    }
+                    if (data.code == 2) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: data.msg
+                        })
+                    }
+                    if (data.code == 3) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: data.msg
+                        })
+                    }
+                },
+                error: function (request) {
+                    $.messager.progress('close');
+                    if (request.status == 401) {
+                        $.messager.confirm('登录失效', '您的身份信息已过期请重新登录', function (r) {
+                            if (r) {
+                                parent.location.href = "/login.html";
+                            }
+                        });
+                    }
+                }
+
+            })
+    }
+        $.messager.show({
+            title: '提示',
+            msg: "新旧密码一样，请修改密码"
+        })
+}
+
+obi = {
+    chenkPass() {
+        var pass = $("#newPass").val();
+        //console.log(pass);
+        // 长度大于8位，至少包含数字、小写字母、大写字母中的两种。
+        var strength = 0;
+        if (pass.length >= 8 && pass.match(/[\da-zA-Z]+/)) {
+            if (pass.match(/\d+/)) {
+                strength++;
+            }
+            if (pass.match(/[a-z]+/)) {
+                strength++;
+            }
+            if (pass.match(/[A-Z]+/)) {
+                strength++;
+            }
+        }
+        if (strength >= 2) {
+            return true;
+        }else {
+            //alert("密码强度不够, 至少包含数字、小写字母、大写字母、特殊字符中的三种");
+            $.messager.confirm('修改密码失败', '密码强度不够, 密码至少8位并且包含数字、字母，请重新输入', function () {
+                $("#newPass").val("");
+            });
+            return false;
+        }
+    }
+}

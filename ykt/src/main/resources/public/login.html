@@ -23,6 +23,15 @@
 </div>
 <div class="loginFoot"></div>
 
+<div id="myPas" class="formDiv">
+    <p align="center">请修改您的密码</p>
+    <p><label class="diaLable">新密码：</label><input type="password" class="easyui-validatebox TailInput" id="newPass" onblur="obi.chenkPass()"></p>
+    <p><label class="diaLable">确认密码：</label><input type="password" class="easyui-validatebox TailInput" id="newPassCheck"></p>
+    <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="savePass()">保存</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+           onclick="return $('#myPas').dialog('close')">关闭</a></div>
+</div>
+
 <script src="js/jquery-easyui-1.5.3/jquery.min.js"></script>
 <script src="js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
 <script src="js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>

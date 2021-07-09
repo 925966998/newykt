@@ -42,12 +42,12 @@ $(function () {
         }
     })
 })
+/*
+
 $(function () {
     var myChart = echarts.init($("#chart01")[0]);
-//app.title = '堆叠柱状图';
-
+    //app.title = '堆叠柱状图';
     option = {
-
         tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -256,6 +256,7 @@ $(function () {
     };
     myChart.setOption(option);
 });
+*/
 
 function init() {
 

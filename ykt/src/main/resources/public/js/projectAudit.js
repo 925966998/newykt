@@ -375,54 +375,29 @@ $("#table").datagrid({
     singleSelect: true,
     toolbar: '#tabelBut',
     columns: [[
-        {
-            field: 'projectName',
-            title: '项目名称',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'startTime',
-            title: '开始发放时间',
-            width: 100,
-            align: 'center',
+        {field: 'projectTypeName', title: '项目名称', width: 100, align: 'center'},
+        {field: 'startTime', title: '开始发放时间', width: 100, align: 'center',
             formatter: function (value, row, index) {
                 if (value != null) {
                     return new Date(value).Format("yyyy-MM-dd HH:mm")
                 }
             }
         },
-        {
-            field: 'endTime',
-            title: '结束时间',
-            width: 100,
-            align: 'center',
+        {field: 'endTime', title: '结束时间', width: 100, align: 'center',
             formatter: function (value, row, index) {
                 if (value != null) {
                     return new Date(value).Format("yyyy-MM-dd HH:mm")
                 }
             }
-        }, {
-            field: 'totalAmount',
-            title: '总金额',
-            width: 100,
-            align: 'center'
         },
-        {
-            field: 'paymentAmount',
-            title: '发放金额',
-            width: 100,
-            align: 'center'
-        }, {
-            field: 'remark',
-            title: '描述',
-            width: 100,
-            align: 'center'
-        }, {
-            field: 'state',
-            title: '审核状态',
-            width: 100,
-            align: 'center',
+        {field: 'totalAmount', title: '总金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
+        },
+        {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
+        },
+        {field: 'remark', title: '描述', width: 100, align: 'left'},
+        {field: 'state', title: '审核状态', width: 100, align: 'center',
             formatter: function (value, row, index) {
                 if (value == 0) {
                     return '审核中';
@@ -437,17 +412,9 @@ $("#table").datagrid({
                     return '发放完成';
                 }
             }
-        }, {
-            field: 'reason',
-            title: '未发放原因',
-            width: 100,
-            align: 'center'
         },
-        {
-            field: "opr",
-            title: '操作',
-            width: 100,
-            align: 'center',
+        {field: 'reason', title: '未发放原因', width: 100, align: 'center'},
+        {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {
                 c = '';
                 if (row.state == 2) {
@@ -477,7 +444,10 @@ $("#addBox").dialog({
     height: 300,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 // 加载物流详情
 $("#lookTail").dialog({
@@ -486,7 +456,10 @@ $("#lookTail").dialog({
     height: 410,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 Date.prototype.Format = function (fmt) { //author: meizz
     var o = {
@@ -502,4 +475,32 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (var k in o)
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
 }

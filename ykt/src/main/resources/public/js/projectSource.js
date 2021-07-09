@@ -210,7 +210,7 @@ obj = {
                                 $("#table").datagrid('unselectAll');
                                 $.messager.show({
                                     title: '提示',
-                                    msg: num + '个用户被删除'
+                                    msg: num + '条记录被删除'
                                 })
 
                             } else {
@@ -294,9 +294,7 @@ obj = {
                         }
                     }
                 })
-
             }
-
         })
     }
 }
@@ -314,92 +312,39 @@ $("#table").datagrid({
     rownumbers: true,
     pageList: [10, 20],
     pageNumber: 1,
-    nowrap: true,
+    nowrap: false,
     height: 'auto',
     sortName: 'id',
     checkOnSelect: true,
     sortOrder: 'asc',
     toolbar: '#tabelBut',
     columns: [[
-        {
-            checkbox: true,
-            field: 'no',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'projectName',
-            title: '资金来源名称',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'documentNum',
-            title: '文号',
-            width: 100,
-            align: 'center'
-        }, {
-            field: 'departmentName',
-            title: '所属单位',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'projectTypeName',
-            title: '资金类型',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'startTime',
-            title: '开始发放时间',
-            width: 100,
-            align: 'center',
+        /*{checkbox: true, field: 'no', width: 100, align: 'center'},*/
+        {field: 'projectName', title: '资金来源名称', width: 100, align: 'center',},
+        {field: 'documentNum', title: '文号', width: 100, align: 'center'},
+        {field: 'departmentName', title: '所属单位', width: 100, align: 'center'},
+        {field: 'projectTypeName', title: '资金类型', width: 100, align: 'center',},
+        {field: 'startTime', title: '开始发放时间', width: 100, align: 'center',
             formatter: function (value, row, index) {
-                if (value != null) {
-                    return new Date(value).Format("yyyy-MM-dd HH:mm")
-                }
-
-            }
+                if (value != null) {return new Date(value).Format("yyyy-MM-dd HH:mm")}}
         },
-        {
-            field: 'totalAmount',
-            title: '总金额',
-            width: 100,
-            align: 'center'
+        {field: 'totalAmount', title: '总金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
-        {
-            field: 'zijin',
-            title: '资金占比',
-            width: 100,
-            align: 'center',
+        {field: 'zijin', title: '资金占比', width: 100, align: 'left',
             formatter: function (value, row, index) {
-                return '中央：' + row.centerAmount + '<br>省：' + row.provinceAmount + '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
-            }
+                return '中央：' +row.centerAmount + '<br>省：' + row.provinceAmount + '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
+            }},
+        {field: 'surplusAmount', title: '结余金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
-        {
-            field: 'surplusAmount',
-            title: '结余金额',
-            width: 100,
-            align: 'center',
-        }, {
-            field: 'note',
-            title: '描述',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: "opr",
-            title: '操作',
-            width: 100,
-            align: 'center',
+        {field: 'note', title: '描述', width: 100, align: 'left',},
+        {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {
                 e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                 d = '<a  id="add" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';
                 return e + d;
-
             }
-
         }
     ]],
     onLoadError: function (request) {
@@ -419,7 +364,10 @@ $("#addBox").dialog({
     height: 300,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 
 Date.prototype.Format = function (fmt) { //author: meizz
@@ -436,4 +384,32 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (var k in o)
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
 }

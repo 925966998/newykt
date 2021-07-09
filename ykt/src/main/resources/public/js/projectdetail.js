@@ -23,63 +23,30 @@ function doQuery(url,data) {
         sortOrder: 'asc',
         toolbar: '#tabelBut',
         columns: [[
-            {
-                checkbox: true,
-                field: 'no',
-                width: 100,
-                align: 'center'
+           /* {checkbox: true, field: 'no', width: 100, align: 'center'},*/
+            {field: 'projectTypeName', title: '项目名称', width: 100, align: 'center'},
+            {field: 'departmentNames', title: '所属单位', width: 100, align: 'center'},
+            {field: 'totalAmount', title: '剩余金额', width: 100, align: 'center',
+                formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
             },
-            {
-                field: 'projectTypeName',
-                title: '项目名称',
-                width: 100,
-                align: 'center'
+            {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',
+                formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
             },
-            {
-                field: 'departmentNames',
-                title: '所属单位',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'totalAmount',
-                title: '剩余金额',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'paymentAmount',
-                title: '发放金额',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'startTime',
-                title: '开始发放时间',
-                width: 100,
-                align: 'center',
+            {field: 'startTime', title: '开始发放时间', width: 100, align: 'center',
                 formatter: function (value, row, index) {
                     if (value != null) {
                         return new Date(value).Format("yyyy-MM-dd HH:mm")
                     }
                 }
             },
-            {
-                field: 'endTime',
-                title: '结束时间',
-                width: 100,
-                align: 'center',
+            {field: 'endTime', title: '结束时间', width: 100, align: 'center',
                 formatter: function (value, row, index) {
                     if (value != null) {
                         return new Date(value).Format("yyyy-MM-dd HH:mm")
                     }
                 }
             },
-            {
-                field: 'state',
-                title: '发放状态',
-                width: 100,
-                align: 'center',
+            {field: 'state', title: '发放状态', width: 100, align: 'center',
                 formatter:function(status){
                     switch (status) {
                         case 0:  return '<div>待审核</div>';
@@ -89,17 +56,8 @@ function doQuery(url,data) {
                     }
                 }
             },
-            {
-                field: 'reason',
-                title: '未发放原因',
-                width: 100,
-                align: 'center'
-            },
-             {
-                 field: "opr",
-                 title: '操作',
-                 width: 100,
-                 align: 'center',
+            {field: 'reason', title: '未发放原因', width: 100, align: 'center'},
+             {field: "opr", title: '操作', width: 100, align: 'center',
                  formatter: function (val, row) {
                      return '<a  id="look"   class=" operA" class="easyui-linkbutton"  href="../web/personName.html?projectId='+row.id+'")">发放名单</a> ';
                  }
@@ -188,7 +146,7 @@ obj = {
     },
     audit: function () {
         var rows = $("#table").datagrid("getSelections");
-        console.log(rows.length)
+        //console.log(rows.length)
         if (rows.length > 1) {
             $.messager.alert('提示', '每次选择一条审批记录', 'info');
         } else if (rows.length < 1) {
@@ -580,17 +538,11 @@ obj = {
                                 title: '警示信息',
                                 msg: "信息删除失败"
                             })
-
                         }
-
                     }
                 })
-
             }
-
         })
-
-
     }
 }
 
@@ -601,7 +553,10 @@ $("#addBox").dialog({
     height: 300,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 // 加载物流详情
 $("#lookTail").dialog({
@@ -610,7 +565,10 @@ $("#lookTail").dialog({
     height: 410,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 Date.prototype.Format = function (fmt) { //author: meizz
     var o = {
@@ -626,4 +584,32 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (var k in o)
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
 }

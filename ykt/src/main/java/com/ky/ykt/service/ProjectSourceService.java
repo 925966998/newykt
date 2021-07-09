@@ -1,5 +1,6 @@
 package com.ky.ykt.service;
 
+import com.alibaba.druid.sql.visitor.functions.Isnull;
 import com.ky.ykt.entity.ProjectSourceEntity;
 import com.ky.ykt.mapper.ProjectSourceMapper;
 import com.ky.ykt.mybatis.PagerResult;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +42,17 @@ public class ProjectSourceService {
      */
     public RestResult queryPage(Map params) {
         List<ProjectSourceEntity> list = projectSourceMapper._queryPage(params);
+        for (ProjectSourceEntity projectSourceEntity :list) {
+            projectSourceEntity.setSurplusAmount(isNullBig(projectSourceEntity.getSurplusAmount()));
+            projectSourceEntity.setTotalAmount(isNullBig(projectSourceEntity.getTotalAmount()));
+            projectSourceEntity.setPaymentAmount(isNullBig(projectSourceEntity.getPaymentAmount()));
+            projectSourceEntity.setCountyAmount(isNullBig(projectSourceEntity.getCountyAmount()));
+            projectSourceEntity.setCityAmount(isNullBig(projectSourceEntity.getCityAmount()));
+            projectSourceEntity.setProvinceAmount(isNullBig(projectSourceEntity.getProvinceAmount()));
+            projectSourceEntity.setCenterAmount(isNullBig(projectSourceEntity.getCenterAmount()));
+
+        }
+
         long count = projectSourceMapper._queryCount(params);
         PagerResult pagerResult = new PagerResult(list, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
@@ -84,5 +97,12 @@ public class ProjectSourceService {
      */
     public Object _deleteForce(String id) {
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, projectSourceMapper._deleteForce(id));
+    }
+
+    public BigDecimal isNullBig(BigDecimal b) {
+        if (b == null) {
+            return BigDecimal.ZERO;
+        }
+        return b;
     }
 }

@@ -69,6 +69,16 @@ public class ProjectService {
 
     public RestResult queryPage(Map params) {
         List<ProjectEntity> list = projectMapper._queryPage(params);
+        for (ProjectEntity projectEntity :list) {
+            projectEntity.setSurplusAmount(isNullBig(projectEntity.getSurplusAmount()));
+            projectEntity.setTotalAmount(isNullBig(projectEntity.getTotalAmount()));
+            projectEntity.setPaymentAmount(isNullBig(projectEntity.getPaymentAmount()));
+            projectEntity.setCountyAmount(isNullBig(projectEntity.getCountyAmount()));
+            projectEntity.setCityAmount(isNullBig(projectEntity.getCityAmount()));
+            projectEntity.setProvinceAmount(isNullBig(projectEntity.getProvinceAmount()));
+            projectEntity.setCenterAmount(isNullBig(projectEntity.getCenterAmount()));
+
+        }
         long count = projectMapper._queryCount(params);
         PagerResult pagerResult = new PagerResult(list, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
@@ -172,6 +182,13 @@ public class ProjectService {
         PagerResult pagerResult = new PagerResult(list, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, pagerResult);
+    }
+
+    public BigDecimal isNullBig(BigDecimal b) {
+        if (b == null) {
+            return BigDecimal.ZERO;
+        }
+        return b;
     }
 
 }

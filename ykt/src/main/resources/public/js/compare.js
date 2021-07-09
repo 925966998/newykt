@@ -201,7 +201,6 @@ obj = {
                 $.messager.progress('close');
                 $("#addBox").dialog({
                     closed: true
-
                 })
                 $("#table").datagrid('reload')
             }
@@ -213,11 +212,9 @@ obj = {
         $("#addBox").dialog({
             closed: true
         })
-
     },
     //提交多个
     submitToBuss: function () {
-
         $.messager.confirm('确定提交', '你确定要提交推送吗？', function (flg) {
             if (flg) {
 

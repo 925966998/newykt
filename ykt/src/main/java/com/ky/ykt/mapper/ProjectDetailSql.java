@@ -53,9 +53,11 @@ public class ProjectDetailSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "paymentDepartment"))) {
             builder.append(" and pd.paymentDepartment = #{paymentDepartment}");
         }
+        /*
         if (StringUtils.isNotBlank(MapUtils.getString(map, "state"))) {
             builder.append(" and pd.state = #{state}");
         }
+        */
         if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("1")) {
             builder.append(GetDepartmentSql.getUserBuilder("p.operDepartment"));
         } else if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("2")) {

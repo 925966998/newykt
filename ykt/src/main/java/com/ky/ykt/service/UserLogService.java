@@ -55,7 +55,7 @@ public class UserLogService {
             // 获取当前登录用户
             SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
 
-            String ip = this.getIpAddr(request);
+            String ip = getIpAddr(request);
             log.setUserName(user.getUserName());
             log.setModule(module);
             log.setDescription(description);
