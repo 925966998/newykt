@@ -12,49 +12,21 @@ function doQuery(url) {
         width: '100%',
         rownumbers: true,
         pageNumber: 1,
-        nowrap: true,
+        nowrap: false,
         height: 'auto',
         sortName: 'id',
         checkOnSelect: true,
         sortOrder: 'asc',
         toolbar: '#tabelBut',
         columns: [[
-            /*{
-                checkbox: true,
-                field: 'no',
-                width: 100,
-                align: 'center'
-            },*/
-            {
-                field: 'name',
-                title: '姓名',
-                width: 100,
-                align: 'center'
+            /*{checkbox: true,field: 'no',width: 100,align: 'center'},*/
+            {field: 'name', title: '姓名', width: 100, align: 'center'},
+            {field: 'phone', title: '手机号', width: 100, align: 'center'},
+            {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
+            {field: 'replacementAmount', title: '补发金额', width: 100, align: 'center',
+                formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
             },
-            {
-                field: 'phone',
-                title: '手机号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'idCardNo',
-                title: '身份证号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'replacementAmount',
-                title: '补发金额',
-                width: 100,
-                align: 'center'
-            },
-
-            {
-                field: "opr",
-                title: '操作',
-                width: 120,
-                align: 'center',
+            {field: "opr", title: '操作', width: 120, align: 'center',
                 formatter: function (val, row) {
                     //s = '<a  id="add" data-id="98" class=" operA"  onclick="obj.show(\'' + row.id + '\')">查看</a> ';
                     e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
@@ -607,7 +579,32 @@ $("#comsub").click(function () {
     })
 })
 
-
-
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
+}
 
 

@@ -57,4 +57,11 @@ public class ProjectDetailService {
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, projectDetailMapper._updateEntity(projectDetailEntity));
     }
 
+    /**
+     * 物理删除
+     */
+    public Object _deleteForce(String id) {
+        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, projectDetailMapper._deleteForce(id));
+    }
+
 }

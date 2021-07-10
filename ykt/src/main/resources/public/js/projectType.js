@@ -272,83 +272,29 @@ $("#table").datagrid({
     rownumbers: true,
     pageList: [10, 20],
     pageNumber: 1,
-    nowrap: true,
+    nowrap: false,
     height: 'auto',
     sortName: 'id',
     checkOnSelect: true,
     sortOrder: 'asc',
     toolbar: '#tabelBut',
     columns: [[
-        {
-            checkbox: true,
-            field: 'no',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'name',
-            title: '补助项目名称',
-            width: 100,
-            align: 'center',
-        },
-        /*
-        {
-            field: 'projectTypeParentName',
-            title: '项目类别',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'type',
-            title: '资金类型',
-            width: 100,
-            align: 'center',
+        /*{checkbox: true, field: 'no', width: 100, align: 'center'},*/
+        {field: 'name', title: '补助项目名称', width: 100, align: 'center',},
+        /*{field: 'projectTypeParentName',title: '项目类别',width: 100,align: 'center'},
+        {field: 'type',title: '资金类型',width: 100,align: 'center',
             formatter: function (value, row, index) {
-                if (value == 1) {
-                    return "个人类";
-                }
-                if (value == 2) {
-                    return "项目类";
-                }
-
+                if (value == 1) {return "个人类";}
+                if (value == 2) {return "项目类";}
             }
         },
         */
-        {
-            field: 'policyBasis',
-            title: '政策依据',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'payFlag',
-            title: '发放标准',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'payTarget',
-            title: '发放对象',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'departmentName',
-            title: '所属部门',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'note',
-            title: '备注说明',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: "opr",
-            title: '操作',
-            width: 100,
-            align: 'center',
+        {field: 'policyBasis', title: '政策依据', width: 100, align: 'center',},
+        {field: 'payFlag', title: '发放标准', width: 100, align: 'center',},
+        {field: 'payTarget', title: '发放对象', width: 100, align: 'center',},
+        {field: 'departmentName', title: '所属部门', width: 100, align: 'center',},
+        {field: 'note', title: '备注说明', width: 100, align: 'center'},
+        {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {
                 e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                 d = '<a  id="add" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';

@@ -11,66 +11,24 @@ function doQuery(url) {
         width: '100%',
         rownumbers: true,
         pageNumber: 1,
-        nowrap: true,
+        nowrap: false,
         height: 'auto',
         sortName: 'id',
         //checkOnSelect: false,
         //sortOrder: 'asc',
         toolbar: '#tabelBut',
         columns: [[
-            {
-                field: 'name',
-                title: '姓名',
-                width: 100,
-                align: 'center'
+            {field: 'name', title: '姓名', width: 100, align: 'center'},
+            {field: 'phone', title: '手机号', width: 100, align: 'center'},
+            {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
+            {field: 'openingBank', title: '开户行', width: 100, align: 'center'},
+            {field: 'bankCardNo', title: '银行卡号', width: 100, align: 'center'},
+            {field: 'projectName', title: '项目资金名称', width: 100, align: 'center'},
+            {field: 'grantAmount', title: '发放金额', width: 100, align: 'center',
+                formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
             },
-            {
-                field: 'phone',
-                title: '手机号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'idCardNo',
-                title: '身份证号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'openingBank',
-                title: '开户行',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'bankCardNo',
-                title: '银行卡号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'projectName',
-                title: '项目资金名称',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'grantAmount',
-                title: '发放金额',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'departmentName',
-                title: '发放部门',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'status',
-                title: '状态',
-                width: 100,
-                align: 'center',
+            {field: 'departmentName', title: '发放部门', width: 100, align: 'center'},
+            {field: 'status', title: '状态', width: 100, align: 'center',
                 formatter: function (val, row) {
                     if (val == '0')
                         return '未发放';
@@ -80,18 +38,9 @@ function doQuery(url) {
                         return '发放失败';
                 }
             },
-            {
-                field: 'failReason',
-                title: '失败原因',
-                width: 100,
-                align: 'center'
-
-            }/*,
-            {
-                field: "opr",
-                title: '操作',
-                width: 100,
-                align: 'center',
+            {field: 'failReason', title: '失败原因', width: 100, align: 'center'}
+            /*,
+            { field: "opr",title: '操作',width: 100,align: 'center',
                 formatter: function (val, row) {
                     e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                     d = '<a  id="del" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';
@@ -377,5 +326,32 @@ $("#upload").click(function () {
             }
         }
     })
-
 })
+
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
+}

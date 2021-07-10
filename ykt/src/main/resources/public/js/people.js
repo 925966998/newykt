@@ -12,76 +12,29 @@ function doQuery(url) {
         width: '100%',
         rownumbers: true,
         pageNumber: 1,
-        nowrap: true,
+        nowrap: false,
         height: 'auto',
         sortName: 'id',
         checkOnSelect: true,
         sortOrder: 'asc',
         toolbar: '#tabelBut',
         columns: [[
-            {
-                checkbox: true,
-                field: 'no',
-                width: 100,
-                align: 'center'
+            /*{checkbox: true, field: 'no', width: 100, align: 'center'},*/
+            {field: 'name', title: '姓名', width: 100, align: 'center'},
+            {field: 'phone', title: '手机号', width: 100, align: 'center'},
+            {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
+            {field: 'openingBank', title: '开户行', width: 100, align: 'center'},
+            {field: 'bankCardNo', title: '银行卡号', width: 100, align: 'center'},
+            {field: 'jtzj', title: '家庭住址', width: 100, align: 'center',
+                formatter: function (value, row, index) {
+                    return  row.countyName + '' + row.townName + '' + row.villageName+''+row.address;
+                }
             },
-            {
-                field: 'name',
-                title: '姓名',
-                width: 100,
-                align: 'center'
-
-
-            },
-            {
-                field: 'phone',
-                title: '手机号',
-                width: 100,
-                align: 'center'
-
-            },
-            {
-                field: 'idCardNo',
-                title: '身份证号',
-                width: 100,
-                align: 'center'
-
-            },
-            {
-                field: 'openingBank',
-                title: '开户行',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'bankCardNo',
-                title: '银行卡号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'countyName',
-                title: '所属区县',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'townName',
-                title: '所属乡镇',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'villageName',
-                title: '所属村组',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: "opr",
-                title: '操作',
-                width: 120,
-                align: 'center',
+            /*
+            {field: 'townName', title: '所属乡镇', width: 100, align: 'center'},
+            {field: 'villageName', title: '所属村组', width: 100, align: 'center'},
+        */
+            {field: "opr", title: '操作', width: 120, align: 'center',
                 formatter: function (val, row) {
                     s = '<a  id="add" data-id="98" class=" operA"  onclick="obj.show(\'' + row.id + '\')">查看</a> ';
                     e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';

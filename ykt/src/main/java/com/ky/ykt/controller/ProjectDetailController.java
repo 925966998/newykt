@@ -335,4 +335,21 @@ public class ProjectDetailController {
     }
     */
 
+    @Log(description = "人员管理物理删除操作", module = "人员管理")
+    @RequestMapping(value = "deleteForce", method = RequestMethod.GET)
+    public Object deleteForce(HttpServletRequest request) {
+        Map params = HttpUtils.getParams(request);
+        logger.info("The PersonUploadController deleteForce method params is {}", params);
+        String id = params.get("id").toString();
+        if (id.contains(",")) {
+            String[] split = id.split(",");
+            for (int i = 0; i < split.length; i++) {
+                projectDetailService._deleteForce(split[i]);
+            }
+        } else {
+            projectDetailService._deleteForce(params.get("id").toString());
+        }
+        return new RestResult();
+    }
+
 }

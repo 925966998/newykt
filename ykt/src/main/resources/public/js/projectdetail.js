@@ -15,7 +15,7 @@ function doQuery(url,data) {
         rownumbers: true,
         pageList: [10, 20],
         pageNumber: 1,
-        nowrap: true,
+        nowrap: false,
         height: 'auto',
         sortName: 'id',
         checkOnSelect: true,
@@ -236,7 +236,6 @@ obj = {
                     }
                 }
                 return $(this).form('validate')
-
             },
             success: function (data) {
                 if (data.code = '10000') {
@@ -296,16 +295,11 @@ obj = {
                                 name: data[index].name,
                                 pass: data[index].pass,
                                 time: data[index].time
-
                             })
                             $("#part01").combotree('setValue', data[index].part);
                         }
-
                     })
-
-
                 }
-
             },
             error: function () {
                 $.messager.show({
@@ -313,7 +307,6 @@ obj = {
                     msg: '更新失败'
 
                 })
-
             }
         })
 
@@ -469,8 +462,8 @@ obj = {
                     }
                     var num = ids.length;
                     $.ajax({
-                        type: 'post',
-                        url: "",
+                        type: 'get',
+                        url: "/ky-ykt/projectSource/deleteMoney",
                         data: {
                             ids: ids.join(',')
                         },
@@ -500,13 +493,10 @@ obj = {
                         }
                     })
                 }
-
             })
-
         } else {
             $.messager.alert('提示', '请选择要删除的记录', 'info');
         }
-
     },
 
     //删除一个
@@ -522,7 +512,6 @@ obj = {
                     },
                     beforesend: function () {
                         $("#table").datagrid('loading');
-
                     },
                     success: function (data) {
                         if (data) {

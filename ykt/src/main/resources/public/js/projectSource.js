@@ -149,7 +149,6 @@ obj = {
                     $("#table").datagrid('load');
                     $("#addBox").dialog({
                         closed: true
-
                     })
                     $.messager.show({
                         title: '提示',
@@ -161,7 +160,6 @@ obj = {
                         msg: '信息保存失败'
                     })
                 }
-
             },
             error: function (request) {
                 if (request.status == 401) {
@@ -178,7 +176,6 @@ obj = {
                 }
             }
         })
-
     },
     // 删除多个
     del: function () {
@@ -189,7 +186,6 @@ obj = {
                     var ids = [];
                     for (i = 0; i < rows.length; i++) {
                         ids.push(rows[i].id);
-
                     }
                     var num = ids.length;
                     $.ajax({
@@ -200,11 +196,9 @@ obj = {
                         },
                         beforesend: function () {
                             $("#table").datagrid('loading');
-
                         },
                         success: function (data) {
                             if (data.code = '10000') {
-
                                 $("#table").datagrid('loaded');
                                 $("#table").datagrid('load');
                                 $("#table").datagrid('unselectAll');

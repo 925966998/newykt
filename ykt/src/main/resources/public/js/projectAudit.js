@@ -204,7 +204,6 @@ obj = {
                         msg: '查询失败'
 
                     })
-
                 }
             },
             error: function (request) {
@@ -223,7 +222,6 @@ obj = {
             url: "",
             onSubmit: function () {
                 return $(this).form('validate')
-
             },
             success: function (data) {
                 var name = $("#name").val();
@@ -233,26 +231,16 @@ obj = {
                 var id = parseInt(Math.random() * 100000);
                 $("#table").datagrid('insertRow', {
                     index: 1,
-                    row: {
-                        id: id,
-                        name: name,
-                        pass: pass,
-                        time: time,
-                        part: part
+                    row: {id: id, name: name, pass: pass, time: time, part: part
                     }
-
-
                 })
                 $("#addBox").dialog({
                     closed: true
-
                 })
                 $.messager.show({
                     title: '提示',
                     msg: '信息保存成功'
                 })
-
-
             }
         })
 
@@ -266,28 +254,25 @@ obj = {
                     var ids = [];
                     for (i = 0; i < rows.length; i++) {
                         ids.push(rows[i].id);
-
                     }
                     var num = ids.length;
                     $.ajax({
-                        type: 'post',
-                        url: "",
+                        type: 'get',
+                        url: "/ky-ykt/projectDetail/deleteForce",
                         data: {
-                            ids: ids.join(',')
+                            id: ids.join(',')
                         },
                         beforesend: function () {
                             $("#table").datagrid('loading');
-
                         },
                         success: function (data) {
                             if (data) {
-
                                 $("#table").datagrid('loaded');
                                 $("#table").datagrid('load');
                                 $("#table").datagrid('unselectAll');
                                 $.messager.show({
                                     title: '提示',
-                                    msg: num + '个用户被删除'
+                                    msg: num + '条记录被删除'
                                 })
 
                             } else {
@@ -367,7 +352,7 @@ $("#table").datagrid({
     rownumbers: true,
     pageList: [10, 20],
     pageNumber: 1,
-    nowrap: true,
+    nowrap: false,
     height: 'auto',
     sortName: 'id',
     checkOnSelect: true,
@@ -424,9 +409,7 @@ $("#table").datagrid({
                     c = '<a  id="look"   class=" operA" class="easyui-linkbutton"  href="../web/personReload.html?projectId='+row.id+'">发放名单</a> ';
                 }
                 return c;
-
             }
-
         }
     ]],
     onClickRow: function (rowIndex, rowData) {
