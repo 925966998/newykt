@@ -373,29 +373,10 @@ $("#table").datagrid({
     sortOrder: 'asc',
     toolbar: '#tabelBut',
     columns: [[
-        {
-            checkbox: true,
-            field: 'no',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'departmentNum',
-            title: '部门编号',
-            width: 100,
-            align: 'center',
-        },
-        {
-            field: 'departmentName',
-            title: '部门名称',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: 'isUse',
-            title: '是否启用',
-            width: 100,
-            align: 'center',
+        {checkbox: true, field: 'no', width: 100, align: 'center'},
+        {field: 'departmentNum', title: '部门编号', width: 100, align: 'center',},
+        {field: 'departmentName', title: '部门名称', width: 100, align: 'center'},
+        {field: 'isUse', title: '是否启用', width: 100, align: 'center',
             formatter: function (value, row, index) {
                 if (value == 0) {
                     return '是'
@@ -404,24 +385,13 @@ $("#table").datagrid({
                 }
             }
         },
-        {
-            field: 'note',
-            title: '备注说明',
-            width: 100,
-            align: 'center'
-        },
-        {
-            field: "opr",
-            title: '操作',
-            width: 100,
-            align: 'center',
+        {field: 'note', title: '备注说明', width: 100, align: 'center'},
+        {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {
                 e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
                 d = '<a  id="add" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';
                 return e + d;
-
             }
-
         }
     ]],
     onLoadError: function (request) {
@@ -441,5 +411,8 @@ $("#addBox").dialog({
     height: 300,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })

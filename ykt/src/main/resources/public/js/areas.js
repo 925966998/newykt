@@ -15,7 +15,7 @@ $(function () {
         url: "/ky-ykt/areas/queryByParentId",
         method: "get",
         onClick: function (node) {
-            console.log(node)
+            //console.log(node)
             sessionStorage.setItem("nodeId", node.id);
             if (node.id == null || node.id == 'null' || node.id == 'undefined') {
                 $("#table").datagrid('load', {})
@@ -345,10 +345,13 @@ $("#table").datagrid({
 $("#addBox").dialog({
     title: "信息内容",
     width: 500,
-    height: 300,
+    height: 200,
     closed: true,
     modal: true,
-    shadow: true
+    shadow: true,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
 })
 
 //加载县城下拉框

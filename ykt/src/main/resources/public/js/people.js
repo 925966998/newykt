@@ -37,7 +37,7 @@ function doQuery(url) {
             {field: "opr", title: '操作', width: 120, align: 'center',
                 formatter: function (val, row) {
                     s = '<a  id="add" data-id="98" class=" operA"  onclick="obj.show(\'' + row.id + '\')">查看</a> ';
-                    e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
+                    e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a><br>';
                     //c = '<a  id="sub" data-id="98" class=" operA"  onclick="obj.submitAudit(\'' + row.id + '\')">提交</a> ';
                     d = '<a  id="del" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';
                     f = '<a  id="add" data-id="98" class=" operA"  onclick="obj.replace(\'' + row.id + '\')">发放记录</a> ';
@@ -230,7 +230,7 @@ obj = {
                 $.messager.progress();
             },
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 $.messager.progress('close');
                 for (var i = 0; i < data.length; i++) {
                     console.log(data[i]);
