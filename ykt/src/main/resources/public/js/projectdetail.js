@@ -164,7 +164,7 @@ obj = {
                 type: 'get',
                 dataType: 'json',
                 success: function (res) {
-                    $("#projectName").text(res.projectDetailEntity.projectName);
+                    $("#projectName").text(res.projectDetailEntity.projectTypeName);
                     $("#paymentAmount").text(res.projectDetailEntity.paymentAmount);
                     $("#totalAmount").text(res.projectDetailEntity.totalAmount);
                     $("#pullNum").text(res.pullNum);
@@ -243,7 +243,6 @@ obj = {
                     $("#table").datagrid('load');
                     $("#auditBox").dialog({
                         closed: true
-
                     })
                     $.messager.show({
                         title: '提示',

@@ -91,6 +91,6 @@ public interface AreasMapper extends BaseMapper {
 
     @Select("select * from areas where name = #{name} and parentId=#{parentId}")
     List<AreasEntity> queryByAreasPid(@Param("name") String name, @Param("parentId") String parentId);
-    @Select("SELECT * FROM areas WHERE `level` = #{level} ORDER BY id ASC")
+    @SelectProvider(type = AreasSql.class, method = "queryByLevel")
     List<AreasEntity> queryByLevel(Map params);
 }

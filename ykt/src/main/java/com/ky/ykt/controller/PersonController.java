@@ -396,6 +396,8 @@ public class PersonController {
         List<ExcelHead> headList = personMapper._queryColumnAndComment();
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         List<PersonEntity> personEntityList = new ArrayList<>();
+        //stringError
+        StringBuffer stringBufferError = new StringBuffer();
         try {
             file.transferTo(uploadFile);
             InputStream inputStream = new FileInputStream(uploadFile);
@@ -409,106 +411,167 @@ public class PersonController {
             //EXCAL手机号校验
             //String phoneRegex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\\d{8}$";
             int i = 1;
-            for (PersonEntity personEntity : personEntities) {
-                /*if (personEntity.getName() != null || personEntity.getBankCardNo() != null || personEntity.getAddress() != null
-                        || personEntity.getCounty() != null || personEntity.getIdCardNo() != null || personEntity.getPhone() != null
-                        || personEntity.getGrantAmount() != null || personEntity.getOpeningBank() != null) {
+      for (PersonEntity personEntity : personEntities) {
+          i++;
+            if (StringUtils.isEmpty(personEntity.getName())
+                || StringUtils.isEmpty(personEntity.getGrantAmount())
+                || StringUtils.isEmpty(personEntity.getCounty())
+                || StringUtils.isEmpty(personEntity.getAddress())
+                || StringUtils.isEmpty(personEntity.getCounty())
+                || StringUtils.isEmpty(personEntity.getTown())
+                || StringUtils.isEmpty(personEntity.getVillage())
+                || StringUtils.isEmpty(personEntity.getBankCardNo())
+                || StringUtils.isEmpty(personEntity.getOpeningBank())
+                || StringUtils.isEmpty(personEntity.getIdCardNo())) {
+                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "有数据为空，请检查后录取<br>");
+               /*
+              return new RestResult(
+                  RestResult.ERROR_CODE,
+                  RestResult.ERROR_MSG,
+                  "第" + i + "行，" + personEntity.getName() + "姓名/身份证号/发放金额 均不能为空");
+              */
+            }
+            /*
+            if (personEntity.getGrantAmount() == null || personEntity.getGrantAmount() == "") {
+                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "发放金额有误，请重新录入<br>");
+              return new RestResult(
+                  RestResult.ERROR_CODE,
+                  RestResult.ERROR_MSG,
+                  "该表中第" + i + "行，" + personEntity.getName() + "发放金额有误，请重新录入");
+            }
+            */
+            boolean idCardMatches = personEntity.getIdCardNo().matches(idCardNoRegex);
+            if (personEntity.getIdCardNo() == null
+                || personEntity.getIdCardNo() == ""
+                || idCardMatches == false) {
+                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的身份证号有误，请重新录入<br>");
+               /*
+              return new RestResult(
+                  RestResult.ERROR_CODE,
+                  RestResult.ERROR_MSG,
+                  "该表中第" + i + "行，" + personEntity.getName() + "身份证号有误，请重新录入");
+              */
+            }
 
-                    if (StringUtils.isEmpty(personEntity.getName()) || StringUtils.isEmpty(personEntity.getBankCardNo()) || StringUtils.isEmpty(personEntity.getGrantAmount())) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "姓名/身份证号/发放金额 均不能为空");
-                    }
-                    */
+            // 身份账号+银行卡号+发放部门+资金项目 需要唯一
+            List<PersonEntity> personEntityList1 =
+                personMapper.queryByIdCardNo(personEntity.getIdCardNo());
+            if (personEntityList1.size() > 0 && personEntityList1 != null) {
+              if (personEntity.getIdCardNo().equals(personEntityList1.get(0).getIdCardNo())
+                  && personEntityList1.get(0).getItemId().equals(projectId)) {
+                  stringBufferError.append("第" + i + "行，" + personEntity.getName() + "已存在，请检查后再重新录入<br>");
+                 /*
+                return new RestResult(
+                    RestResult.ERROR_CODE,
+                    RestResult.ERROR_MSG,
+                    "第" + i + "行，" + personEntity.getName() + "该人员已存在");
+                */
+              }
+            }
+            // 本次录入检查唯一
+            if (personEntityList != null && personEntityList.size() > 0) {
+              for (int j = 0; j < personEntityList.size(); j++) {
+                PersonEntity personEntity1 = personEntityList.get(j);
+                if (personEntity1.getIdCardNo().equals(personEntity.getIdCardNo())) {
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "已录过，请检查后再重新录入<br>");
+                }
+                  if (personEntity1.getBankCardNo().equals(personEntity.getBankCardNo())) {
+                      stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的银行卡已录过，请检查后再重新录入<br>");
+                  }
                    /*
-                if (personEntity.getName() != null || personEntity.getBankCardNo() != null || personEntity.getAddress() != null
-                        || personEntity.getCounty() != null || personEntity.getIdCardNo() != null
-                        || personEntity.getGrantAmount() != null || personEntity.getOpeningBank() != null) {
-                    */
-                if (personEntity.getName() != null  ||  personEntity.getIdCardNo() != null
-                        || personEntity.getGrantAmount() != null) {
+                  return new RestResult(
+                      RestResult.ERROR_CODE,
+                      RestResult.ERROR_MSG,
+                      "第" + i + "行，" + personEntity.getName() + "已经录过，请重新录入");
+                }
+                */
+              }
+            }
+            String personId = UUID.randomUUID().toString();
 
-                    if (StringUtils.isEmpty(personEntity.getName()) || StringUtils.isEmpty(personEntity.getGrantAmount()) || StringUtils.isEmpty(personEntity.getIdCardNo())) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第"+i+"行，"+personEntity.getName()+"姓名/身份证号/发放金额 均不能为空");
-                    }
+          List<AreasEntity> townEntities = new ArrayList<>();
+          List<AreasEntity> villageEntities = new ArrayList<>();
 
-                    i++;
-                    if (personEntity.getGrantAmount() == null || personEntity.getGrantAmount() == "") {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "该表中第" + i + "行，"+personEntity.getName()+"发放金额有误，请重新录入");
-                    }
-                    boolean idCardMatches = personEntity.getIdCardNo().matches(idCardNoRegex);
-                    if (personEntity.getIdCardNo() == null || personEntity.getIdCardNo() == "" || idCardMatches == false) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "该表中第" + i + "行，"+personEntity.getName()+"身份证号有误，请重新录入");
-                    }
-                    /*boolean phoneMatches = personEntity.getPhone().matches(phoneRegex);
-                    if (personEntity.getPhone() == null || personEntity.getPhone() == "" || phoneMatches == false) {
-                        return new RestResult(40000, RestResult.ERROR_MSG, "该表中第" + i + "行手机号有误，请重新录入");
-                    }*/
-
-                    //身份账号+银行卡号+发放部门+资金项目 需要唯一
-                    List<PersonEntity> personEntityList1 = personMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                    if (personEntityList1.size() > 0 && personEntityList1 != null) {
-                        if (personEntity.getIdCardNo().equals(personEntityList1.get(0).getIdCardNo()) && personEntityList1.get(0).getItemId().equals(projectId)) {
-                            return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第"+i+"行，" + personEntity.getName() + "该人员已存在");
-                        }
-                    }
-                    //本次录入检查唯一
-                    if(personEntityList != null && personEntityList.size()>0){
-                        for (int j = 0; j < personEntityList.size(); j++) {
-                            PersonEntity personEntity1 = personEntityList.get(j);
-                            if(personEntity1.getIdCardNo().equals(personEntity.getIdCardNo())){
-                                return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第"+i+"行，"+personEntity.getName()+"已经录过，请重新录入");
-                            }
-                        }
-                    }
-                    String personId = UUID.randomUUID().toString();
-                    //查询人员档案
-                    List<PersonUploadEntity> personUploadEntities = personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                    if(personUploadEntities == null || personUploadEntities.size()<=0){
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第"+i+"行，"+personEntity.getName()+"此人员不存在人员档案中，请补全档案信息，重新上传");
-                    }
-                    /*
-                    AreasEntity countyEntity = areasMapper.queryByIdByName(personEntity.getCounty(), 2);
-                    if (countyEntity == null) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属区县在系统不存在");
-                    }
-                    List<AreasEntity> townEntities = areasMapper.queryByAreasPid(personEntity.getTown(), countyEntity.getId());
-                    if (townEntities == null || townEntities.size() == 0) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属乡镇在系统不存在");
-                    }
-                    List<AreasEntity> villageEntities = new ArrayList<>();
+            AreasEntity countyEntity = areasMapper.queryByIdByName(personEntity.getCounty(), 2);
+            if (countyEntity == null) {
+                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属区县在系统不存在<br>");
+                //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属区县在系统不存在");
+            }else{
+                 townEntities = areasMapper.queryByAreasPid(personEntity.getTown(), countyEntity.getId());
+                if (townEntities == null || townEntities.size() == 0) {
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属乡镇在系统不存在<br>");
+                    //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属乡镇在系统不存在");
+                }else{
                     for (AreasEntity areasEntity :
                             townEntities) {
                         villageEntities.addAll(areasMapper.queryByAreasPid(personEntity.getVillage(), areasEntity.getId()));
                     }
                     if (villageEntities == null || villageEntities.size() == 0) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属村组在系统不存在");
+                        stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属村组在系统不存在<br>");
+                        //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属村组在系统不存在");
+                    }else{
+                        //乡镇
+                        List<AreasEntity> collect = villageEntities.stream()
+                                .filter(AreasEntity -> AreasEntity.getName().equals(personEntity.getVillage()))
+                                .collect(Collectors.toList());
                     }
+                }
+            }
 
-                    //乡镇
-                    List<AreasEntity> collect = villageEntities.stream()
-                            .filter(AreasEntity -> AreasEntity.getName().equals(personEntity.getVillage()))
-                            .collect(Collectors.toList());
-                    */
-                     //bigDecimal = bigDecimal.add(new BigDecimal(personEntity.getGrantAmount()));
+
+            if(StringUtils.isEmpty(stringBufferError)){
+                // 查询人员档案
+                List<PersonUploadEntity> personUploadEntities =
+                        personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
+                if (personUploadEntities == null || personUploadEntities.size() <= 0) {
+                /*
+              return new RestResult(
+                  RestResult.ERROR_CODE,
+                  RestResult.ERROR_MSG,
+                  "第" + i + "行，" + personEntity.getName() + "此人员不存在人员档案中，请补全档案信息，重新上传");
+                */
+                    ProjectEntity projectEntity = projectMapper._get(projectId);
+                    personEntity.setCounty(countyEntity.getId());
+                    personEntity.setTown(townEntities.get(0).getId());
+                    personEntity.setVillage(villageEntities.get(0).getId());
+                    personEntity.setAddress(personEntity.getAddress());
+                    personEntity.setPhone(personEntity.getPhone());
+                    personEntity.setOpeningBank(personEntity.getOpeningBank());
+                    personEntity.setBankCardNo(personEntity.getBankCardNo());
+
+                    personEntity.setId(personId);
+                    personEntity.setItemId(projectId);
+                    personEntity.setStatus("3"); // 新增状态是未提交 3
+                    personEntity.setDepartmentId(user.getDepartmentId());
+                    personEntity.setUserId(user.getId());
+                    personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
+                    // personMapper._addEntity(personEntity);
+                    // 去除名字之间的空格
+                    personEntity.setName(personEntity.getName().replaceAll(" ", ""));
+                    personEntityList.add(personEntity);
+                }else{
                     ProjectEntity projectEntity = projectMapper._get(projectId);
                     personEntity.setCounty(personUploadEntities.get(0).getCounty());
                     personEntity.setTown(personUploadEntities.get(0).getTown());
                     personEntity.setVillage(personUploadEntities.get(0).getVillage());
-                    personEntity.setAddress(personEntities.get(0).getAddress());
-                    personEntity.setPhone(personUploadEntities.get(0).getPhone());
-                    personEntity.setOpeningBank(personUploadEntities.get(0).getOpeningBank());
-                    personEntity.setBankCardNo(personUploadEntities.get(0).getBankCardNo());
+                    personEntity.setAddress(personEntity.getAddress());
+                    personEntity.setPhone(personEntity.getPhone());
+                    personEntity.setOpeningBank(personEntity.getOpeningBank());
+                    personEntity.setBankCardNo(personEntity.getBankCardNo());
                     personEntity.setId(personId);
                     personEntity.setItemId(projectId);
-                    personEntity.setStatus("3");//新增状态是未提交 3
+                    personEntity.setStatus("3"); // 新增状态是未提交 3
                     personEntity.setDepartmentId(user.getDepartmentId());
                     personEntity.setUserId(user.getId());
                     personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
-                    //personMapper._addEntity(personEntity);
-                    //去除名字之间的空格
-                    personEntity.setName(personEntity.getName().replaceAll(" ",""));
+                    // personMapper._addEntity(personEntity);
+                    // 去除名字之间的空格
+                    personEntity.setName(personEntity.getName().replaceAll(" ", ""));
                     personEntityList.add(personEntity);
                 }
             }
+
+        }
             logger.info("execute success {}", personEntities.size());
         } catch (Exception e) {
             logger.error("{}", e);
@@ -516,6 +579,12 @@ public class PersonController {
             uploadFile.delete();
         } finally {
             uploadFile.delete();
+        }
+        if(StringUtils.isNotEmpty(stringBufferError)){
+            return new RestResult(
+                    RestResult.ERROR_CODE,
+                    RestResult.ERROR_MSG,
+                    stringBufferError);
         }
         if (personEntityList != null && personEntityList.size() > 0) {
             for (PersonEntity personEntity : personEntityList
@@ -551,14 +620,6 @@ public class PersonController {
             List<PersonEntity> personEntities = ExcelUtils.readExcelToEntity(PersonEntity.class, inputStream, uploadFile.getName(), headList);
             List<PersonEntity> personEntities1 = new ArrayList<>();
             for (PersonEntity personEntity : personEntities) {
-                /*if (personEntity.getName() != null || personEntity.getBankCardNo() != null
-                        || personEntity.getIdCardNo() != null || personEntity.getPhone() != null
-                        || personEntity.getGrantAmount() != null) {
-
-                    if (StringUtils.isEmpty(personEntity.getProjectId()) || StringUtils.isEmpty(personEntity.getName()) || StringUtils.isEmpty(personEntity.getBankCardNo()) || StringUtils.isEmpty(personEntity.getGrantAmount())
-                            || StringUtils.isEmpty(personEntity.getIdCardNo()) || StringUtils.isEmpty(personEntity.getPhone())) {
-                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "流水号/姓名/银行卡号/手机号/身份证号/发放金额/回执状态均不能为空");
-                    }*/
                 if (personEntity.getName() != null || personEntity.getBankCardNo() != null
                         || personEntity.getIdCardNo() != null
                         || personEntity.getGrantAmount() != null) {

@@ -189,7 +189,6 @@ obj = {
     addBox: function () {
         $("#addBox").dialog({
             closed: false
-
         });
         $("#addForm").form('clear');
         doQueryProject('projectId');
@@ -211,7 +210,10 @@ obj = {
             closed: false,
         });
         $("#addForm").form('clear');
-
+        doQueryProject('projectId');
+        doQueryProject('projectCombox');
+        $('#project').show();
+        $('#department').show();
         $.ajax({
             url: '/ky-ykt/person/queryById?id=' + id,
             type: 'get',
@@ -229,11 +231,9 @@ obj = {
                     $("#grantAmount").val(data.grantAmount);
                     $("#idCardNo").val(data.idCardNo);
                     $("#openingBank").val(data.openingBank);
-
                     $("#countCombo").combobox('setValue', data.county);
-
+                    $("#projectCombox").combobox('setValue', data.itemId);
                     $("#townCombo").combobox('setValue', data.town);
-
                     $("#villageCombo").combobox('setValue', data.village);
                     $("#address").val(data.address);
                     $("#bankCardNo").val(data.bankCardNo);
@@ -360,9 +360,7 @@ obj = {
     canUpload: function () {
         $("#addUploadBox").dialog({
             closed: true
-
         })
-
     },
     // 删除多个
     del: function () {
@@ -477,9 +475,8 @@ obj = {
                 $.messager.progress('close');
                 $("#table").datagrid('reload')
                 if (data.code != 10000) {
-                    $.messager.alert('提示', data.data, 'error');
+                    $.messager.alert({title: '系统提示', msg: data.data, width: 500, height: 350});
                 }
-
             },
             error: function (request) {
                 $.messager.progress('close');
