@@ -6,6 +6,7 @@ import com.ky.ykt.mybatis.BaseMapper;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -112,4 +113,6 @@ public interface PersonUploadMapper extends BaseMapper {
 
     @Select("select * from person_upload where id = #{personId}")
     PersonUploadEntity querypersonId(@Param("personId") String personId);
+    @Select("select * from person_upload where idCardNo = #{idCardNo} and bankCardNo = #{bankCardNo} and projectType ='0' ")
+    PersonUploadEntity queryPerson(HashMap params);
 }

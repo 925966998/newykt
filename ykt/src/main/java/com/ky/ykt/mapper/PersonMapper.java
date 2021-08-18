@@ -90,11 +90,11 @@ public interface PersonMapper extends BaseMapper {
     @Select("SELECT COLUMN_NAME entityName,column_comment excelName FROM INFORMATION_SCHEMA.Columns WHERE table_name='person' AND table_schema='ky-ykt'")
     List<ExcelHead> _queryColumnAndComment();
 
-    @Select("select * from person where idCardNo = #{idCardNo} and status = 0 ")
-    List<PersonEntity> queryByIdCardNo(@Param("idCardNo") String idCardNo);
+    @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} ")
+    List<PersonEntity> queryByIdCardNo(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
-    @Update("update person set projectId=#{projectId},status=4 where id = #{id} ")
-    int doSubmitAudit(@Param("id") String id, @Param("projectId") String projectId);
+    @Update("update person set status=4 and failReason = '' where id = #{id} ")
+    int doSubmitAudit(@Param("id") String id);
 
     @Update("update person set status = #{status},auditReason=#{auditReason},auditTime=now() where id = #{id}")
     int audit(Map params);
@@ -108,7 +108,7 @@ public interface PersonMapper extends BaseMapper {
     @Select("SELECT SUM(grantAmount) FROM person WHERE  projectId = #{projectId} and departmentId = #{departmentId} and logicalDel = 0")
     BigDecimal queryMoney(Map map);
 
-    @Update("update person set status ='4'  where projectId =#{id}")
+    @Update("update person set status = 4  where projectId = #{id} and status = 0 ")
     int updateByProjectId(@Param("id") String id);
 
     @SelectProvider(type = PersonSql.class, method = "_queryByPage")

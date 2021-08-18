@@ -14,6 +14,21 @@
     <!--左侧树-->
 
     <div data-options="region:'center',split:true">
+        <!--表格查询-->
+        <form id="tableFindForm">
+            <!--<input type="hidden" name="flag" value="person">-->
+            <div class="staAn05">
+                <label class="labeStyle">姓名</label> <input class="inputSelf" type="text" name="name"/>
+                <label class="labeStyle">手机号</label><input class="inputSelf" type="text" name="phone"/>
+                <label class="labeStyle">身份证号</label><input class="inputSelf" type="text" name="idCardNo"/>
+                <br>
+                <label class="labeStyle">所属区域:</label><input class="inputSelf" type="text" id="areaId" name="areaId" />
+                <label class="labeStyle">项目类别:</label><input class="inputSelf" type="text" id="projectType" name="itemId"/>
+                <label class="labeStyle">开户行</label><input class="inputSelf" type="text" name="openingBank"/>
+                <a id="btn" href="javascript:" class="easyui-linkbutton tableFindBut"
+                   data-options="iconCls:'icon-search'" onclick="obj.find()">查询</a>
+            </div>
+        </form>
         <!--表格列表-->
         <div class="tableCon">
             <table id="table" class="tableStyle"></table>

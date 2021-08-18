@@ -69,6 +69,9 @@ public class PersonSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "record"))) {
             builder.append(" and p.status != 3");
         }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "itemId"))) {
+            builder.append(" and p.itemId = #{itemId}");
+        }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "statusTwo"))) {
             builder.append(" and p.itemId in (");
             if (map.get("statusTwo") instanceof List) {
@@ -162,6 +165,20 @@ public class PersonSql extends BaseProvider {
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "county"))) {
             builder.append(" and a1.name = #{county}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "statusTwo"))) {
+            builder.append(" and p.itemId in (");
+            if (map.get("statusTwo") instanceof List) {
+                List<String> projectTypeEntities = (List) map.get("statusTwo");
+                for (String id : projectTypeEntities) {
+                    if (projectTypeEntities.indexOf(id) > 0)
+                        builder.append(",");
+                    builder.append("'").append(id).append("'");
+                }
+            } else {
+                builder.append(map.get("statusTwo"));
+            }
+            builder.append(")");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "level"))) {
             if (map.get("level").toString().equals("2")) {

@@ -61,6 +61,24 @@ function doQuery(url) {
 }
 
 $(function () {
+    $("#projectType").combobox({
+        url: '/ky-ykt/project/queryByParams',
+        queryParams: {state: 0},
+        method: 'get',
+        height: 26,
+        width: '15%',
+        valueField: 'id',
+        textField: 'projectTypeName',
+        loadFilter: function (data) {
+            var obj = {};
+            obj.id = '0';
+            obj.name = '请选择'
+            //在数组0位置插入obj,不删除原来的元素
+            data.splice(0, 0, obj)
+            return data;
+        }
+    });
+    //$("#projectType").combobox('select', '0');
     // 加载表格
     doQuery('/ky-ykt/person/queryPage?status=2');
 })
@@ -171,15 +189,13 @@ obj = {
     reSubmitAudit: function () {
         $.messager.confirm('确定提交', '你确定再次提交？', function (flg) {
             if (flg) {
-
                 $.ajax({
-                    type: 'POST',
-                    url: "/ky-ykt/person/doSubmitAudit",
+                    type: 'get',
+                    url: "/ky-ykt/person/doSubmitAudit?"+ $("#tableFindForm").serialize(),
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     beforeSend: function () {
                         $("#table").datagrid('loading');
-
                     },
                     success: function (data) {
                         if (data) {

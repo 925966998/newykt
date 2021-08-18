@@ -164,6 +164,7 @@ public class ProjectDetailController {
         ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
         Map map = new HashMap();
         map.put("projectId", projectDetailEntity.getId());
+        map.put("status",4);
         List<PersonEntity> entities = personMapper._queryAll(map);
         SimpleDateFormat dfs = new SimpleDateFormat("yyyyMMddHHmmss");// 设置日期格式
         String tStamp = dfs.format(new Date());

@@ -92,8 +92,9 @@ public class PersonUploadSql extends BaseProvider {
                     if (map.get("departmentIdList") instanceof List) {
                         List<String> departmentIdList = (List) map.get("departmentIdList");
                         for (String id : departmentIdList) {
-                            if (departmentIdList.indexOf(id) > 0)
+                            if (departmentIdList.indexOf(id) > 0) {
                                 builder.append(",");
+                            }
                             builder.append("'").append(id).append("'");
                         }
                     } else {
