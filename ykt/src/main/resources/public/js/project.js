@@ -542,11 +542,11 @@ $("#table").datagrid({
                 return '中央：' + row.centerAmount + '<br>省：' + row.provinceAmount+ '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
             }
         },
-        {field: 'paymentAmountResult', title: '发放金额', width: 100, align: 'center',
+        {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',
             formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
         {field: 'surplusAmount', title: '剩余金额', width: 100, align: 'center',
-            formatter: function (val, row) {if ((row.totalAmount - row.paymentAmountResult) == 0) {return '0.00';} else {return toMoney((row.totalAmount - row.paymentAmountResult));}},
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
         {field: 'state', title: '发放状态', width: 100, align: 'center',
             formatter: function (value, row, index) {

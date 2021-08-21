@@ -32,6 +32,16 @@ public class ProjectDetailEntity extends BaseEntity {
     private String departmentNames;
     private String projectTypeName;
     private Integer batchNumber;
+    private BigDecimal grantAmount;
+
+    public BigDecimal getGrantAmount() {
+        return grantAmount;
+    }
+
+
+    public void setGrantAmount(BigDecimal grantAmount) {
+        this.grantAmount = grantAmount;
+    }
 
     public Integer getBatchNumber() {
         return batchNumber;

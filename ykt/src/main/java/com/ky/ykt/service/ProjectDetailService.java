@@ -1,5 +1,6 @@
 package com.ky.ykt.service;
 
+import com.ky.ykt.entity.PersonEntity;
 import com.ky.ykt.entity.ProjectDetailEntity;
 import com.ky.ykt.mapper.PersonMapper;
 import com.ky.ykt.mapper.ProjectDetailMapper;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +46,22 @@ public class ProjectDetailService {
 
     public RestResult queryPage(Map params) {
         List<ProjectDetailEntity> list = projectDetailMapper._queryPage(params);
+        List<ProjectDetailEntity> list1 = new ArrayList<>();
+        for (ProjectDetailEntity projectDetailEntity : list) {
+            List<PersonEntity> personEntities = personMapper.queryProjectId(projectDetailEntity.getId());
+            BigDecimal zero = BigDecimal.ZERO;
+            for (PersonEntity personEntity : personEntities) {
+                if(personEntity.getStatus().equals("0") ){
+                    zero = zero.add(new BigDecimal(personEntity.getGrantAmount()));
+                }
+            }
+            projectDetailEntity.setPaymentAmount(zero);
+            projectDetailEntity.setTotalAmount(projectDetailEntity.getSurplusAmount().add(zero));
+            list1.add(projectDetailEntity);
+        }
+
         long count = projectDetailMapper._queryCount(params);
-        PagerResult pagerResult = new PagerResult(list, count, MapUtils.getLongValue(params, "page"),
+        PagerResult pagerResult = new PagerResult(list1, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, pagerResult);
 

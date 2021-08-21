@@ -14,7 +14,7 @@ import java.util.Map;
 @Mapper
 public interface PersonMapper extends BaseMapper {
 
-    @Select("select count(*) as num from person where TRIM(projectId) = #{id}")
+    @Select("select count(*) as num from person where TRIM(projectId) = #{id} and status = '0' ")
     long queryCountByProjectCode(@Param("id") String id);
 
     /**

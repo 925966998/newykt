@@ -253,17 +253,21 @@ public class PersonController {
         List<PersonEntity> personEntities = personMapper._queryAll(map);
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         //String projectDetailId = UUID.randomUUID().toString();
-        BigDecimal amount = new BigDecimal("0");
         ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntities.get(0).getProjectId());
         ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
         for (PersonEntity personEntity : personEntities) {
-            amount = amount.add(new BigDecimal(personEntity.getGrantAmount()).setScale(2, BigDecimal.ROUND_HALF_UP));
+            projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
+            projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
+            projectDetailEntity.setState(0);
+            projectDetailMapper._updateEntity(projectDetailEntity);
+
+            ProjectEntity projectEntity1 = projectMapper._get(projectDetailEntity.getProjectId());
+            projectEntity1.setPaymentAmount(projectEntity1.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
+            projectEntity1.setSurplusAmount(projectEntity1.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
+            projectMapper._updateEntity(projectEntity1);
             personService.doSubmitAudit(personEntity.getId());
         }
-        projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(amount));
-        projectDetailEntity.setSurplusAmount(projectDetailEntity.getTotalAmount().subtract(projectDetailEntity.getPaymentAmount()));
-        projectDetailEntity.setState(0);
-        projectDetailMapper._updateEntity(projectDetailEntity);
+
         logger.info("Create new projectDetailEntity success {}", JSON.toJSONString(projectDetailEntity));
         return new RestResult();
     }
@@ -812,9 +816,11 @@ public class PersonController {
 
             //projectEntity.setTotalAmount(totalAmount1);
             BigDecimal addAmount = totalAmount.add(projectEntity.getPaymentAmount());
+
             projectEntity.setPaymentAmount(addAmount);
             projectEntity.setSurplusAmount(projectEntity.getTotalAmount().subtract(addAmount));
             projectMapper._updateEntity(projectEntity);
+
         } else {
             return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "数据不能为空，请重新录入！！");
         }
