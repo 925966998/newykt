@@ -90,4 +90,8 @@ public class ProjectTypeService {
     public List<ProjectTypeEntity> queryByProjectTypeId(String id) {
         return projectTypeMapper.queryByProjectTypeId(id);
     }
+
+    public Object queryProjectTree(Map params) {
+        return projectTypeMapper.queryProjectTree(params);
+    }
 }

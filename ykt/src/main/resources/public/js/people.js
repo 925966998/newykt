@@ -79,7 +79,7 @@ $("#areaId").combotree({
 
 $(function () {
     $("#projectType").combobox({
-        url: '/ky-ykt/projectType/queryByParams',
+        url: '/ky-ykt/projectType/queryProjectTree',
         method: 'get',
         height: 26,
         width: '15%',
@@ -98,6 +98,12 @@ $(function () {
     // 加载表格
     doQuery('/ky-ykt/personUpload/queryPage');
     doQueryProject('findProjectId');
+
+    var userId = sessionStorage.getItem("userId");
+    if (userId != '223b6557-3969-4b1d-9b81-296786a546de') {
+        $("#areaId").hide();
+    }
+
 })
 
 function doQueryProject(id) {

@@ -20,8 +20,8 @@ public interface ProjectMapper extends BaseMapper {
     @Select("select * from project where projectCode=#{projectCode}")
     ProjectEntity queryByCode(@Param("projectCode")String projectCode);
 
-    @Select("select pt.`name` as projectType,COUNT(*) as num from project p LEFT JOIN project_type pt ON p.projectType=pt.id GROUP BY projectType ")
-    List<StatisticEntity> queryType();
+    @SelectProvider(type = ProjectSql.class, method = "queryType")
+    List<StatisticEntity> queryType(Map params);
 
     /**
      * 根据条件查询分页 必要参数： currentPage : 当前第几页，默认1 pageSize : 每页多少条，默认10条 其他参数： map里的key为属性名（字段首字母小写） value为查询的条件，默认为等于
@@ -91,4 +91,10 @@ public interface ProjectMapper extends BaseMapper {
 
     @Select("select * from project where projectType = #{id}")
     List<ProjectEntity> queryProjectType(String id);
+
+    @SelectProvider(type = ProjectSql.class, method = "queryProject")
+    List<ProjectEntity> queryProject(Map params);
+
+    @SelectProvider(type = ProjectSql.class, method = "queryFFproject")
+    List<ProjectEntity> queryFFproject(Map params);
 }

@@ -91,7 +91,7 @@ public interface PersonMapper extends BaseMapper {
     List<ExcelHead> _queryColumnAndComment();
 
     @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} ")
-    List<PersonEntity> queryByIdCardNo(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
+    PersonEntity queryByIdCardNo(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
     @Update("update person set status=4 and failReason = '' where id = #{id} ")
     int doSubmitAudit(@Param("id") String id);

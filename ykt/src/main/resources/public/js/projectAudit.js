@@ -1,3 +1,22 @@
+$(function (){
+    $("#projectNameSearch").combobox({
+        url: '/ky-ykt/projectType/queryProjectTree',
+        method: 'get',
+        height: 26,
+        width: '15%',
+        valueField: 'id',
+        textField: 'name',
+        loadFilter: function (data) {
+            var obj = {};
+            obj.id = '0';
+            obj.name = '请选择'
+            //在数组0位置插入obj,不删除原来的元素
+            data.splice(0, 0, obj)
+            return data;
+        }
+    });
+    $("#projectNameSearch").combobox('select', '0');
+})
 obj = {
     // 查询
     find: function () {

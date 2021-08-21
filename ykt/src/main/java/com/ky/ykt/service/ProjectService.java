@@ -142,8 +142,8 @@ public class ProjectService {
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, projectMapper._delete(id));
     }
 
-    public List<StatisticEntity> queryType() {
-        return projectMapper.queryType();
+    public List<StatisticEntity> queryType(Map params) {
+        return projectMapper.queryType(params);
     }
 
     public List<StatisticEntity> statistic(Map pagerParam) {
@@ -191,4 +191,19 @@ public class ProjectService {
         return b;
     }
 
+    public Object queryProject(Map params, HttpServletRequest request) {
+                SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+                if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+                    DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
+                    params.put("departmentId", departmentEntity.getParentId());
+                    params.put("userId",user.getId());
+                }
+        List<ProjectEntity> projectDetailEntities = projectMapper.queryProject(params);
+        return projectDetailEntities;
+    }
+
+    public Object queryFFproject(Map params, HttpServletRequest request) {
+        List<ProjectEntity> projectDetailEntities = projectMapper.queryFFproject(params);
+        return projectDetailEntities;
+    }
 }

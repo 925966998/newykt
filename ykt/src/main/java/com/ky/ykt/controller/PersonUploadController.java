@@ -358,12 +358,11 @@ public class PersonUploadController {
                     }
 
                     //身份账号+银行卡号+发放部门+资金项目 需要唯一
-                    List<PersonUploadEntity> uploadEntity = personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                    for (PersonUploadEntity personUploadEntity : uploadEntity) {
-                        if (personEntity.getIdCardNo().equals(personUploadEntity.getIdCardNo()) && personEntity.getBankCardNo().equals(personUploadEntity.getBankCardNo())) {
-                            return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第"+i+"行，"+personEntity.getName()+"已存在");
-                        }
+                    PersonUploadEntity uploadEntity = personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
+                    if (personEntity.getIdCardNo().equals(uploadEntity.getIdCardNo()) && personEntity.getBankCardNo().equals(uploadEntity.getBankCardNo())) {
+                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第"+i+"行，"+personEntity.getName()+"已存在");
                     }
+
                     //本次录入检查唯一
                     if(resultList != null &&resultList.size()>0){
                         for (int j = 0; j < resultList.size(); j++) {

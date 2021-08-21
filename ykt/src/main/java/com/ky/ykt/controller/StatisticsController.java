@@ -94,6 +94,11 @@ public class StatisticsController {
     public Object statisticCount(HttpServletRequest request) {
         Map params = HttpUtils.getParams(request);
         logger.info("The Statisticscontroller queryPage method params are {}", params);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            params.put("userId", user.getId());
+            params.put("DJFlag","4J");
+        }
         BigDecimal bigDecimal = statisticsService.statisticCount(params);
         return bigDecimal;
     }
@@ -102,6 +107,11 @@ public class StatisticsController {
     public Object projectPage(HttpServletRequest request) {
         Map params = HttpUtils.getParams(request);
         logger.info("The Statisticscontroller queryPage method params are {}", params);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            params.put("userId", user.getId());
+            params.put("DJFlag","4J");
+        }
         RestResult restResult = statisticsService.statisticPage(params);
         PagerResult data = (PagerResult) restResult.getData();
         return this.toJson(data);
@@ -115,14 +125,20 @@ public class StatisticsController {
     }
 
     @RequestMapping(value = "/statistic", method = RequestMethod.GET)
-    public Map<String, Object> statistic(String id) {
+    public Map<String, Object> statistic(String id,HttpServletRequest request) {
         logger.info("The ProjectController select method params are {}", id);
-        List<StatisticEntity> statisticEntities = projectService.queryType();
+        Map params = HttpUtils.getParams(request);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            params.put("userId", user.getId());
+        }
+        List<StatisticEntity> statisticEntities = projectService.queryType(params);
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
         for (StatisticEntity statisticEntity : statisticEntities
         ) {
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object>
+                    map = new HashMap<String, Object>();
             map.put("value", statisticEntity.getNum());
             map.put("name", statisticEntity.getProjectType());
             datas.add(map);
@@ -132,8 +148,14 @@ public class StatisticsController {
     }
 
     @RequestMapping(value = "/dateStatistic", method = RequestMethod.GET)
-    public List<StatisticEntity> dateStatistic() {
+    public List<StatisticEntity> dateStatistic(HttpServletRequest request) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            mapResult.put("userId",user.getId());
+            mapResult.put("paymentDepartment",user.getDepartmentId());
+            mapResult.put("DJFlag","4J");
+        }
         List<StatisticEntity> statistic = projectService.statistic(mapResult);
         return statistic;
     }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ky.ykt.entity.MenuEntity;
 import com.ky.ykt.entity.ProjectTypeEntity;
+import com.ky.ykt.entity.SysUserEntity;
 import com.ky.ykt.entity.TreeNode;
 import com.ky.ykt.logUtil.Log;
 import com.ky.ykt.mybatis.PagerResult;
@@ -174,5 +175,19 @@ public class ProjectTypeController {
         }
         logger.info("The convert treeNode is {}", JSON.toJSONString(treeNodes));
         return treeNodes;
+    }
+
+    /**
+     * 查询全部数据不分页
+     */
+    @RequestMapping(value = "queryProjectTree", method = RequestMethod.GET, produces = "application/json;UTF-8")
+    public Object queryProjectTree(HttpServletRequest request) {
+        Map params = HttpUtils.getParams(request);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            params.put("userId",user.getId());
+        }
+        logger.info("The ProjectTypeController queryByParams method params are {}", params);
+        return projectTypeService.queryProjectTree(params);
     }
 }

@@ -53,6 +53,13 @@ public class ProjectController {
     @RequestMapping(value = "queryByParams", method = RequestMethod.GET, produces = "application/json;UTF-8")
     public Object queryParams(HttpServletRequest request) {
         Map params = HttpUtils.getParams(request);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
+            params.put("departmentId", departmentEntity.getParentId());
+            params.put("userId",user.getId());
+            params.put("DJFlag","4J");
+        }
         logger.info("The ProjectController queryByParams method params are {}", params);
         return projectService.queryAll(params, request);
     }
@@ -60,6 +67,11 @@ public class ProjectController {
     @RequestMapping(value = "queryCount", method = RequestMethod.GET, produces = "application/json;UTF-8")
     public Object queryCount(HttpServletRequest request) {
         Map params = HttpUtils.getParams(request);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            params.put("userId",user.getId());
+            params.put("DJFlag","4J");
+        }
         logger.info("The ProjectController queryByParams method params are {}", params);
         return projectService.queryCount(params);
     }
@@ -257,5 +269,26 @@ public class ProjectController {
         RestResult restResult = projectService.queryMetionPage(params);
         PagerResult data = (PagerResult) restResult.getData();
         return this.toJson(data);
+    }
+
+    @RequestMapping(value = "queryProject", method = RequestMethod.GET, produces = "application/json;UTF-8")
+    public Object queryProject(HttpServletRequest request) {
+        Map params = HttpUtils.getParams(request);
+        logger.info("The ProjectController queryByParams method params are {}", params);
+        return projectService.queryProject(params, request);
+    }
+
+    @RequestMapping(value = "queryFFproject", method = RequestMethod.GET, produces = "application/json;UTF-8")
+    public Object queryFFproject(HttpServletRequest request) {
+        Map params = HttpUtils.getParams(request);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
+            params.put("departmentId", departmentEntity.getParentId());
+            params.put("userId",user.getId());
+            params.put("DJFlag","4J");
+        }
+        logger.info("The ProjectController queryByParams method params are {}", params);
+        return projectService.queryFFproject(params, request);
     }
 }

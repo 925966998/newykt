@@ -7,6 +7,10 @@ $(function () {
     statistics2();
     statistics3();
     statistics4();
+    var userId = sessionStorage.getItem("userId");
+    if (userId != '223b6557-3969-4b1d-9b81-296786a546de') {
+        $("#paymentDepartment").hide();
+    }
 })
 $("#paymentDepartment").combobox({
     url: '/ky-ykt/department/queryByParams',
@@ -25,7 +29,7 @@ $("#paymentDepartment").combobox({
     }
 })
 $("#projectType").combobox({
-    url: '/ky-ykt/projectType/queryByParams',
+    url: '/ky-ykt/projectType/queryProjectTree',
     method: 'get',
     height: 26,
     width: '15%',
@@ -48,6 +52,7 @@ function statistics1 () {
         success: function (res) {
             var myChart = echarts.init($("#chart01")[0]);
             var datas = res.datas;
+            console.log(res);
             var q = [];
             var qq = [];
             for (var i = 0; i < datas.length; i++) {
@@ -164,9 +169,11 @@ function statistics3() {
             //console.log(datatotal)
             var myChart = echarts.init($("#chart04")[0]);
             option = {
+                /*
                 title: {
                     text: '近半年资金发放统计分析'
                 },
+                */
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: {
@@ -227,7 +234,7 @@ function statistics3() {
 };
 function statistics4() {
     $.ajax({
-        url: '/ky-ykt/project/queryByParams',
+        url: '/ky-ykt/project/queryFFproject',
         type: 'get',
         dataType: 'json',
         data: {projectId: window.location.href.split("=")[1]},
@@ -237,7 +244,7 @@ function statistics4() {
             var data = [];
             var datax = [];
             for (var i = 0; i < res.length; i++) {
-                dataAxis.push(res[i].projectName);
+                dataAxis.push(res[i].projectTypeName);
                 data.push(res[i].totalAmount);
                 datax.push(res[i].totalAmount);
             }
@@ -249,9 +256,11 @@ function statistics4() {
             }
 
             option = {
+                /*
                 title: {
                     text: '资金项目资金展示分析',
                 },
+                */
                 xAxis: {
                     data: dataAxis,
                     type: 'category',

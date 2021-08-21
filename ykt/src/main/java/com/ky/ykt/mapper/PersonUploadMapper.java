@@ -91,7 +91,7 @@ public interface PersonUploadMapper extends BaseMapper {
     List<ExcelHead> _queryColumnAndComment();
 
     @Select("select * from person_upload where idCardNo = #{idCardNo} and projectType = 0 ")
-    List<PersonUploadEntity> queryByIdCardNo(@Param("idCardNo") String idCardNo);
+    PersonUploadEntity queryByIdCardNo(@Param("idCardNo") String idCardNo);
 
     @Update("update person_upload set status = 1,submitTime=now() where id = #{id} ")
     int doSubmitAudit(String id);

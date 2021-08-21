@@ -438,12 +438,12 @@ public class PersonController {
             }
 
             // 身份账号+银行卡号+发放部门+资金项目 需要唯一
-            List<PersonEntity> personEntityList1 =
+            PersonEntity personEntity2 =
                 personMapper.queryByIdCardNo(personEntity.getIdCardNo(),projectId);
-            if (personEntityList1.size() > 0 && personEntityList1 != null) {
-              if (personEntity.getIdCardNo().equals(personEntityList1.get(0).getIdCardNo())
-                  && personEntityList1.get(0).getItemId().equals(projectId)) {
-                  stringBufferError.append("第" + i + "行，" + personEntity.getName() + "已存在，请检查后再重新录入<br>");
+            if (personEntity2 != null) {
+              if (personEntity.getIdCardNo().equals(personEntity2.getIdCardNo())
+                  && personEntity2.getItemId().equals(projectId)) {
+                  stringBufferError.append("第" + i + "行，" + personEntity.getName() + "已经录过，请检查后再重新录入<br>");
                  /*
                 return new RestResult(
                     RestResult.ERROR_CODE,
@@ -457,10 +457,10 @@ public class PersonController {
               for (int j = 0; j < personEntityList.size(); j++) {
                 PersonEntity personEntity1 = personEntityList.get(j);
                 if (personEntity1.getIdCardNo().equals(personEntity.getIdCardNo())) {
-                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "已录过，请检查后再重新录入<br>");
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的身份证号已录过，请检查后再重新录入<br>");
                 }
                   if (personEntity1.getBankCardNo().equals(personEntity.getBankCardNo())) {
-                      stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的银行卡已录过，请检查后再重新录入<br>");
+                      stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的银行卡号已录过，请检查后再重新录入<br>");
                   }
                    /*
                   return new RestResult(
@@ -505,9 +505,9 @@ public class PersonController {
 
             if(StringUtils.isEmpty(stringBufferError)){
                 // 查询人员档案
-                List<PersonUploadEntity> personUploadEntities =
+                PersonUploadEntity personUploadEntity =
                         personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                if (personUploadEntities == null || personUploadEntities.size() <= 0) {
+                if (personUploadEntity == null) {
                 /*
               return new RestResult(
                   RestResult.ERROR_CODE,
@@ -534,10 +534,18 @@ public class PersonController {
                     personEntity.setName(personEntity.getName().replaceAll(" ", ""));
                     personEntityList.add(personEntity);
                 }else{
+                    if(!personEntity.getIdCardNo().equals(personUploadEntity.getIdCardNo()) || !personEntity.getName().equals(personUploadEntity.getName())
+                            || !personEntity.getBankCardNo().equals(personUploadEntity.getBankCardNo())){
+                        //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
+                        return new RestResult(
+                                RestResult.ERROR_CODE,
+                                RestResult.ERROR_MSG,
+                                "第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
+                    }
                     ProjectEntity projectEntity = projectMapper._get(projectId);
-                    personEntity.setCounty(personUploadEntities.get(0).getCounty());
-                    personEntity.setTown(personUploadEntities.get(0).getTown());
-                    personEntity.setVillage(personUploadEntities.get(0).getVillage());
+                    personEntity.setCounty(personUploadEntity.getCounty());
+                    personEntity.setTown(personUploadEntity.getTown());
+                    personEntity.setVillage(personUploadEntity.getVillage());
                     personEntity.setAddress(personEntity.getAddress());
                     personEntity.setPhone(personEntity.getPhone());
                     personEntity.setOpeningBank(personEntity.getOpeningBank());
@@ -554,7 +562,6 @@ public class PersonController {
                     personEntityList.add(personEntity);
                 }
             }
-
         }
             logger.info("execute success {}", personEntities.size());
         } catch (Exception e) {
@@ -695,8 +702,8 @@ public class PersonController {
     @RequestMapping(value = "checkIdCard", method = RequestMethod.GET)
     public Boolean checkIdCard(String idCardNo,String projectId) {
         logger.info("The PersonController queryByParams method params are {}", idCardNo,projectId);
-        List<PersonEntity> personEntityList = personMapper.queryByIdCardNo(idCardNo,projectId);
-        if (personEntityList.size() > 0 && personEntityList != null) {
+        PersonEntity personEntity = personMapper.queryByIdCardNo(idCardNo,projectId);
+        if (personEntity != null) {
             return true;
         }
         return false;

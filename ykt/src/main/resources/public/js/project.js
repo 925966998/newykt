@@ -557,8 +557,8 @@ $("#table").datagrid({
             formatter: function (val, row) {
                 c = '<a  id="look"  data-id="98" class=" operA" onclick="obj.look(\'' + row.id + '\')">查看</a> ';
                 a = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a> ';
-                b = '<a  id="detail" data-id="98" class=" operA"  onclick="obj.detail(\'' + row.id + '\')">明细</a> ';
-                return a + b + c;
+                /*b = '<a  id="detail" data-id="98" class=" operA"  onclick="obj.detail(\'' + row.id + '\')">明细</a> ';*/
+                return a + c;
             }
         }
     ]]

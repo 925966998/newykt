@@ -95,7 +95,7 @@ $(function () {
 
 function doQueryProject(id) {
     $("#" + id).combobox({
-        url: '/ky-ykt/project/queryByParams',
+        url: '/ky-ykt/project/queryProject',
         //url: '/ky-ykt/project/queryAllProject',
         //queryParams: {flag: 2, state: 0},
         queryParams: {state: 0},
@@ -471,7 +471,7 @@ obj = {
                 });
             },
             success: function (data) {
-                console.log(data)
+                //console.log(data)
                 $.messager.progress('close');
                 $("#table").datagrid('reload')
                 if (data.code != 10000) {

@@ -95,4 +95,75 @@ public class ProjectSql extends BaseProvider {
         builder.append(pageSize);
         return builder;
     }
+
+    public String queryProject(Map map) {
+        StringBuilder builder = new StringBuilder("select p.*,CONCAT_WS('-',pt.name,p.batchNumber) as projectTypeName from project p LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN user_projecttype up ON up.projectTypeId= p.projectType ");
+        builder.append(" where 1=1  and p.logicalDel=0");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
+            builder.append(" and p.projectName = #{projectName}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "state"))) {
+            builder.append(" and p.state = #{state}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and p.batchNumber = #{batchNumber}");
+        }
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" and up.userId = #{userId}");
+        }
+        builder.append(" order by p.startTime desc");
+        return builder.toString();
+    }
+
+    public String queryFFproject(Map map) {
+    StringBuilder builder =
+        new StringBuilder(
+            "SELECT p.*,CONCAT_WS( '-', pt.NAME, p.batchNumber ) AS projectTypeName,(\n"
+                + "\tSELECT\n"
+                + "\t\tSUM( pd.paymentAmount ) \n"
+                + "\tFROM\n"
+                + "\t\tproject_detail pd \n"
+                + "\tWHERE\n"
+                + "\t\tpd.projectId = p.id \n"
+                + "\t\tAND pd.state = 1 \n"
+                + "\t) AS paymentAmountResult FROM project_detail pd LEFT JOIN project p on pd.projectId = p.id LEFT JOIN project_type pt on pt.id = p.projectType  ");
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
+            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
+        }
+        builder.append(" where 1=1  and p.logicalDel=0");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
+            builder.append(" and p.projectName = #{projectName}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "state"))) {
+            builder.append(" and p.state = #{state}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and p.batchNumber = #{batchNumber}");
+        }
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" and upt.userId = #{userId}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("1")) {
+            builder.append(GetDepartmentSql.getUserBuilder("p.operDepartment"));
+        } else if (StringUtils.isNotBlank(MapUtils.getString(map, "flag")) && map.get("flag").equals("2")) {
+            if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
+                builder.append(" and p.paymentDepartment = #{departmentId}");
+            }else{
+                builder.append(GetDepartmentSql.getUserBuilder("p.paymentDepartment"));
+            }
+        }
+        builder.append(" order by p.startTime desc");
+        return builder.toString();
+    }
+
+    public String queryType(Map map) {
+        StringBuilder builder =
+                new StringBuilder(
+                        "select pt.`name` as projectType,COUNT(*) as num,p.paymentDepartment from project p LEFT JOIN project_type pt ON p.projectType=pt.id LEFT JOIN user_projecttype upt ON upt.projectTypeId = pt.id where 1=1 ");
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" and upt.userId = #{userId}");
+        }
+        builder.append(" GROUP BY projectType");
+        return builder.toString();
+    }
 }

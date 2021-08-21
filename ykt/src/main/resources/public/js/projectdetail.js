@@ -74,7 +74,7 @@ function doQuery(url,data) {
 
 $(function () {
     $("#projectNameSearch").combobox({
-        url: '/ky-ykt/projectType/queryByParams',
+        url: '/ky-ykt/projectType/queryProjectTree',
         method: 'get',
         height: 26,
         width: '15%',

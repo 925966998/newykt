@@ -32,7 +32,7 @@ $("#areaId").combotree({
     }
 })
 $("#projectType").combobox({
-    url: '/ky-ykt/projectType/queryByParams',
+    url: '/ky-ykt/projectType/queryProjectTree',
     method: 'get',
     height: 26,
     width: '15%',
@@ -47,6 +47,13 @@ $("#projectType").combobox({
         return data;
     }
 });
+
+$(function (){
+    var userId = sessionStorage.getItem("userId");
+    if (userId != '223b6557-3969-4b1d-9b81-296786a546de') {
+        $("#areaId").hide();
+    }
+})
 obj = {
     // 查询
     find: function () {
