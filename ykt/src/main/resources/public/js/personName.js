@@ -232,7 +232,7 @@ function doQuery(url) {
         method: "get",
         iconCls: "icon-left02",
         url: url,
-        queryParams: { projectId: getUrlParam('projectId')},
+        queryParams: { projectId: getUrlParam('projectId'),noFirst:3},
         fitColumns: true,
         striped: true,
         pagination: true,

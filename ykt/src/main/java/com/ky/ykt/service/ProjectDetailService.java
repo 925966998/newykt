@@ -44,7 +44,6 @@ public class ProjectDetailService {
     public RestResult queryPage(Map params) {
         List<ProjectDetailEntity> list = projectDetailMapper._queryPage(params);
         long count = projectDetailMapper._queryCount(params);
-
         PagerResult pagerResult = new PagerResult(list, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, pagerResult);

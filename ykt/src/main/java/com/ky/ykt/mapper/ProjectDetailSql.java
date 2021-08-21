@@ -29,24 +29,7 @@ public class ProjectDetailSql extends BaseProvider {
 
     @Override
     protected String _query(Map map) {
-    StringBuilder builder =
-        new StringBuilder(
-            "SELECT\n"
-                + "\tpt.name AS projectName,\n"
-                + "\tpd.paymentAmount AS paymentAmount,\n"
-                + "\td.departmentName AS departmentName,\n"
-                + "\tpd.startTime AS startTime,\n"
-                + "\tpd.totalAmount AS totalAmount,\n"
-                + "\tpt.name AS projectTypeName \n"
-                + "FROM\n"
-                + "\tproject_detail pd\n"
-                + "\tLEFT JOIN project p ON p.id = pd.projectId\n"
-                + "\tLEFT JOIN department d ON d.id = pd.paymentDepartment\n"
-                + "\tLEFT JOIN project_type pt ON p.projectType = pt.id\n" );
-        if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
-            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
-        }
-        builder.append(" WHERE pd.logicalDel = 0 ");
+        StringBuilder builder = new StringBuilder("select pd.*,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id where 1=1  and pd.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectId"))) {
             builder.append(" and pd.projectId = #{projectId}");
         }
@@ -96,24 +79,7 @@ public class ProjectDetailSql extends BaseProvider {
 
     @Override
     public String _queryPage(Map map) {
-    StringBuilder builder =
-        new StringBuilder(
-            "SELECT\n"
-                + "\tpt.name AS projectName,\n"
-                + "\tpd.paymentAmount AS paymentAmount,\n"
-                + "\td.departmentName AS departmentName,\n"
-                + "\tpd.startTime AS startTime,\n"
-                + "\tpd.totalAmount AS totalAmount,\n"
-                + "\tpt.name AS projectTypeName \n"
-                + "FROM\n"
-                + "\tproject_detail pd\n"
-                + "\tLEFT JOIN project p ON p.id = pd.projectId\n"
-                + "\tLEFT JOIN department d ON d.id = pd.paymentDepartment\n"
-                + "\tLEFT JOIN project_type pt ON p.projectType = pt.id ");
-        if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
-            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
-        }
-        builder.append(" WHERE pd.logicalDel = 0 ");
+        StringBuilder builder = new StringBuilder("select pd.*,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id where 1=1  and pd.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectId"))) {
             builder.append(" and pd.projectId = #{projectId}");
         }
@@ -221,17 +187,13 @@ public class ProjectDetailSql extends BaseProvider {
 
     public String statisticCount(Map map) {
         StringBuilder builder = new StringBuilder("SELECT sum(pd.paymentAmount)" +
-                "\n" +
                 "FROM\n" +
                 "project_detail pd\n" +
                 "LEFT JOIN department d ON d.id = pd.paymentDepartment\n" +
                 "LEFT JOIN project p ON p.id=pd.projectId\n" +
-                "LEFT JOIN project_type pt ON p.projectType = pt.id\n" +
-                "WHERE\n" +
-                "1 = 1\n" +
-                "AND pd.logicalDel = 0");
+                "LEFT JOIN project_type pt ON p.projectType = pt.id ");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
-            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
+            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId WHERE 1 = 1 AND pd.logicalDel = 0 ");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and p.projectType = #{projectType}");

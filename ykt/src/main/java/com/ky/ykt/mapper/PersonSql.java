@@ -63,11 +63,16 @@ public class PersonSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "bankCardNo"))) {
             builder.append(" and p.bankCardNo = #{bankCardNo}");
         }
+        /*
         if (StringUtils.isNotBlank(MapUtils.getString(map, "status"))) {
             builder.append(" and p.status = #{status}");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "record"))) {
             builder.append(" and p.status != 3");
+        }
+        */
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "noFirst"))) {
+            builder.append(" and p.status != 1");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "itemId"))) {
             builder.append(" and p.itemId = #{itemId}");
@@ -165,6 +170,9 @@ public class PersonSql extends BaseProvider {
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "county"))) {
             builder.append(" and a1.name = #{county}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "noFirst"))) {
+            builder.append(" and p.status != 1");
         }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "statusTwo"))) {
             builder.append(" and p.itemId in (");
