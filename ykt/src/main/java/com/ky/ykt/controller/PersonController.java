@@ -437,20 +437,15 @@ public class PersonController {
               */
             }
 
-            // 身份账号+银行卡号+发放部门+资金项目 需要唯一
-            PersonEntity personEntity2 =
-                personMapper.queryByIdCardNo(personEntity.getIdCardNo(),projectId);
-            if (personEntity2 != null) {
-              if (personEntity.getIdCardNo().equals(personEntity2.getIdCardNo())
-                  && personEntity2.getItemId().equals(projectId)) {
-                  stringBufferError.append("第" + i + "行，" + personEntity.getName() + "已经录过，请检查后再重新录入<br>");
-                 /*
-                return new RestResult(
-                    RestResult.ERROR_CODE,
-                    RestResult.ERROR_MSG,
-                    "第" + i + "行，" + personEntity.getName() + "该人员已存在");
-                */
-              }
+        // 身份账号+银行卡号+发放部门+资金项目 需要唯一
+        List<PersonEntity> personEntity2 =
+            personMapper.queryByIdCardNoProject(
+                personEntity.getIdCardNo(), projectId, personEntity.getBankCardNo());
+            if (personEntity2.size()>0 && personEntity2 != null) {
+                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "信息已经录过，请检查后再重新录入<br>");
+                if (personEntity2.size()>1){
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "银行卡号已经录过，请检查后再重新录入<br>");
+                }
             }
             // 本次录入检查唯一
             if (personEntityList != null && personEntityList.size() > 0) {
@@ -501,7 +496,6 @@ public class PersonController {
                     }
                 }
             }
-
 
             if(StringUtils.isEmpty(stringBufferError)){
                 // 查询人员档案

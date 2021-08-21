@@ -129,6 +129,15 @@ public class ProjectDetailController {
             projectEntity.setPaymentAmount(projectEntity.getPaymentAmount().subtract(projectDetailEntity1.getPaymentAmount()));
             projectEntity.setSurplusAmount(projectEntity.getSurplusAmount().add(projectDetailEntity1.getPaymentAmount()));
             projectMapper._updateEntity(projectEntity);
+
+            List<PersonEntity> personEntities = personMapper.queryProjectId(projectDetailEntity.getId());
+            for (PersonEntity personEntity : personEntities) {
+                personMapper.deletePeople(personEntity.getId());
+            }
+
+            personMapper.deleteProject(projectDetailEntity.getId());
+            personMapper.deleteReplaceProjectId(projectDetailEntity.getId());
+
         }
         return projectDetailService.update(projectDetailEntity);
     }

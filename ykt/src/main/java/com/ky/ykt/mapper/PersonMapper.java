@@ -93,6 +93,9 @@ public interface PersonMapper extends BaseMapper {
     @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} ")
     PersonEntity queryByIdCardNo(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
+    @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} or bankCardNo = #{bankCardNo}")
+    List<PersonEntity> queryByIdCardNoProject(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId,@Param("bankCardNo") String bankCardNo);
+
     @Update("update person set status=4 and failReason = '' where id = #{id} ")
     int doSubmitAudit(@Param("id") String id);
 
@@ -122,4 +125,12 @@ public interface PersonMapper extends BaseMapper {
 
     @Select("select *,a1.`name` AS countyName,a2.`name` as townName,a3.`name` AS villageName from person_Upload pu left join areas a1 on a1.id=pu.county left join areas a2 on a2.id=pu.town  left join areas a3 on a3.id=pu.village where pu.name = #{name} and  pu.idCardNo = #{idCardNo} and pu.bankCardNo = #{bankCardNo}")
     PersonUploadEntity queryPerson(Map params);
+    @Delete("delete from person where projectId = #{id}")
+    void deleteProject(String id);
+    @Delete("delete from person_replacement where projectId = #{id}")
+    void deleteReplaceProjectId(String id);
+    @Select("select * from person where projectId = #{id} ")
+    List<PersonEntity> queryProjectId(String id);
+    @Delete("delete from person_upload where personId = #{id}")
+    void deletePeople(String id);
 }
