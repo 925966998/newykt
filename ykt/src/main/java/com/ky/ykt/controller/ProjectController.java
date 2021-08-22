@@ -56,7 +56,7 @@ public class ProjectController {
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
             DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
-            params.put("departmentId", departmentEntity.getParentId());
+            params.put("departmentId", departmentEntity.getId());
             params.put("userId",user.getId());
             params.put("DJFlag","4J");
         }

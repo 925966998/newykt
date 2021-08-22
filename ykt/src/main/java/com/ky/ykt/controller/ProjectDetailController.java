@@ -133,10 +133,12 @@ public class ProjectDetailController {
             List<PersonEntity> personEntities = personMapper.queryProjectId(projectDetailEntity.getId());
             for (PersonEntity personEntity : personEntities) {
                 personMapper.deletePeople(personEntity.getId());
+                //personMapper.deleteProject(projectDetailEntity.getId());
+                personMapper.deleteReplaceProjectId(projectDetailEntity.getId(),personEntity.getId());
+                personMapper._deleteForce(personEntity.getId());
             }
 
-            personMapper.deleteProject(projectDetailEntity.getId());
-            personMapper.deleteReplaceProjectId(projectDetailEntity.getId());
+
 
         }
         return projectDetailService.update(projectDetailEntity);

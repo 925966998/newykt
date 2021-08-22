@@ -106,7 +106,7 @@ public class PersonController {
         if (personEntity.getId() != null && personEntity.getId().length() > 0) {
             //ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntity.getProjectId());
             //ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
-            PersonUploadEntity personUploadEntity = personUploadMapper.queryPersonIdProject(personEntity.getId(),personEntity.getId());
+            PersonUploadEntity personUploadEntity = personUploadMapper.queryPersonIdProject(personEntity.getId(),personEntity.getProjectId());
             if(personUploadEntity != null){
                 personUploadMapper.deleteIdcardNo(personUploadEntity.getIdCardNo());
                 personUploadEntity.setPhone(personEntity.getPhone());
@@ -127,7 +127,7 @@ public class PersonController {
                 personUploadEntity.setPersonId(" ");
                 personUploadMapper._addEntity(personUploadEntity);
             }
-            personService.update(personEntity);
+            return personService.update(personEntity);
         } else {
             SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
             //单个添加
@@ -138,9 +138,8 @@ public class PersonController {
             personEntity.setDepartmentId(user.getDepartmentId());
             personEntity.setUserId(user.getId());
             personEntity.setIssuingUnit(user.getDepartmentId());
-            personService.add(personEntity);
+            return personService.add(personEntity);
         }
-        return new RestResult();
     }
 
     /**

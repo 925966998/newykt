@@ -125,12 +125,16 @@ public interface PersonMapper extends BaseMapper {
 
     @Select("select *,a1.`name` AS countyName,a2.`name` as townName,a3.`name` AS villageName from person_Upload pu left join areas a1 on a1.id=pu.county left join areas a2 on a2.id=pu.town  left join areas a3 on a3.id=pu.village where pu.name = #{name} and  pu.idCardNo = #{idCardNo} and pu.bankCardNo = #{bankCardNo}")
     PersonUploadEntity queryPerson(Map params);
+
     @Delete("delete from person where projectId = #{id}")
     void deleteProject(String id);
-    @Delete("delete from person_replacement where projectId = #{id}")
-    void deleteReplaceProjectId(String id);
-    @Select("select * from person where projectId = #{id} ")
+
+    @Delete("delete from person_replacement where projectId = #{id} and personId = #{personId}")
+    void deleteReplaceProjectId(String id,String personId);
+
+    @Select("select * from person where projectId = #{id} and  status = '0' or status = '4'")
     List<PersonEntity> queryProjectId(String id);
+
     @Delete("delete from person_upload where personId = #{id}")
     void deletePeople(String id);
 }

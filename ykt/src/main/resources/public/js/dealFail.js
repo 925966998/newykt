@@ -149,7 +149,7 @@ obj = {
                 if (lag == true) {
                     $.ajax({
                         url: '/ky-ykt/person/saveOrUpdate',
-                        type: 'post',
+                        type: 'POST',
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         data: form2Json("addForm"),
@@ -171,7 +171,8 @@ obj = {
                             }
                         }
                     })
-                }
+                }else
+                    return false;
             },
             success: function () {
                 $.messager.progress('close');
