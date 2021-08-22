@@ -81,6 +81,8 @@ $(function () {
     //$("#projectType").combobox('select', '0');
     // 加载表格
     doQuery('/ky-ykt/person/queryPage?status=2');
+
+
 })
 
 obj = {
@@ -114,9 +116,13 @@ obj = {
                     $("#grantAmount").val(data.grantAmount);
                     $("#idCardNo").val(data.idCardNo);
                     $("#bankCardNo").val(data.bankCardNo);
-                    $("#county").val(data.countyName);
-                    $("#town").val(data.townName);
-                    $("#village").val(data.villageName);
+                    /*$("#county").val(data.countyName);*/
+                   /* $("#town").val(data.townName);*/
+                    $("#county").combobox('setValue', data.county);
+
+                    $("#town").combobox('setValue', data.town);
+                    $("#village").combobox('setValue', data.village);
+                    /*$("#village").val(data.villageName);*/
                     $("#address").val(data.address);
                     $("#openingBank").val(data.openingBank);
                 }
@@ -325,3 +331,28 @@ function toMoney(num) {
         return num = null;
     }
 }
+
+//加载区县下拉框
+$("#county").combobox({
+    url: '/ky-ykt/areas/queryByLevel?level=2',
+    method: 'get',
+    valueField: 'id',
+    textField: 'name',
+    onChange: function (newValue, oldValue) {
+        $("#town").combobox({
+            url: '/ky-ykt/areas/queryByLevel?level=3&parentId=' + newValue,
+            method: 'get',
+            valueField: 'id',
+            textField: 'name',
+            onChange: function (newValue, oldValue) {
+                //加载村组下拉框
+                $("#village").combobox({
+                    url: '/ky-ykt/areas/queryByLevel?level=4&parentId=' + newValue,
+                    method: 'get',
+                    valueField: 'id',
+                    textField: 'name'
+                });
+            }
+        });
+    }
+});

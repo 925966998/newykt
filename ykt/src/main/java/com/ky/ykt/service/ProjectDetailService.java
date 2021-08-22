@@ -50,10 +50,12 @@ public class ProjectDetailService {
         for (ProjectDetailEntity projectDetailEntity : list) {
             List<PersonEntity> personEntities = personMapper.queryProjectId(projectDetailEntity.getId());
             BigDecimal zero = BigDecimal.ZERO;
-            for (PersonEntity personEntity : personEntities) {
-                if(personEntity.getStatus().equals("0") ){
-                    zero = zero.add(new BigDecimal(personEntity.getGrantAmount()));
-                }
+            if(personEntities.size()>0 && personEntities != null){
+        for (int i = 0; i < personEntities.size(); i++){
+            if(personEntities.get(i).getStatus().equals("0") ||  personEntities.get(i).getStatus().equals("4")){
+                zero = zero.add(new BigDecimal(personEntities.get(i).getGrantAmount()));
+            }
+        }
             }
             projectDetailEntity.setPaymentAmount(zero);
             projectDetailEntity.setTotalAmount(projectDetailEntity.getSurplusAmount().add(zero));

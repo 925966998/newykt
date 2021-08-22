@@ -102,7 +102,31 @@ public class PersonController {
     public Object saveOrUpdate(@RequestBody String body, HttpServletRequest request) {
         logger.info("The PersonController saveOrUpdate method params are {}", body);
         PersonEntity personEntity = JSONObject.parseObject(body, PersonEntity.class);
+        PersonEntity personEntity1 = personMapper._get(personEntity.getId());
         if (personEntity.getId() != null && personEntity.getId().length() > 0) {
+            //ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntity.getProjectId());
+            //ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
+            PersonUploadEntity personUploadEntity = personUploadMapper.queryPersonIdProject(personEntity.getId(),personEntity.getId());
+            if(personUploadEntity != null){
+                personUploadMapper.deleteIdcardNo(personUploadEntity.getIdCardNo());
+                personUploadEntity.setPhone(personEntity.getPhone());
+                personUploadEntity.setName(personEntity.getName());
+                personUploadEntity.setCounty(personEntity.getCounty());
+                personUploadEntity.setTown(personEntity.getTown());
+                personUploadEntity.setVillage(personEntity.getVillage());
+                personUploadEntity.setAddress(personEntity.getAddress());
+                personUploadEntity.setOpeningBank(personEntity.getOpeningBank());
+                personUploadEntity.setBankCardNo(personEntity.getBankCardNo());
+                personUploadEntity.setGrantAmount(personEntity.getGrantAmount());
+                personUploadEntity.setIdCardNo(personEntity.getIdCardNo());
+                personUploadEntity.setProjectId(personEntity.getProjectId());
+                personUploadMapper._updateEntity(personUploadEntity);
+                personUploadEntity.setId(UUID.randomUUID().toString());
+                personUploadEntity.setProjectId("");
+                personUploadEntity.setProjectType("0");
+                personUploadEntity.setPersonId(" ");
+                personUploadMapper._addEntity(personUploadEntity);
+            }
             personService.update(personEntity);
         } else {
             SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
@@ -113,6 +137,7 @@ public class PersonController {
             //获取当前操作人信息
             personEntity.setDepartmentId(user.getDepartmentId());
             personEntity.setUserId(user.getId());
+            personEntity.setIssuingUnit(user.getDepartmentId());
             personService.add(personEntity);
         }
         return new RestResult();
@@ -442,14 +467,11 @@ public class PersonController {
             }
 
         // 身份账号+银行卡号+发放部门+资金项目 需要唯一
-        List<PersonEntity> personEntity2 =
+        PersonEntity personEntity2 =
             personMapper.queryByIdCardNoProject(
-                personEntity.getIdCardNo(), projectId, personEntity.getBankCardNo());
-            if (personEntity2.size()>0 && personEntity2 != null) {
+                personEntity.getIdCardNo(), projectId);
+            if (personEntity2 != null) {
                 stringBufferError.append("第" + i + "行，" + personEntity.getName() + "信息已经录过，请检查后再重新录入<br>");
-                if (personEntity2.size()>1){
-                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "银行卡号已经录过，请检查后再重新录入<br>");
-                }
             }
             // 本次录入检查唯一
             if (personEntityList != null && personEntityList.size() > 0) {
@@ -752,6 +774,7 @@ public class PersonController {
                 PersonUploadEntity personUploadEntity1 = personUploadMapper._queryPersonId(personEntity.getId());
                 if (personUploadEntity1 != null) {
                     BeanUtils.copyProperties(personEntity, personUploadEntity1);
+                    personUploadEntity1.setProjectId(projectDetailId);
                     personUploadEntity1.setProjectType(projectEntity.getProjectType());
                     personUploadMapper._updateEntity(personUploadEntity1);
                 } else {
@@ -768,6 +791,7 @@ public class PersonController {
                     PersonUploadEntity personUploadEntity = new PersonUploadEntity();
                     BeanUtils.copyProperties(personEntity, personUploadEntity);
                     personUploadEntity.setPersonId(personEntity.getId());
+                    personUploadEntity.setProjectId(projectDetailId);
                     personUploadEntity.setProjectType(projectEntity.getProjectType());
                     personUploadMapper._addEntity(personUploadEntity);
                 }

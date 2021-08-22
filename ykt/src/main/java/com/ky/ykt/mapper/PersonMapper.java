@@ -14,7 +14,7 @@ import java.util.Map;
 @Mapper
 public interface PersonMapper extends BaseMapper {
 
-    @Select("select count(*) as num from person where TRIM(projectId) = #{id} and status = '0' ")
+    @Select("select count(*) as num from person where TRIM(projectId) = #{id} and status !=1 ")
     long queryCountByProjectCode(@Param("id") String id);
 
     /**
@@ -93,8 +93,8 @@ public interface PersonMapper extends BaseMapper {
     @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} ")
     PersonEntity queryByIdCardNo(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
-    @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} or bankCardNo = #{bankCardNo}")
-    List<PersonEntity> queryByIdCardNoProject(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId,@Param("bankCardNo") String bankCardNo);
+    @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId}")
+    PersonEntity queryByIdCardNoProject(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
     @Update("update person set status=4 and failReason = '' where id = #{id} ")
     int doSubmitAudit(@Param("id") String id);
