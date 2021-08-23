@@ -259,13 +259,24 @@ public class PersonSql extends BaseProvider {
                 "p.bankCardNo AS bankCardNo,\n" +
                 "p.grantAmount AS grantAmount,\n" +
                 "pt.`name` AS projectTypeName,\n" +
-                "d.departmentName AS departmentName " +
-                " FROM\n" +
+                "d.departmentName AS departmentName " );
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" ,upt.userId");
+        }
+        builder.append(" FROM\n" +
                 "person p\n" +
                 "LEFT JOIN project_detail pd ON p.projectId = pd.id\n" +
                 "LEFT JOIN project pp ON pd.projectId = pp.id\n" +
                 "LEFT JOIN project_type pt ON pp.projectType = pt.id\n" +
-                "LEFT JOIN department d ON d.id=pd.operDepartment where 1=1 ");
+                "LEFT JOIN department d ON d.id=pd.operDepartment ");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" left join user_projecttype upt on pt.id=upt.projectTypeId");
+        }
+
+        builder.append(" where 1=1 ");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" and upt.userId = #{userId}");
+        }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "idCardNo"))) {
             builder.append(" and p.idCardNo = #{idCardNo}");
         }
@@ -332,7 +343,14 @@ public class PersonSql extends BaseProvider {
                 "LEFT JOIN project_detail pd ON p.projectId = pd.id\n" +
                 "LEFT JOIN project pp ON pd.projectId = pp.id\n" +
                 "LEFT JOIN project_type pt ON pp.projectType = pt.id\n" +
-                "LEFT JOIN department d ON d.id=pd.operDepartment  where 1=1 ");
+                "LEFT JOIN department d ON d.id=pd.operDepartment  " );
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" left join user_projecttype upt on pt.id=upt.projectTypeId");
+        }
+        builder.append(" where 1=1 ");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" and upt.userId = #{userId}");
+        }
         if (StringUtils.isNotBlank(MapUtils.getString(map, "idCardNo"))) {
             builder.append(" and p.idCardNo = #{idCardNo}");
         }
