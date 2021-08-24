@@ -658,10 +658,8 @@ public class PersonController {
                             personEntity1.setStatus("1");
                             personEntity1.setFailReason(" ");
                             pentity.setStatus("1");
-                        } else if (personEntity.getStatus().contains("失败")) {
-                            personEntity1.setStatus("2");
-                            personEntity1.setFailReason(personEntity.getFailReason());
-                            pentity.setStatus("2");
+                            /*
+                            //成功发放资金
                             ProjectEntity projectEntity = projectMapper._get(personEntity1.getItemId());
                             projectEntity.setPaymentAmount(projectEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
                             projectEntity.setSurplusAmount(projectEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
@@ -670,9 +668,14 @@ public class PersonController {
                             projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
                             projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
                             projectDetailMapper._updateEntity(projectDetailEntity);
+                            */
+                        } else if (personEntity.getStatus().contains("失败")) {
+                            personEntity1.setStatus("2");
+                            personEntity1.setFailReason(personEntity.getFailReason());
+                            pentity.setStatus("2");
                         }
                         personMapper._updateEntity(personEntity1);
-                        personReplacementMapper._updateEntity(personReplacementEntity);
+                        personReplacementMapper._updateEntity(pentity);
                     }else{
                         if (personEntity.getStatus().contains("成功")) {
                             personEntity1.setStatus("1");
@@ -682,6 +685,7 @@ public class PersonController {
                             personEntity1.setStatus("2");
                             personEntity1.setFailReason(personEntity.getFailReason());
                             personReplacementEntity.setStatus("2");
+                            /*
                             ProjectEntity projectEntity = projectMapper._get(personEntity1.getItemId());
                             projectEntity.setPaymentAmount(projectEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
                             projectEntity.setSurplusAmount(projectEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
@@ -690,6 +694,7 @@ public class PersonController {
                             projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
                             projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
                             projectDetailMapper._updateEntity(projectDetailEntity);
+                            */
                         }
                         personMapper._updateEntity(personEntity1);
                         personReplacementMapper._updateEntity(personReplacementEntity);
@@ -808,16 +813,14 @@ public class PersonController {
                 personMapper._updateEntity(personEntity);
             }
 
-            //ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(projectDetailId);
             ProjectDetailEntity projectDetailEntity = new ProjectDetailEntity();
             projectDetailEntity.setId(projectDetailId);
-            //ProjectEntity projectEntity = projectMapper._get(itemId);
-            BigDecimal totalAmount1 = projectEntity.getSurplusAmount();
+            //BigDecimal totalAmount1 = projectEntity.getSurplusAmount();
 
-            projectDetailEntity.setTotalAmount(projectEntity.getSurplusAmount());
-            projectDetailEntity.setPaymentAmount(totalAmount);
+            projectDetailEntity.setTotalAmount(projectEntity.getTotalAmount());
+            projectDetailEntity.setPaymentAmount(projectEntity.getPaymentAmount());
             //发放剩余金额
-            projectDetailEntity.setSurplusAmount(totalAmount1.subtract(totalAmount));
+            projectDetailEntity.setSurplusAmount(projectEntity.getSurplusAmount());
             projectDetailEntity.setProjectId(itemId);
             projectDetailEntity.setProjectName(projectEntity.getProjectName());
             projectDetailEntity.setStartTime(new Date());
@@ -827,23 +830,14 @@ public class PersonController {
             projectDetailEntity.setOperDepartment(user.getDepartmentId());
             projectDetailEntity.setPaymentDepartment(projectEntity.getPaymentDepartment());
             projectDetailEntity.setState(0);
-            /*
-            if (projectDetailEntity != null) {
-                projectDetailMapper._updateEntity(projectDetailEntity);
-            } else {
-                projectDetailEntity.setId(projectDetailId);
-                projectDetailMapper._addEntity(projectDetailEntity);
-            }
-            */
             projectDetailMapper._addEntity(projectDetailEntity);
-
-            //projectEntity.setTotalAmount(totalAmount1);
+            /*
             BigDecimal addAmount = totalAmount.add(projectEntity.getPaymentAmount());
 
             projectEntity.setPaymentAmount(addAmount);
             projectEntity.setSurplusAmount(projectEntity.getTotalAmount().subtract(addAmount));
             projectMapper._updateEntity(projectEntity);
-
+            */
         } else {
             return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "数据不能为空，请重新录入！！");
         }

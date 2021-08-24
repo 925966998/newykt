@@ -104,4 +104,6 @@ public interface ProjectDetailMapper extends BaseMapper {
     List<ProjectDetailEntity> _queryProjectId(@Param("projectId")Map projectId);
     @Select("select * from project_detail where id = #{projectId}")
     ProjectDetailEntity queryId(@Param("projectId")String projectId);
+    @Select("select * from project_detail where projectId = #{id}")
+    List<ProjectDetailEntity> querysuccess(String id);
 }

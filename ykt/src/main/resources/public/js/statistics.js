@@ -10,6 +10,8 @@ $(function () {
     var userId = sessionStorage.getItem("userId");
     if (userId != '223b6557-3969-4b1d-9b81-296786a546de') {
         $("#paymentDepartment").hide();
+        $("#jbn").hide();
+
     }
 })
 $("#paymentDepartment").combobox({

@@ -2,6 +2,8 @@ package com.ky.ykt.service;
 
 import com.alibaba.druid.sql.visitor.functions.Isnull;
 import com.ky.ykt.entity.ProjectSourceEntity;
+import com.ky.ykt.mapper.PersonMapper;
+import com.ky.ykt.mapper.ProjectMapper;
 import com.ky.ykt.mapper.ProjectSourceMapper;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
@@ -28,6 +30,8 @@ public class ProjectSourceService {
 
     @Autowired
     ProjectSourceMapper projectSourceMapper;
+    @Autowired
+    ProjectMapper projectMapper;
 
     public Object queryAll(Map params) {
         List<ProjectSourceEntity> departmentEntities = projectSourceMapper._queryAll(params);
@@ -43,14 +47,17 @@ public class ProjectSourceService {
     public RestResult queryPage(Map params) {
         List<ProjectSourceEntity> list = projectSourceMapper._queryPage(params);
         for (ProjectSourceEntity projectSourceEntity :list) {
-            projectSourceEntity.setSurplusAmount(isNullBig(projectSourceEntity.getSurplusAmount()));
             projectSourceEntity.setTotalAmount(isNullBig(projectSourceEntity.getTotalAmount()));
-            projectSourceEntity.setPaymentAmount(isNullBig(projectSourceEntity.getPaymentAmount()));
+            //统计成功的
+            BigDecimal bigDecimal = projectMapper.querySuccess(projectSourceEntity.getId());
+            projectSourceEntity.setPaymentAmount(bigDecimal);
+            projectSourceEntity.setSurplusAmount(projectSourceEntity.getTotalAmount().subtract(isNullBig(bigDecimal)));
+
             projectSourceEntity.setCountyAmount(isNullBig(projectSourceEntity.getCountyAmount()));
             projectSourceEntity.setCityAmount(isNullBig(projectSourceEntity.getCityAmount()));
             projectSourceEntity.setProvinceAmount(isNullBig(projectSourceEntity.getProvinceAmount()));
             projectSourceEntity.setCenterAmount(isNullBig(projectSourceEntity.getCenterAmount()));
-
+            projectSourceMapper._updateEntity(projectSourceEntity);
         }
 
         long count = projectSourceMapper._queryCount(params);

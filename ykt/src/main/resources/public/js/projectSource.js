@@ -329,9 +329,11 @@ $("#table").datagrid({
             formatter: function (value, row, index) {
                 return '中央：' +row.centerAmount + '<br>省：' + row.provinceAmount + '<br>市：' + row.cityAmount + '<br>区县：' + row.countyAmount;
             }},
-        {field: 'surplusAmount', title: '结余金额', width: 100, align: 'center',
+
+        {field: 'surplusAmount', title: '剩余金额', width: 100, align: 'center',
             formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
+
         {field: 'note', title: '描述', width: 100, align: 'left',},
         {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {

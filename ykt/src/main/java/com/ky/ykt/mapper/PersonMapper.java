@@ -137,4 +137,6 @@ public interface PersonMapper extends BaseMapper {
 
     @Delete("delete from person_upload where personId = #{id}")
     void deletePeople(String id);
+    @Select("select sum(grantAmount) from person where projectId = #{projectId} and status = '1'")
+    BigDecimal querySuccess(String projectId);
 }

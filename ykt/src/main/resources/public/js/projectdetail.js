@@ -26,7 +26,7 @@ function doQuery(url,data) {
            /* {checkbox: true, field: 'no', width: 100, align: 'center'},*/
             {field: 'projectTypeName', title: '项目名称', width: 100, align: 'center'},
             {field: 'departmentNames', title: '所属单位', width: 100, align: 'center'},
-            {field: 'totalAmount', title: '剩余金额', width: 100, align: 'center',
+            {field: 'surplusAmount', title: '剩余金额', width: 100, align: 'center',
                 formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
             },
             {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',

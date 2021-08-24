@@ -86,6 +86,9 @@ public class ProjectDetailController {
             departmentIdList.add(user.getDepartmentId());
             params.put("departmentIdList", departmentIdList);
             params.put("departmentIdListFlag", "departmentIdListFlag");
+            params.put("DJFlag", "4J");
+            params.put("userId", user.getId());
+
         }
         if(params.get("state") != null){
             if(params.get("state").equals("1")){
@@ -102,6 +105,7 @@ public class ProjectDetailController {
                 params.put("projectName", " ");
             }
         }
+
         RestResult restResult = projectDetailService.queryPage(params);
         PagerResult data = (PagerResult) restResult.getData();
         return this.toJson(data);

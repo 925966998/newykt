@@ -88,6 +88,7 @@ public interface PersonReplacementMapper extends BaseMapper {
 
     @Select("select * from person_replacement where personId = #{personId} and status = 4 and projectId = #{projectId}")
     PersonReplacementEntity queryPersonId(Map params);
+
     @Select("select * from person_replacement where personId = #{personId} and status = 2 and projectId = #{projectId}")
     PersonReplacementEntity queryPersonIdtwo(Map params);
 }
