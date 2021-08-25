@@ -336,6 +336,197 @@ public class PersonSql extends BaseProvider {
         return builder.toString();
     }
 
+    public String statisticsAll(Map map) {
+        StringBuilder builder = new StringBuilder("SELECT\n" +
+                "p.`name` AS userName,\n" +
+                "p.phone AS phone,\n" +
+                "(\n" +
+                "SELECT\n" +
+                "NAME county\n" +
+                "FROM\n" +
+                "areas\n" +
+                "WHERE\n" +
+                "id = p.county\n" +
+                ") as county,\n" +
+                "(\n" +
+                "SELECT\n" +
+                "NAME town\n" +
+                "FROM\n" +
+                "areas\n" +
+                "WHERE\n" +
+                "id = p.town\n" +
+                ") as town,\n" +
+                "(\n" +
+                "SELECT\n" +
+                "NAME village\n" +
+                "FROM\n" +
+                "areas\n" +
+                "WHERE\n" +
+                "id = p.village\n" +
+                ") as village ,p.idCardNo AS idCardNo,\n" +
+//                "p.county AS county,\n" +
+                "p.address AS address,\n" +
+                "pt.name AS projectName,\n" +
+                "p.`status` AS status,\n" +
+                "p.bankCardNo AS bankCardNo,\n" +
+                "p.grantAmount AS grantAmount,\n" +
+                "pt.`name` AS projectTypeName,\n" +
+                "d.departmentName AS departmentName " );
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" ,upt.userId");
+        }
+        builder.append(" FROM\n" +
+                "person p\n" +
+                "LEFT JOIN project_detail pd ON p.projectId = pd.id\n" +
+                "LEFT JOIN project pp ON pd.projectId = pp.id\n" +
+                "LEFT JOIN project_type pt ON pp.projectType = pt.id\n" +
+                "LEFT JOIN department d ON d.id=pd.operDepartment ");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" left join user_projecttype upt on pt.id=upt.projectTypeId");
+        }
+
+        builder.append(" where 1=1 ");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")) {
+            builder.append(" and upt.userId = #{userId}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "idCardNo"))) {
+            builder.append(" and p.idCardNo = #{idCardNo}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "level"))) {
+            if (map.get("level").toString().equals("2")) {
+                builder.append(" and p.county = #{areaId}");
+            } else if (map.get("level").toString().equals("3")) {
+                builder.append(" and p.town = #{areaId}");
+            } else if (map.get("level").toString().equals("4")) {
+                builder.append(" and p.village = #{areaId}");
+            }
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userName"))) {
+            builder.append(" and p.name like concat('%',#{userName},'%')");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "status"))) {
+            builder.append(" and p.status =#{status}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
+            builder.append(" and pp.projectType = #{projectType}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+            builder.append(" and pp.batchNumber = #{batchNumber}");
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "operDepartment"))) {
+            if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag")) && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {
+                if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdList"))) {
+                    builder.append(" and pd.operDepartment in (");
+                    if (map.get("departmentIdList") instanceof List) {
+                        List<String> departmentIdList = (List) map.get("departmentIdList");
+                        for (String id : departmentIdList) {
+                            if (departmentIdList.indexOf(id) > 0)
+                                builder.append(",");
+                            builder.append("'").append(id).append("'");
+                        }
+                    } else {
+                        builder.append(map.get("departmentIdList"));
+                    }
+                    builder.append(")");
+                }
+            } else {
+                builder.append(" and pd.operDepartment = #{operDepartment}");
+            }
+        }
+        String startTime = "";
+        String endTime = "";
+        if (!StringUtils.isBlank(MapUtils.getString(map, "startTime"))) {
+            startTime = dealStartEndDate(map.get("startTime").toString(), "startTime");
+        }
+        if (!StringUtils.isBlank(MapUtils.getString(map, "endTime"))) {
+            endTime = dealStartEndDate(map.get("endTime").toString(), "endTime");
+        }
+        if (!startTime.equals("") || !endTime.equals("")) {
+            builder.append(" and  p.createTime between '" + startTime + "' and '" + endTime + "' ");
+        }
+        return builder.toString();
+    }
+
+  public String statisticsSum(Map map) {
+    StringBuilder builder = new StringBuilder("SELECT sum(p.grantAmount) AS grantAmount ");
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag"))
+        && map.get("DJFlag").equals("4J")) {
+      builder.append(" ,upt.userId");
+    }
+    builder.append(
+        " FROM\n"
+            + "person p\n"
+            + "LEFT JOIN project_detail pd ON p.projectId = pd.id\n"
+            + "LEFT JOIN project pp ON pd.projectId = pp.id\n"
+            + "LEFT JOIN project_type pt ON pp.projectType = pt.id\n"
+            + "LEFT JOIN department d ON d.id=pd.operDepartment ");
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag"))
+        && map.get("DJFlag").equals("4J")) {
+      builder.append(" left join user_projecttype upt on pt.id=upt.projectTypeId");
+    }
+
+    builder.append(" where 1=1 ");
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag"))
+        && map.get("DJFlag").equals("4J")) {
+      builder.append(" and upt.userId = #{userId}");
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "idCardNo"))) {
+      builder.append(" and p.idCardNo = #{idCardNo}");
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "level"))) {
+      if (map.get("level").toString().equals("2")) {
+        builder.append(" and p.county = #{areaId}");
+      } else if (map.get("level").toString().equals("3")) {
+        builder.append(" and p.town = #{areaId}");
+      } else if (map.get("level").toString().equals("4")) {
+        builder.append(" and p.village = #{areaId}");
+      }
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "userName"))) {
+      builder.append(" and p.name like concat('%',#{userName},'%')");
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "status"))) {
+      builder.append(" and p.status =#{status}");
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
+      builder.append(" and pp.projectType = #{projectType}");
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "batchNumber"))) {
+      builder.append(" and pp.batchNumber = #{batchNumber}");
+    }
+    if (StringUtils.isNotBlank(MapUtils.getString(map, "operDepartment"))) {
+      if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdListFlag"))
+          && map.get("departmentIdListFlag").equals("departmentIdListFlag")) {
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "departmentIdList"))) {
+          builder.append(" and pd.operDepartment in (");
+          if (map.get("departmentIdList") instanceof List) {
+            List<String> departmentIdList = (List) map.get("departmentIdList");
+            for (String id : departmentIdList) {
+              if (departmentIdList.indexOf(id) > 0) builder.append(",");
+              builder.append("'").append(id).append("'");
+            }
+          } else {
+            builder.append(map.get("departmentIdList"));
+          }
+          builder.append(")");
+        }
+      } else {
+        builder.append(" and pd.operDepartment = #{operDepartment}");
+      }
+    }
+    String startTime = "";
+    String endTime = "";
+    if (!StringUtils.isBlank(MapUtils.getString(map, "startTime"))) {
+      startTime = dealStartEndDate(map.get("startTime").toString(), "startTime");
+    }
+    if (!StringUtils.isBlank(MapUtils.getString(map, "endTime"))) {
+      endTime = dealStartEndDate(map.get("endTime").toString(), "endTime");
+    }
+    if (!startTime.equals("") || !endTime.equals("")) {
+      builder.append(" and  p.createTime between '" + startTime + "' and '" + endTime + "' ");
+    }
+    return builder.toString();
+}
     public String statisticsCount(Map map) {
         StringBuilder builder = new StringBuilder("SELECT\n" +
                 "COUNT(*) FROM\n" +

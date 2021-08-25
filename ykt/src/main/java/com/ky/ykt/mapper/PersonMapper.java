@@ -34,6 +34,12 @@ public interface PersonMapper extends BaseMapper {
     @SelectProvider(type = PersonSql.class, method = "statistics")
     List<StatisticEntity> statistics(Map pagerParam);
 
+    @SelectProvider(type = PersonSql.class, method = "statisticsAll")
+    List<StatisticEntity> statisticsAll(Map pagerParam);
+
+    @SelectProvider(type = PersonSql.class, method = "statisticsSum")
+    BigDecimal statisticsSum(Map pagerParam);
+
     @SelectProvider(type = PersonSql.class, method = "statisticsCount")
     long statisticsCount(Map pagerParam);
 
@@ -132,7 +138,7 @@ public interface PersonMapper extends BaseMapper {
     @Delete("delete from person_replacement where projectId = #{id} and personId = #{personId}")
     void deleteReplaceProjectId(String id,String personId);
 
-    @Select("select * from person where projectId = #{id} and  status = '0' or status = '4'")
+    @Select("select * from person where projectId = #{id} and  status != '1'")
     List<PersonEntity> queryProjectId(String id);
 
     @Delete("delete from person_upload where personId = #{id}")

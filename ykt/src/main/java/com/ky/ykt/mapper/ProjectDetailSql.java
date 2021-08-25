@@ -33,7 +33,7 @@ public class ProjectDetailSql extends BaseProvider {
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" ,upt.userId ");
         }
-        builder.append("from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id " );
+        builder.append(" from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id " );
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append("  left join user_projecttype upt on p.projectName = upt.projectTypeId");
         }
@@ -92,7 +92,7 @@ public class ProjectDetailSql extends BaseProvider {
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" ,upt.userId ");
         }
-        builder.append("from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id ");
+        builder.append(" from project_detail pd LEFT JOIN department d ON d.id=pd.paymentDepartment LEFT JOIN  project p ON pd.projectId=p.id LEFT JOIN  department dt ON pd.operDepartment=dt.id LEFT JOIN  project_type pt ON pd.projectName=pt.id ");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
         }
@@ -179,7 +179,7 @@ public class ProjectDetailSql extends BaseProvider {
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
         }
-        builder.append(" WHERE pd.logicalDel = 0 ");
+        builder.append(" WHERE pd.state = 0 and pd.logicalDel = 0 ");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and p.projectType = #{projectType}");
         }
@@ -211,8 +211,9 @@ public class ProjectDetailSql extends BaseProvider {
                 "LEFT JOIN project p ON p.id=pd.projectId\n" +
                 "LEFT JOIN project_type pt ON p.projectType = pt.id ");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
-            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId WHERE 1 = 1 AND pd.logicalDel = 0 ");
+            builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId  ");
         }
+        builder.append(" WHERE 1 = 1 AND pd.logicalDel = 0 and pd.state = '0'");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectType"))) {
             builder.append(" and p.projectType = #{projectType}");
         }
@@ -259,7 +260,7 @@ public class ProjectDetailSql extends BaseProvider {
         if (!startTime.equals("") || !endTime.equals("")) {
             builder.append(" and  pd.startTime between '" + startTime + "' and '" + endTime + "' ");
         }
-        builder.append(" order by pd.startTime desc");
+        builder.append(" AND pd.state = 0 order by pd.startTime desc");
         return builder.toString();
     }
 
@@ -289,7 +290,7 @@ public class ProjectDetailSql extends BaseProvider {
         if (StringUtils.isNotBlank(MapUtils.getString(map, "paymentDepartment"))) {
             builder.append(" and paymentDepartment = #{paymentDepartment} ");
         }
-        builder.append("UNION " +
+        builder.append("AND state=0 UNION " +
                 "SELECT " +
                 "SUM(paymentAmount) AS paymentAmount, " +
                 "SUM(surplusAmount) AS surplusAmount, " +
@@ -308,7 +309,7 @@ public class ProjectDetailSql extends BaseProvider {
             builder.append(" and paymentDepartment = #{paymentDepartment} ");
         }
         builder.append(
-                "UNION " +
+                " AND state=0 UNION " +
                 "SELECT " +
                 "SUM(paymentAmount) AS paymentAmount, " +
                 "SUM(surplusAmount) AS surplusAmount, " +
@@ -321,9 +322,12 @@ public class ProjectDetailSql extends BaseProvider {
                 "WHERE " +
                 "DATE_FORMAT(startTime, '%Y-%m') = DATE_FORMAT( " +
                 "CURDATE() - INTERVAL 3 MONTH, " +
-                "'%Y-%m' " +
-                ") " +
-                "UNION " +
+                        "'%Y-%m' " +
+                        ") " );
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "paymentDepartment"))) {
+            builder.append(" and paymentDepartment = #{paymentDepartment} ");
+        }
+        builder.append(" AND state=0 UNION " +
                 "SELECT " +
                 "SUM(paymentAmount) AS paymentAmount, " +
                 "SUM(surplusAmount) AS surplusAmount, " +
@@ -342,7 +346,7 @@ public class ProjectDetailSql extends BaseProvider {
             builder.append(" and paymentDepartment = #{paymentDepartment} ");
         }
         builder.append(
-                "UNION " +
+                " AND state=0 UNION " +
                 "SELECT " +
                 "SUM(paymentAmount) AS paymentAmount, " +
                 "SUM(surplusAmount) AS surplusAmount, " +
@@ -355,9 +359,12 @@ public class ProjectDetailSql extends BaseProvider {
                 "WHERE " +
                 "DATE_FORMAT(startTime, '%Y-%m') = DATE_FORMAT( " +
                 "CURDATE() - INTERVAL 1 MONTH, " +
-                "'%Y-%m' " +
-                ") " +
-                "UNION " +
+                        "'%Y-%m' " +
+                        ") " );
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "paymentDepartment"))) {
+            builder.append(" and paymentDepartment = #{paymentDepartment} ");
+        }
+        builder.append(" AND state=0 UNION " +
                 "SELECT " +
                 "SUM(paymentAmount) AS paymentAmount, " +
                 "SUM(surplusAmount) AS surplusAmount, " +
@@ -365,7 +372,7 @@ public class ProjectDetailSql extends BaseProvider {
                 "FROM " +
                 "project_detail " +
                 "WHERE " +
-                "DATE_FORMAT(startTime, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')");
+                "DATE_FORMAT(startTime, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m') AND state=0 ");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "paymentDepartment"))) {
             builder.append(" and paymentDepartment = #{paymentDepartment} ");
         }

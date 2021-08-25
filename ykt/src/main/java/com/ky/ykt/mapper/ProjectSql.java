@@ -130,7 +130,7 @@ public class ProjectSql extends BaseProvider {
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
         }
-        builder.append(" where 1=1  and p.logicalDel=0");
+        builder.append(" where 1=1  and p.logicalDel=0 and pd.state = 0  ");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and p.projectName = #{projectName}");
         }
@@ -157,9 +157,15 @@ public class ProjectSql extends BaseProvider {
     }
 
     public String queryType(Map map) {
-        StringBuilder builder =
-                new StringBuilder(
-                        "select pt.`name` as projectType,COUNT(*) as num,p.paymentDepartment from project p LEFT JOIN project_type pt ON p.projectType=pt.id LEFT JOIN user_projecttype upt ON upt.projectTypeId = pt.id where 1=1 ");
+        StringBuilder builder = new StringBuilder("select pt.`name` as projectType,COUNT(*) as num,p.paymentDepartment");
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" ,upt.userId");
+        }
+        builder.append(" from project p LEFT JOIN project_type pt ON p.projectType=pt.id " );
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
+            builder.append(" LEFT JOIN user_projecttype upt ON upt.projectTypeId = pt.id");
+        }
+        builder.append(" where 1=1 ");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
             builder.append(" and upt.userId = #{userId}");
         }

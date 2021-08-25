@@ -128,12 +128,13 @@ public class ProjectDetailController {
     public Object saveOrUpdate(ProjectDetailEntity projectDetailEntity) {
         logger.info("The ProjectDetailController saveOrUpdate method params are {}", projectDetailEntity);
         if(projectDetailEntity.getState() == 2){
-            ProjectDetailEntity projectDetailEntity1 = projectDetailMapper._get(projectDetailEntity.getId());
+            //ProjectDetailEntity projectDetailEntity1 = projectDetailMapper._get(projectDetailEntity.getId());
+            /*
             ProjectEntity projectEntity = projectMapper._get(projectDetailEntity1.getProjectId());
             projectEntity.setPaymentAmount(projectEntity.getPaymentAmount().subtract(projectDetailEntity1.getPaymentAmount()));
             projectEntity.setSurplusAmount(projectEntity.getSurplusAmount().add(projectDetailEntity1.getPaymentAmount()));
             projectMapper._updateEntity(projectEntity);
-
+            */
             List<PersonEntity> personEntities = personMapper.queryProjectId(projectDetailEntity.getId());
             for (PersonEntity personEntity : personEntities) {
                 personMapper.deletePeople(personEntity.getId());
@@ -141,8 +142,6 @@ public class ProjectDetailController {
                 personMapper.deleteReplaceProjectId(projectDetailEntity.getId(),personEntity.getId());
                 personMapper._deleteForce(personEntity.getId());
             }
-
-
 
         }
         return projectDetailService.update(projectDetailEntity);

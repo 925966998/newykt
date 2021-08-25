@@ -2,10 +2,10 @@ package com.ky.ykt.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ky.ykt.entity.DepartmentEntity;
-import com.ky.ykt.entity.ProjectTypeEntity;
-import com.ky.ykt.entity.StatisticEntity;
-import com.ky.ykt.entity.SysUserEntity;
+import com.ky.ykt.entity.*;
+import com.ky.ykt.excle.ExcelStyle;
+import com.ky.ykt.excle.ExportExcel;
+import com.ky.ykt.mapper.AreasMapper;
 import com.ky.ykt.mapper.DepartmentMapper;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
@@ -13,6 +13,7 @@ import com.ky.ykt.service.ProjectService;
 import com.ky.ykt.service.ProjectTypeService;
 import com.ky.ykt.service.StatisticsService;
 import com.ky.ykt.utils.HttpUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @ClassName Statisticscontroller
@@ -46,6 +47,8 @@ public class StatisticsController {
     ProjectTypeService projectTypeService;
     @Autowired
     DepartmentMapper departmentMapper;
+    @Autowired
+    AreasMapper areasMapper;
 
 
     @RequestMapping(value = "/queryPage", method = RequestMethod.GET)
@@ -92,6 +95,7 @@ public class StatisticsController {
         }
         RestResult restResult = statisticsService.queryPage(params);
         PagerResult data = (PagerResult) restResult.getData();
+
         return this.toJson(data);
     }
 
@@ -126,6 +130,7 @@ public class StatisticsController {
         JSONObject jsonObj = new JSONObject();
         jsonObj.put("total", data.getTotalItemsCount());
         jsonObj.put("rows", data.getItems());
+        jsonObj.put("footer", data.getFooters());
         return jsonObj;
     }
 
@@ -170,5 +175,75 @@ public class StatisticsController {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<StatisticEntity> statistic = projectService.statistic(mapResult);
         return mapResult;
+    }
+
+    @RequestMapping(value = "/excel", method = RequestMethod.GET)
+    protected void personUploadExportX(HttpServletRequest request, HttpServletResponse response) {
+        Map params = HttpUtils.getParams(request);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if (!user.getUserName().equals("admin")) {
+            List<DepartmentEntity> departmentEntities = departmentMapper.queryByParentId(user.getDepartmentId());
+            List<String> departmentIdList = new ArrayList<String>();
+            if (departmentEntities != null && departmentEntities.size() > 0) {
+                for (DepartmentEntity departmentEntity : departmentEntities
+                ) {
+                    departmentIdList.add(departmentEntity.getId());
+                }
+
+            }
+            departmentIdList.add(user.getDepartmentId());
+            params.put("departmentIdList", departmentIdList);
+            params.put("departmentIdListFlag", "departmentIdListFlag");
+            params.put("userId",user.getId());
+            params.put("DJFlag","4J");
+        }
+        if(params.get("areaId") != null && StringUtils.isNotEmpty(params.get("areaId").toString())){
+            AreasEntity areasEntity = areasMapper._get(params.get("areaId").toString());
+            params.put("level",areasEntity.getLevel());
+        }
+        Map map = this.excel(params);
+        String[] header = (String[]) map.get("header");
+        List<String[]> data = (List<String[]>) map.get("data");
+        ExcelStyle style = (ExcelStyle) map.get("style");
+        try {
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("Content-Disposition",
+                    "attachment;filename=" + new String((style.getXlsName() + ".xls").getBytes(), "iso-8859-1"));
+            OutputStream out = response.getOutputStream();
+            ExportExcel.export(header, data, style, out);
+        } catch (Exception e) {
+            logger.error("exportExcel error:{}", e);
+        }
+    }
+
+    public Map excel(Map params) {
+        Map resultMap = new HashMap();
+        ExcelStyle style = new ExcelStyle();
+        List<String[]> data = new ArrayList();
+        List<StatisticEntity> entities = (List<StatisticEntity>) statisticsService.staticsAll(params).getData();
+        SimpleDateFormat dfs = new SimpleDateFormat("yyyyMMddHHmmss");// 设置日期格式
+        String tStamp = dfs.format(new Date());
+        style.setColumnWidth(25);
+        style.setSheetName("导出");
+        style.setXlsName("人员信息表_" + tStamp);
+            for (int i = 0; i < entities.size(); i++) {
+                data.add(new String[]{
+                        entities.get(i).getUserName(),
+                entities.get(i).getPhone(),
+                entities.get(i).getProjectName(),
+                entities.get(i).getGrantAmount().toString(),
+                entities.get(i).getCounty(),
+                entities.get(i).getTown(),
+                entities.get(i).getVillage(),
+                entities.get(i).getAddress(),
+                        });
+            }
+        resultMap.put("header",
+                new String[]{"姓名", "手机号", "身份证号","资金发放名称", "发放金额", "所属区县","所属乡镇","所属村组","详细地址"});
+        resultMap.put("data", data);
+        resultMap.put("style", style);
+        return resultMap;
+
+
     }
 }

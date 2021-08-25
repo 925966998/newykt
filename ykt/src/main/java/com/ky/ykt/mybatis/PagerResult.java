@@ -9,8 +9,16 @@ import java.util.List;
 public class PagerResult {
     private long pageNumber, pageSize, pagesCount, totalItemsCount;
     private List items;
+    private List footers;
 
     public PagerResult(List items, long totalItemsCount, long currentPage, long pageSize) {
+        this.items = (items == null ? new ArrayList() : items);
+        this.totalItemsCount = (totalItemsCount <= 0 ? 0 : totalItemsCount);
+        this.pageNumber = (currentPage) <= 0 ? 0 : (currentPage);
+        this.pageSize = (pageSize <= 0 ? 10 : pageSize);
+    }
+    public PagerResult(List items, List footers,long totalItemsCount, long currentPage, long pageSize) {
+        this.footers = (items == null ? new ArrayList() : footers);
         this.items = (items == null ? new ArrayList() : items);
         this.totalItemsCount = (totalItemsCount <= 0 ? 0 : totalItemsCount);
         this.pageNumber = (currentPage) <= 0 ? 0 : (currentPage);
@@ -35,5 +43,13 @@ public class PagerResult {
 
     public List getItems() {
         return items;
+    }
+
+    public List getFooters() {
+        return footers;
+    }
+
+    public void setFooters(List footers) {
+        this.footers = footers;
     }
 }

@@ -70,6 +70,9 @@ obj = {
         })
 
     },
+    excel: function () {
+        window.location.href = '/ky-ykt/statistics/excel?flag=2&' + $("#tableFindForm").serialize();
+    },
 }
 // 加载表格
 $("#table").datagrid({
@@ -91,6 +94,7 @@ $("#table").datagrid({
     sortName: 'id',
     checkOnSelect: true,
     sortOrder: 'asc',
+    showFooter: true,
     toolbar: '#tabelBut',
     columns: [[
         {field: 'userName', title: '姓名', width: 100, align: 'center'},

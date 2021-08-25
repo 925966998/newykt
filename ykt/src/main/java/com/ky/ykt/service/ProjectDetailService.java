@@ -58,7 +58,7 @@ public class ProjectDetailService {
         }
             }
             projectDetailEntity.setPaymentAmount(zero);
-            projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount());
+            //projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount());
             list1.add(projectDetailEntity);
         }
 

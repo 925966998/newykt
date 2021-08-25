@@ -1,6 +1,7 @@
 package com.ky.ykt.service;
 
 import com.ky.ykt.entity.AreasEntity;
+import com.ky.ykt.entity.PersonUploadEntity;
 import com.ky.ykt.entity.StatisticEntity;
 import com.ky.ykt.mapper.AreasMapper;
 import com.ky.ykt.mapper.PersonMapper;
@@ -55,8 +56,18 @@ public class StatisticsService {
         }
 
         personUploadEntities = personMapper.statistics(params);
+        BigDecimal bigDecimal = personMapper.statisticsSum(params);
+        List<StatisticEntity> statisticEntityList = new ArrayList<>();
+        StatisticEntity statisticEntity = new StatisticEntity();
+        statisticEntity.setUserName("合计");
+        statisticEntity.setGrantAmount(isNullBig(bigDecimal));
+        statisticEntity.setCounty(" ");
+        statisticEntity.setCounty(" ");
+        statisticEntity.setAddress(" ");
+        statisticEntity.setVillage(" ");
+        statisticEntityList.add(statisticEntity);
         long count = personMapper.statisticsCount(params);
-        PagerResult pagerResult = new PagerResult(personUploadEntities, count, MapUtils.getLongValue(params, "page"),
+        PagerResult pagerResult = new PagerResult(personUploadEntities,statisticEntityList, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
         return new
 
@@ -71,12 +82,50 @@ public class StatisticsService {
     }
 
     public RestResult statisticPage(Map params) {
-        List<StatisticEntity> personUploadEntities = new ArrayList<>();
-        personUploadEntities = projectDetailMapper.statisticPage(params);
+        List<StatisticEntity> personUploadEntities = projectDetailMapper.statisticPage(params);
+        List<StatisticEntity> personUploadEntities1 = projectDetailMapper.statistic(params);
         long count = projectDetailMapper.statisticPageCount(params);
         PagerResult pagerResult = new PagerResult(personUploadEntities, count, MapUtils.getLongValue(params, "page"),
                 MapUtils.getLongValue(params, "rows"));
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, pagerResult);
+    }
+
+    public BigDecimal isNullBig(BigDecimal b) {
+        if (b == null) {
+            return BigDecimal.ZERO;
+        }
+        return b;
+    }
+
+    public RestResult staticsAll(Map params) {
+        List<StatisticEntity> personUploadEntities = new ArrayList<>();
+        if (StringUtils.isNotBlank(MapUtils.getString(params, "areaId"))) {
+            String areaId = params.get("areaId").toString();
+            AreasEntity areasEntity = areasMapper._get(areaId);
+            params.put("level", areasEntity.getLevel());
+//            List<AreasEntity> areasEntities = areasMapper.queryByPid(areaId);
+//            List<String> areaIdList = new ArrayList<String>();
+//            if (areasEntities != null && areasEntities.size() > 0) {
+//                for (AreasEntity areasEntity1 : areasEntities
+//                ) {
+//                    areaIdList.add(areasEntity1.getId());
+//                }
+//                areaIdList.add(areaId);
+//                params.put("areaIdList", areaIdList);
+//            }
+        }
+
+        personUploadEntities = personMapper.statisticsAll(params);
+        BigDecimal bigDecimal = personMapper.statisticsSum(params);
+        StatisticEntity statisticEntity = new StatisticEntity();
+        statisticEntity.setUserName("合计");
+        statisticEntity.setGrantAmount(isNullBig(bigDecimal));
+        statisticEntity.setCounty(" ");
+        statisticEntity.setTown(" ");
+        statisticEntity.setAddress(" ");
+        statisticEntity.setVillage(" ");
+        personUploadEntities.add(statisticEntity);
+        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, personUploadEntities);
 
     }
 
