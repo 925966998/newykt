@@ -62,6 +62,8 @@ public class PersonController {
     AreasMapper areasMapper;
     @Autowired
     PersonReplacementMapper personReplacementMapper;
+    @Autowired
+    UserProjectTypeMapper userProjectTypeMapper;
 
     /**
      * 根据条件查询数据（不分页）
@@ -238,9 +240,22 @@ public class PersonController {
                         params.put("statusTwo", projectTypeList);
                     }else{
                         params.put("statusTwo", "");
+
                     }
+                    params.put("userId", user.getId());
+                    List<String> stringss = userProjectTypeMapper.queryByprojectTypeId(user.getId());
+                    List<String> strings = new ArrayList<>();
+                    for (String o : stringss) {
+                        List<ProjectEntity> projectEntities = projectMapper.queryProjectType(o);
+                        for (ProjectEntity projectEntity : projectEntities) {
+                            strings.add(projectEntity.getId());
+                        }
+
+                    }
+                    params.put("stringList",strings);
                 }
             }
+
         }
         return personService.queryPage(params);
         //return personUploadService.queryPage(params);
@@ -419,7 +434,8 @@ public class PersonController {
             //BigDecimal bigDecimal = new BigDecimal(BigInteger.ZERO);
             //校验录入的表的字段是否合格
             //EXCAL表身份证号校验
-            String idCardNoRegex = "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)|(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)";
+            //String idCardNoRegex = "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)|(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)";
+            String idCardNoRegex = "(^\\w{11}|\\w{18}$)";
             //EXCAL手机号校验
             //String phoneRegex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\\d{8}$";
             int i = 1;

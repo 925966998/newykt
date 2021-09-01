@@ -142,6 +142,23 @@ public class PersonSql extends BaseProvider {
                     builder.append(GetDepartmentSql.getUserBuilder("p.departmentId"));
                 }
             }
+
+        }
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userProjectType")) && map.get("userProjectType").equals("userProjectType")) {
+            if (StringUtils.isNotBlank(MapUtils.getString(map, "stringList"))) {
+                builder.append(" and p.itemId in (");
+                if (map.get("stringList") instanceof List) {
+                    List<String> stringList = (List) map.get("stringList");
+                    for (String id : stringList) {
+                        if (stringList.indexOf(id) > 0)
+                            builder.append(",");
+                        builder.append("'").append(id).append("'");
+                    }
+                } else {
+                    builder.append(map.get("stringList"));
+                }
+                builder.append(")");
+            }
         }
         builder.append(" order by p.updateTime desc");
         return builder.toString();

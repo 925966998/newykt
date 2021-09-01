@@ -230,6 +230,7 @@ public class StatisticsController {
                 data.add(new String[]{
                         entities.get(i).getUserName(),
                 entities.get(i).getPhone(),
+                        entities.get(i).getIdCardNo(),
                 entities.get(i).getProjectName(),
                 entities.get(i).getGrantAmount().toString(),
                 entities.get(i).getCounty(),

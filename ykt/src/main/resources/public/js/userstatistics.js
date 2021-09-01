@@ -68,10 +68,11 @@ obj = {
             batchNumber: $("#batchNumber").val(),
             status: $("#status").val(),
         })
-
     },
     excel: function () {
-        window.location.href = '/ky-ykt/statistics/excel?flag=2&' + $("#tableFindForm").serialize();
+        window.location.href = '/ky-ykt/statistics/excel?flag=2&projectType='+ $("#projectType").val()+'&userName='+$("#userName").val()
+        +'&operDepartment='+$("#operDepartment").val()+'&idCardNo'+$("#idCardNo").val()+'&startTime='+$("#startTime").val()
+        +'&endTime='+$("#endTime").val()+'&areaId='+$("#areaId").val()+'&batchNumber='+$("#batchNumber").val()+'&status='+$("#status").val();
     },
 }
 // 加载表格
