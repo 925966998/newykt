@@ -289,8 +289,20 @@ public class PersonController {
     public Object doSubmitAudit(HttpServletRequest request) {
         Map map = HttpUtils.getParams(request);
         map.put("status", "2");
-        List<PersonEntity> personEntities = personMapper._queryAll(map);
+
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        map.put("userId", user.getId());
+        List<String> stringss = userProjectTypeMapper.queryByprojectTypeId(user.getId());
+        List<String> strings = new ArrayList<>();
+        for (String o : stringss) {
+            List<ProjectEntity> projectEntities = projectMapper.queryProjectType(o);
+            for (ProjectEntity projectEntity : projectEntities) {
+                strings.add(projectEntity.getId());
+            }
+
+        }
+        map.put("stringList",strings);
+        List<PersonEntity> personEntities = personMapper._queryAll(map);
         //String projectDetailId = UUID.randomUUID().toString();
         ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntities.get(0).getProjectId());
         ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
