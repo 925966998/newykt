@@ -21,7 +21,7 @@ function doQuery(url) {
         columns: [[
             /*{checkbox: true,field: 'no',width: 100,align: 'center'},*/
             {field: 'name', title: '姓名', width: 100, align: 'center'},
-            {field: 'phone', title: '手机号', width: 100, align: 'center'},
+           /* {field: 'phone', title: '手机号', width: 100, align: 'center'},*/
             {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
             {field: 'replacementAmount', title: '补发金额', width: 100, align: 'center',
                 formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},

@@ -99,4 +99,6 @@ public interface ProjectMapper extends BaseMapper {
     List<ProjectEntity> queryFFproject(Map params);
     @Select("select sum(paymentAmount) from project where projectSourceId = #{id}")
     BigDecimal querySuccess(String id);
+
+
 }

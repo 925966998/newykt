@@ -19,7 +19,7 @@ function doQuery(url) {
         toolbar: '#tabelBut',
         columns: [[
             {field: 'name', title: '姓名', width: 100, align: 'center'},
-            {field: 'phone', title: '手机号', width: 100, align: 'center'},
+            /*{field: 'phone', title: '手机号', width: 100, align: 'center'},*/
             {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
             {field: 'openingBank', title: '开户行', width: 100, align: 'center'},
             {field: 'bankCardNo', title: '社保卡号', width: 100, align: 'center'},

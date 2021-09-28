@@ -99,10 +99,10 @@ $("#table").datagrid({
     toolbar: '#tabelBut',
     columns: [[
         {field: 'userName', title: '姓名', width: 100, align: 'center'},
-        {field: 'phone', title: '手机号', width: 100, align: 'center'},
-        {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
+        {field: 'bankCardNo', title: '银行卡号', width: 120, align: 'center'},
+        {field: 'idCardNo', title: '身份证号', width: 120, align: 'center'},
         {field: 'projectName', title: '资金发放名称', width: 100, align: 'center'},
-        {field: 'grantAmount', title: '发放金额', width: 100, align: 'center',
+        {field: 'grantAmount', title: '发放金额', width: 50, align: 'center',
             formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
         {field: 'jtzz', title: '所在区县', width: 100, align: 'center',

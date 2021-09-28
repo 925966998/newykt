@@ -247,61 +247,15 @@ function doQuery(url) {
         sortOrder: 'asc',
         toolbar: '#tabelBut',
         columns: [[
-
-            {
-                field: 'name',
-                title: '姓名',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'phone',
-                title: '手机号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'idCardNo',
-                title: '身份证号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'openingBank',
-                title: '开户行',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'bankCardNo',
-                title: '银行卡号',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'grantAmount',
-                title: '发放金额',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'countyName',
-                title: '所属区县',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'townName',
-                title: '所属乡镇',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'villageName',
-                title: '所属村组',
-                width: 100,
-                align: 'center'
-            }
+            {field: 'name', title: '姓名', width: 100, align: 'center'},
+           /* {field: 'phone', title: '手机号', width: 100, align: 'center'},*/
+            {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
+            {field: 'openingBank', title: '开户行', width: 100, align: 'center'},
+            {field: 'bankCardNo', title: '银行卡号', width: 100, align: 'center'},
+            {field: 'grantAmount', title: '发放金额', width: 100, align: 'center'},
+            {field: 'countyName', title: '所属区县', width: 100, align: 'center'},
+            {field: 'townName', title: '所属乡镇', width: 100, align: 'center'},
+            {field: 'villageName', title: '所属村组', width: 100, align: 'center'}
         ]],
         onLoadError: function (request) {
             if (request.status == 401) {

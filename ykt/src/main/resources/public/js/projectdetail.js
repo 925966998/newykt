@@ -170,6 +170,7 @@ obj = {
                     $("#pullNum").text(res.pullNum);
                     $("#operUser").text(res.projectDetailEntity.userName);
                     $("#operDepartment").text(res.projectDetailEntity.departmentName);
+                    $("#documentNum").text(res.projectDetailEntity.documentNum);
                 },
             })
         }

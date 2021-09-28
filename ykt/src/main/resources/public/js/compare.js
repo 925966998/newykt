@@ -19,10 +19,10 @@ function doQuery(url) {
         toolbar: '#tabelBut',
         columns: [[
             {field: 'name', title: '姓名', width: 100, align: 'center'},
-            {field: 'phone', title: '手机号', width: 100, align: 'center'},
-            {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
+            /*{field: 'phone', title: '手机号', width: 100, align: 'center'},*/
+            {field: 'idCardNo', title: '身份证号', width: 120, align: 'center'},
             {field: 'openingBank', title: '开户行', width: 100, align: 'center'},
-            {field: 'bankCardNo', title: '银行卡号', width: 100, align: 'center'},
+            {field: 'bankCardNo', title: '银行卡号', width: 120, align: 'center'},
             {field: 'projectName', title: '项目资金名称', width: 100, align: 'center'},
             {field: 'grantAmount', title: '发放金额', width: 100, align: 'center',
                 formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},

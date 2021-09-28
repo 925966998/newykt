@@ -289,7 +289,6 @@ public class PersonController {
     public Object doSubmitAudit(HttpServletRequest request) {
         Map map = HttpUtils.getParams(request);
         map.put("status", "2");
-
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         map.put("userId", user.getId());
         List<String> stringss = userProjectTypeMapper.queryByprojectTypeId(user.getId());
@@ -299,27 +298,31 @@ public class PersonController {
             for (ProjectEntity projectEntity : projectEntities) {
                 strings.add(projectEntity.getId());
             }
-
         }
         map.put("stringList",strings);
         List<PersonEntity> personEntities = personMapper._queryAll(map);
-        //String projectDetailId = UUID.randomUUID().toString();
-        ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntities.get(0).getProjectId());
-        ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
-        for (PersonEntity personEntity : personEntities) {
-            projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-            projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-            projectDetailEntity.setState(0);
-            projectDetailMapper._updateEntity(projectDetailEntity);
+        //去重
+        List<PersonEntity> distProject = getDistProject(personEntities);
+        for (PersonEntity per : distProject) {
+            //String projectDetailId = UUID.randomUUID().toString();
+            ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(per.getProjectId());
+            ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
+            map.remove("stringList");
+            map.put("itemId",projectEntity.getId());
+            List<PersonEntity> personEntities1 = personMapper._queryAll(map);
+            for (PersonEntity personEntity : personEntities1) {
+                //projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
+                //projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
+                projectDetailEntity.setState(0);
+                projectDetailMapper._updateEntity(projectDetailEntity);
 
-            ProjectEntity projectEntity1 = projectMapper._get(projectDetailEntity.getProjectId());
-            projectEntity1.setPaymentAmount(projectEntity1.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-            projectEntity1.setSurplusAmount(projectEntity1.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-            projectMapper._updateEntity(projectEntity1);
-            personService.doSubmitAudit(personEntity.getId());
+                ProjectEntity projectEntity1 = projectMapper._get(projectDetailEntity.getProjectId());
+                projectEntity1.setPaymentAmount(projectEntity1.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
+                projectEntity1.setSurplusAmount(projectEntity1.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
+                projectMapper._updateEntity(projectEntity1);
+                personService.doSubmitAudit(personEntity.getId());
+            }
         }
-
-        logger.info("Create new projectDetailEntity success {}", JSON.toJSONString(projectDetailEntity));
         return new RestResult();
     }
 
@@ -887,5 +890,18 @@ public class PersonController {
         logger.info("The PersonController queryByPage method params are {}", params);
         params = setDepartmentIdForMap(request, params);
         return personService.queryPage(params);
+    }
+
+    //项目去重
+    public List<PersonEntity> getDistProject(List<PersonEntity> list){
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = i+1; j < list.size(); j++) {
+                if(list.get(i).getProjectId().equals(list.get(j).getProjectId())){
+                    list.remove(j);
+                    j--;
+                }
+            }
+        }
+        return list;
     }
 }

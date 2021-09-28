@@ -2,8 +2,12 @@ package com.ky.ykt.service;
 
 import com.ky.ykt.entity.PersonEntity;
 import com.ky.ykt.entity.ProjectDetailEntity;
+import com.ky.ykt.entity.ProjectEntity;
+import com.ky.ykt.entity.ProjectSourceEntity;
 import com.ky.ykt.mapper.PersonMapper;
 import com.ky.ykt.mapper.ProjectDetailMapper;
+import com.ky.ykt.mapper.ProjectMapper;
+import com.ky.ykt.mapper.ProjectSourceMapper;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
 import org.apache.commons.collections.MapUtils;
@@ -33,7 +37,10 @@ public class ProjectDetailService {
     ProjectDetailMapper projectDetailMapper;
     @Autowired
     PersonMapper personMapper;
-
+    @Autowired
+    ProjectMapper projectMapper;
+    @Autowired
+    ProjectSourceMapper projectSourceMapper;
     public Object queryAll(Map params) {
         List<ProjectDetailEntity> projectDetailEntities = projectDetailMapper._queryAll(params);
         return projectDetailEntities;
@@ -57,6 +64,11 @@ public class ProjectDetailService {
             }
         }
             }
+            //统计成功的
+            ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
+            ProjectSourceEntity projectSourceEntity = projectSourceMapper._get(projectEntity.getProjectSourceId());
+            BigDecimal bigDecimal = projectMapper.querySuccess(projectEntity.getProjectSourceId());
+            projectDetailEntity.setSurplusAmount(projectSourceEntity.getTotalAmount().subtract(isNullBig(bigDecimal)));
             projectDetailEntity.setPaymentAmount(zero);
             //projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount());
             list1.add(projectDetailEntity);
@@ -80,6 +92,13 @@ public class ProjectDetailService {
      */
     public Object _deleteForce(String id) {
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, projectDetailMapper._deleteForce(id));
+    }
+
+    public BigDecimal isNullBig(BigDecimal b) {
+        if (b == null) {
+            return BigDecimal.ZERO;
+        }
+        return b;
     }
 
 }
