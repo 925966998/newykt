@@ -78,8 +78,11 @@ public interface UserProjectTypeMapper extends BaseMapper {
     @Delete("delete from user_projecttype where userId = #{userId}")
     void clearByUserId(@Param("userId")String userId);
 
-    @Select("select projectTypeId from user_projecttype where UserId = #{UserId}")
-    List<String> queryByprojectTypeId(@Param("UserId")String UserId);
+    @Select("select projectTypeId from user_projecttype where userId = #{userId}")
+    List<String> queryByprojectTypeId(@Param("userId")String userId);
+
+    @Select("select projectTypeId from user_projecttype where userId = #{userId} and itemId = #{itemId}")
+    List<String> queryByprojectTypeIdItem(@Param("userId")String UserId,@Param("itemId")String itemId);
 
     @Delete("delete from user_projecttype where UserId=#{UserId}")
     int deleteByUserId(@Param("UserId")String UserId);

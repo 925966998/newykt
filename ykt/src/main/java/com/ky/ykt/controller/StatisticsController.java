@@ -229,7 +229,7 @@ public class StatisticsController {
             for (int i = 0; i < entities.size(); i++) {
                 data.add(new String[]{
                         entities.get(i).getUserName(),
-                entities.get(i).getPhone(),
+                entities.get(i).getBankCardNo(),
                         entities.get(i).getIdCardNo(),
                 entities.get(i).getProjectName(),
                 entities.get(i).getGrantAmount().toString(),
@@ -240,7 +240,7 @@ public class StatisticsController {
                         });
             }
         resultMap.put("header",
-                new String[]{"姓名", "手机号", "身份证号","资金发放名称", "发放金额", "所属区县","所属乡镇","所属村组","详细地址"});
+                new String[]{"姓名", "银行卡号", "身份证号","资金发放名称", "发放金额", "所属区县","所属乡镇","所属村组","详细地址"});
         resultMap.put("data", data);
         resultMap.put("style", style);
         return resultMap;

@@ -102,7 +102,7 @@ public class SysUserService {
 
     public Object queryById(Map params) {
         SysUserEntity sysUserEntity = sysUserMapper.queryById(params.get("id").toString());
-        List<String> userProjectList = userProjectTypeMapper.queryByprojectTypeId(params.get("id").toString());
+        List<String> userProjectList = userProjectTypeMapper.queryByprojectTypeId(sysUserEntity.getId());
         String userProjectStr = String.join(",", userProjectList);
         sysUserEntity.setUserProjectList(userProjectStr);
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, sysUserEntity);

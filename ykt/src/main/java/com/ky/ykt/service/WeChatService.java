@@ -17,9 +17,9 @@ public class WeChatService {
 
     public Object wechatLogin(JSONObject parseObject) {
         if (parseObject.containsKey("name") && parseObject.containsKey("idCardNo") && parseObject.containsKey("bankCardNo")) {
-            PersonUploadEntity personUploadEntity = personUploadMapper.queryByIdCardNo(parseObject.getString("idCardNo"));
+            List<PersonUploadEntity> personUploadEntity = personUploadMapper.queryByIdCardNo(parseObject.getString("idCardNo"));
             if (personUploadEntity != null) {
-                if (personUploadEntity.getBankCardNo().equals(parseObject.getString("bankCardNo"))) {
+                if (personUploadEntity.get(0).getBankCardNo().equals(parseObject.getString("bankCardNo"))) {
                     return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, personUploadEntity);
                 }
             } else {

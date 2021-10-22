@@ -13,6 +13,7 @@ import com.ky.ykt.mybatis.RestResult;
 import com.ky.ykt.service.PersonService;
 import com.ky.ykt.service.PersonUploadService;
 import com.ky.ykt.utils.HttpUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -555,9 +556,9 @@ public class PersonController {
 
             if(StringUtils.isEmpty(stringBufferError)){
                 // 查询人员档案
-                PersonUploadEntity personUploadEntity =
+                List<PersonUploadEntity> personUploadEntityList =
                         personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                if (personUploadEntity == null) {
+                if (personUploadEntityList == null) {
                 /*
               return new RestResult(
                   RestResult.ERROR_CODE,
@@ -583,9 +584,9 @@ public class PersonController {
                     // 去除名字之间的空格
                     personEntity.setName(personEntity.getName().replaceAll(" ", ""));
                     personEntityList.add(personEntity);
-                }else{
-                    if(!personEntity.getIdCardNo().equals(personUploadEntity.getIdCardNo()) || !personEntity.getName().equals(personUploadEntity.getName())
-                            || !personEntity.getBankCardNo().equals(personUploadEntity.getBankCardNo())){
+                }else if(personUploadEntityList.size() == 1){
+                    if(!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
+                            || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo()) || !personEntity.getAddress().equals(personUploadEntityList.get(0).getAddress())){
                         //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
                         return new RestResult(
                                 RestResult.ERROR_CODE,
@@ -593,9 +594,9 @@ public class PersonController {
                                 "第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
                     }
                     ProjectEntity projectEntity = projectMapper._get(projectId);
-                    personEntity.setCounty(personUploadEntity.getCounty());
-                    personEntity.setTown(personUploadEntity.getTown());
-                    personEntity.setVillage(personUploadEntity.getVillage());
+                    personEntity.setCounty(personUploadEntityList.get(0).getCounty());
+                    personEntity.setTown(personUploadEntityList.get(0).getTown());
+                    personEntity.setVillage(personUploadEntityList.get(0).getVillage());
                     personEntity.setAddress(personEntity.getAddress());
                     personEntity.setPhone(personEntity.getPhone());
                     personEntity.setOpeningBank(personEntity.getOpeningBank());
@@ -610,6 +611,11 @@ public class PersonController {
                     // 去除名字之间的空格
                     personEntity.setName(personEntity.getName().replaceAll(" ", ""));
                     personEntityList.add(personEntity);
+                }else{
+                    return new RestResult(
+                            RestResult.ERROR_CODE,
+                            RestResult.ERROR_MSG,
+                            "第" + i + "行的信息与档案中数据不匹配<br>");
                 }
             }
         }
