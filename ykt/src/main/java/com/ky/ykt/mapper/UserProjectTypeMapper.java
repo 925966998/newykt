@@ -89,4 +89,7 @@ public interface UserProjectTypeMapper extends BaseMapper {
 
     @Delete("delete from user_projecttype where roleId=#{roleId}")
     int deleteByRoleId(@Param("roleId")String roleId);
+
+    @Select("SELECT pt.id AS id,pt.name AS projectTypeName FROM user_projecttype upt  LEFT JOIN project_Type pt on upt.projectTypeId = pt.id WHERE upt.userId = #{userId} and upt.logicalDel = 0 ")
+    List<UserProjectTypeEntity> queryProject(Map params);
 }

@@ -2,8 +2,7 @@ package com.ky.ykt.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ky.ykt.entity.UserProjectTypeEntity;
-import com.ky.ykt.entity.TreeNode;
+import com.ky.ykt.entity.*;
 import com.ky.ykt.entity.UserProjectTypeEntity;
 import com.ky.ykt.mapper.MenuMapper;
 import com.ky.ykt.mapper.RoleMenuMapper;
@@ -40,6 +39,7 @@ public class UserProjectTypeController {
     UserProjectTypeMapper userProjectTypeMapper;
     @Autowired
     MenuMapper menuMapper;
+
 
     /**
      * 根据条件查询数据（不分页）
@@ -139,6 +139,17 @@ public class UserProjectTypeController {
         userProjectTypeService.save(list, roleId);
     }
     */
+
+    @RequestMapping(value = "queryProject", method = RequestMethod.GET, produces = "application/json;UTF-8")
+    public Object queryProject(HttpServletRequest request) {
+        Map params = HttpUtils.getParams(request);
+        logger.info("The ProjectController queryByParams method params are {}", params);
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        if(!user.getRoleId().equals("a599f1da-f57c-4afc-a600-b58e15836aa0")){
+            params.put("userId",user.getId());
+        }
+        return userProjectTypeService.queryProject(params);
+    }
 
 
 }

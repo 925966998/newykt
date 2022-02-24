@@ -11,6 +11,7 @@ import com.ky.ykt.mybatis.BaseEntity;
 public class UserProjectTypeEntity extends BaseEntity {
     private String userId;
     private String projectTypeId;
+    private String projectTypeName;
 
     public String getUserId() {
         return userId;
@@ -26,5 +27,13 @@ public class UserProjectTypeEntity extends BaseEntity {
 
     public void setProjectTypeId(String projectTypeId) {
         this.projectTypeId = projectTypeId;
+    }
+
+    public String getProjectTypeName() {
+        return projectTypeName;
+    }
+
+    public void setProjectTypeName(String projectTypeName) {
+        this.projectTypeName = projectTypeName;
     }
 }

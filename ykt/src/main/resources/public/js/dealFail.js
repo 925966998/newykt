@@ -192,49 +192,70 @@ obj = {
         })
 
     },
+    // 弹出提交下拉框
+    uploadBox: function () {
+        $("#addUploadBox").dialog({
+            closed: false
+        });
+        $("#addUploadBox").form('clear');
+        doQueryProject('projectCombo');
+    },
+    canUpload: function () {
+        $("#addUploadBox").dialog({
+            closed: true
+        })
+    },
     //提交多个
     reSubmitAudit: function () {
         $.messager.confirm('确定提交', '你确定再次提交？', function (flg) {
             if (flg) {
-                $.ajax({
-                    type: 'get',
-                    url: "/ky-ykt/person/doSubmitAudit?"+ $("#tableFindForm").serialize(),
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    beforeSend: function () {
-                        $("#table").datagrid('loading');
-                    },
-                    success: function (data) {
-                        if (data) {
+                console.log($("#projectCombo").combobox("getValue"));
+                if($("#projectCombo").combobox("getValue") != ""){
+                    $.ajax({
+                        type: 'get',
+                        url: "/ky-ykt/person/doSubmitAudit?projectTypeId=" + $("#projectCombo").combobox("getValue"),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        beforeSend: function () {
+                            $("#table").datagrid('loading');
+                        },
+                        success: function (data) {
+                            if (data) {
+                                $("#table").datagrid('reload');
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: '提交成功'
+                                })
+
+                            } else {
+                                $.messager.show({
+                                    title: '警示信息',
+                                    msg: "提交失败"
+                                })
+                            }
+                        },
+                        error: function (request) {
                             $("#table").datagrid('reload');
-                            $.messager.show({
-                                title: '提示',
-                                msg: '提交成功'
-                            })
-
-                        } else {
-                            $.messager.show({
-                                title: '警示信息',
-                                msg: "提交失败"
-                            })
-
+                            if (request.status == 401) {
+                                $.messager.confirm('登录失效', '您的身份信息已过期请重新登录', function (r) {
+                                    if (r) {
+                                        parent.location.href = "/login.html";
+                                    }
+                                });
+                            }
                         }
-
-                    },
-                    error: function (request) {
-                        $("#table").datagrid('reload');
-                        if (request.status == 401) {
-                            $.messager.confirm('登录失效', '您的身份信息已过期请重新登录', function (r) {
-                                if (r) {
-                                    parent.location.href = "/login.html";
-                                }
-                            });
-                        }
-                    }
-                })
+                    })
+                }else{
+                    $.messager.show({
+                        title: '警示信息',
+                        msg: "项目资金不能为空"
+                    })
+                }
             }
-
         })
+        $("#addUploadBox").dialog({
+            closed: true
+        });
 
 
     },
@@ -357,3 +378,27 @@ $("#county").combobox({
         });
     }
 });
+
+// 弹出框加载
+$("#addUploadBox").dialog({
+    title: "确认提交",
+    width: 480,
+    height: 140,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
+    closed: true,
+    modal: true,
+    shadow: true
+})
+
+function doQueryProject(id) {
+    $("#" + id).combobox({
+        url: '/ky-ykt/userProjectType/queryProject',
+        //url: '/ky-ykt/project/queryAllProject',
+        //queryParams: {flag: 2, state: 0},
+        method: 'get',
+        valueField: 'id',
+        textField: 'projectTypeName',
+    });
+}

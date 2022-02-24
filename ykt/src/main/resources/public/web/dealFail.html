@@ -35,7 +35,7 @@
             <div id="tabelBut">
                 <div>
                     <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove"
-                       onclick="obj.reSubmitAudit()">提交审核</a>
+                       onclick="obj.uploadBox()">提交审核</a>
                     <br>
                 </div>
             </div>
@@ -85,6 +85,22 @@
         <div class="forSubmint"><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="obj.sum()">保存</a><a
                 href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="obj.res()">重置</a>
             <a href="#" class="easyui-linkbutton" id="can" iconCls="icon-cancel" onclick="obj.can()">取消</a></div>
+    </form>
+</div>
+
+<!--//新增上传弹出框-->
+<div id="addUploadBox">
+    <form id="uploadDialogForm">
+        <div class="formDiv">
+            <span style="height:30px;weight:15px;margin: 1%">请选择项目资金名称：</span>
+            <select name="projectId" class="easyui-combobox easyui-validatebox" required="required"
+                    style="height: 26px; width: 50%;"
+                    id="projectCombo"></select>
+        </div>
+        <div class="forSubmint" style="margin: 10px 0px;"><a href="#" class="easyui-linkbutton" iconCls="icon-ok"
+                                                             onclick="obj.reSubmitAudit()">确认提交</a>
+            <a href="#" class="easyui-linkbutton" id="canUpload" iconCls="icon-cancel" onclick="obj.canUpload()">取消</a>
+        </div>
     </form>
 </div>
 

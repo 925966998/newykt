@@ -9,6 +9,7 @@ import com.ky.ykt.excle.ExcelUtils;
 import com.ky.ykt.excle.ExportExcel;
 import com.ky.ykt.logUtil.Log;
 import com.ky.ykt.mapper.*;
+import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
 import com.ky.ykt.service.PersonService;
 import com.ky.ykt.service.PersonUploadService;
@@ -65,6 +66,8 @@ public class PersonController {
     PersonReplacementMapper personReplacementMapper;
     @Autowired
     UserProjectTypeMapper userProjectTypeMapper;
+    @Autowired
+    ProjectTypeMapper projectTypeMapper;
 
     /**
      * 根据条件查询数据（不分页）
@@ -288,10 +291,75 @@ public class PersonController {
     @RequestMapping(value = "/doSubmitAudit", method = RequestMethod.GET)
     @Transactional
     public Object doSubmitAudit(HttpServletRequest request) {
-        Map map = HttpUtils.getParams(request);
-        map.put("status", "2");
+        Map params = HttpUtils.getParams(request);
+        params.put("status", "2");
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
-        map.put("userId", user.getId());
+        params.put("userId", user.getId());
+        String projectTypeId = request.getParameter("projectTypeId");
+        params.put("projectTypeId", projectTypeId);
+        if (user.getRoleId().equals("426f5a25-c237-472c-975f-9a08e93622c7")) {
+            List<DepartmentEntity> departmentEntities = departmentMapper.queryByParentId(user.getDepartmentId());
+            List<String> departmentIdList = new ArrayList<String>();
+            if (departmentEntities != null && departmentEntities.size() > 0) {
+                for (DepartmentEntity departmentEntity : departmentEntities
+                ) {
+                    departmentIdList.add(departmentEntity.getId());
+                }
+                departmentIdList.add(user.getDepartmentId());
+                params.put("departmentIdList", departmentIdList);
+                params.put("departmentIdListFlag", "departmentIdListFlag");
+                params.put("userProjectType","userProjectType");
+            }
+            if(params.get("status") != null){
+                if(params.get("status").equals("2")){
+                    DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
+                    AreasEntity areasEntity = areasMapper._get(departmentEntity.getAreaId());
+                    params.put("level", areasEntity.getLevel());
+                    params.put("areaId", departmentEntity.getAreaId());
+                    params.put("userId", user.getId());
+                }
+            }
+        }else  if (user.getRoleId().equals("c4d895ca-9dd7-4c58-b686-d078d65422ac")){
+            params.put("issuingUnit", user.getDepartmentId());
+            if(params.get("status") != null){
+                if(params.get("status").equals("2")){
+                    List<ProjectTypeEntity> projectTypeEntities = departmentMapper.queryProjectType(user.getDepartmentId());
+                    List<String> projectTypeList = new ArrayList<String>();
+                    if(projectTypeEntities != null && projectTypeEntities.size()>0){
+                        for (int i = 0; i < projectTypeEntities.size(); i++) {
+                            ProjectTypeEntity projectTypeEntity =  projectTypeEntities.get(i);
+                            List<ProjectEntity> projectEntities = projectMapper.queryProjectType(projectTypeEntity.getId());
+                            if(projectEntities != null && projectEntities.size()>0){
+                                for (int j = 0; j < projectEntities.size(); j++) {
+                                    ProjectEntity projectEntity =  projectEntities.get(j);
+                                    projectTypeList.add(projectEntity.getId());
+                                }
+                            }else{
+                                params.put("statusTwo", "");
+                            }
+                        }
+                        params.put("statusTwo", projectTypeList);
+                    }else{
+                        params.put("statusTwo", "");
+
+                    }
+                    params.put("userId", user.getId());
+                    List<String> stringss = userProjectTypeMapper.queryByprojectTypeId(user.getId());
+                    List<String> strings = new ArrayList<>();
+                    for (String o : stringss) {
+                        List<ProjectEntity> projectEntities = projectMapper.queryProjectType(o);
+                        for (ProjectEntity projectEntity : projectEntities) {
+                            strings.add(projectEntity.getId());
+                        }
+
+                    }
+                    params.put("stringList",strings);
+                }
+            }
+        }
+        RestResult restResult = (RestResult) personService.queryAll(params);
+        List<PersonEntity> personEntityList = (List<PersonEntity>) restResult.getData();
+        /*
         List<String> stringss = userProjectTypeMapper.queryByprojectTypeId(user.getId());
         List<String> strings = new ArrayList<>();
         for (String o : stringss) {
@@ -300,30 +368,38 @@ public class PersonController {
                 strings.add(projectEntity.getId());
             }
         }
+
         map.put("stringList",strings);
         List<PersonEntity> personEntities = personMapper._queryAll(map);
+        */
         //去重
-        List<PersonEntity> distProject = getDistProject(personEntities);
+        List<PersonEntity> distProject = getDistProject(personEntityList);
+
+        List<ProjectTypeEntity> projectTypeEntities = projectTypeMapper.queryByProjectTypeId(projectTypeId);
         for (PersonEntity per : distProject) {
-            //String projectDetailId = UUID.randomUUID().toString();
+            if(per.getProjectName().equals(projectTypeEntities.get(0).getName())){
             ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(per.getProjectId());
             ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
-            map.remove("stringList");
-            map.put("itemId",projectEntity.getId());
-            List<PersonEntity> personEntities1 = personMapper._queryAll(map);
+            params.remove("stringList");
+            params.put("itemId",projectEntity.getId());
+            List<PersonEntity> personEntities1 = personMapper._queryAll(params);
             for (PersonEntity personEntity : personEntities1) {
                 //projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
                 //projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-                projectDetailEntity.setState(0);
-                projectDetailMapper._updateEntity(projectDetailEntity);
 
-                ProjectEntity projectEntity1 = projectMapper._get(projectDetailEntity.getProjectId());
-                projectEntity1.setPaymentAmount(projectEntity1.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-                projectEntity1.setSurplusAmount(projectEntity1.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-                projectMapper._updateEntity(projectEntity1);
-                personService.doSubmitAudit(personEntity.getId());
+                    projectDetailEntity.setState(0);
+                    projectDetailMapper._updateEntity(projectDetailEntity);
+
+                    ProjectEntity projectEntity1 = projectMapper._get(projectDetailEntity.getProjectId());
+                    projectEntity1.setPaymentAmount(projectEntity1.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
+                    projectEntity1.setSurplusAmount(projectEntity1.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
+                    projectMapper._updateEntity(projectEntity1);
+                    personService.doSubmitAudit(personEntity.getId());
+                }
             }
         }
+
+
         return new RestResult();
     }
 
@@ -451,7 +527,7 @@ public class PersonController {
             //校验录入的表的字段是否合格
             //EXCAL表身份证号校验
             //String idCardNoRegex = "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)|(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)";
-            String idCardNoRegex = "(^\\w{11}|\\w{18}$)";
+            String idCardNoRegex = "(^\\w{11}|\\w{15}|\\w{18}$)";
             //EXCAL手机号校验
             //String phoneRegex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\\d{8}$";
             int i = 1;
@@ -558,7 +634,7 @@ public class PersonController {
                 // 查询人员档案
                 List<PersonUploadEntity> personUploadEntityList =
                         personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                if (personUploadEntityList == null) {
+                if (personUploadEntityList == null || personUploadEntityList.size() == 0 ) {
                 /*
               return new RestResult(
                   RestResult.ERROR_CODE,
@@ -586,12 +662,12 @@ public class PersonController {
                     personEntityList.add(personEntity);
                 }else if(personUploadEntityList.size() == 1){
                     if(!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
-                            || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo()) || !personEntity.getAddress().equals(personUploadEntityList.get(0).getAddress())){
+                            || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo())){
                         //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
                         return new RestResult(
                                 RestResult.ERROR_CODE,
                                 RestResult.ERROR_MSG,
-                                "第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
+                                "第" + i + "行的信息中,"+personEntity.getName()+"姓名/身份证/银行卡与档案中数据不匹配<br>");
                     }
                     ProjectEntity projectEntity = projectMapper._get(projectId);
                     personEntity.setCounty(personUploadEntityList.get(0).getCounty());
@@ -678,7 +754,7 @@ public class PersonController {
                     Map map = new HashMap();
                     ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntity.getProjectId());
                     map.put("projectId", personEntity.getProjectId());
-                    map.put("bankCardNo", personEntity.getBankCardNo());
+                    //map.put("bankCardNo", personEntity.getBankCardNo());
                     map.put("idCardNo", personEntity.getIdCardNo());
                     map.put("departmentId", user.getDepartmentId());
                     PersonEntity personEntity1 = personMapper._queryAll(map).get(0);
