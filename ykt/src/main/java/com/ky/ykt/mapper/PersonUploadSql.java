@@ -29,7 +29,12 @@ public class PersonUploadSql extends BaseProvider {
     @Override
     protected String _query(Map map) {
         StringBuilder builder = new StringBuilder("SELECT\n" +
-                "\tpu.*, d.departmentName AS departmentName,\n" +
+                "\tpu.id,\n" +
+                "\tpu.name,\n" +
+                "\tpu.idCardNo,\n" +
+                "\tpu.openingBank,\n" +
+                "\tpu.bankCardNo,\n" +
+                "\tpu.address, d.departmentName AS departmentName,\n" +
                 "\tpt.name AS projectTypeName,\n" +
                 "a1.name as countyName,a2.name as townName ,a3.name as villageName " +
                 "FROM\n" +

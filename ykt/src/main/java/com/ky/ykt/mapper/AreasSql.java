@@ -26,7 +26,7 @@ public class AreasSql extends BaseProvider {
 
     @Override
     protected String _query(Map map) {
-        StringBuilder builder = new StringBuilder("select * from " + this.getTableName() + " where 1=1  and logicalDel=0");
+        StringBuilder builder = new StringBuilder("select id,name,parentId from " + this.getTableName() + " where 1=1  and logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "name"))) {
             builder.append(" and name like concat('%',#{name},'%')");
         }
@@ -45,7 +45,7 @@ public class AreasSql extends BaseProvider {
 
     @Override
     public String _queryPage(Map map) {
-        StringBuilder builder = new StringBuilder("select * from " + this.getTableName() + " where 1=1  and logicalDel=0");
+        StringBuilder builder = new StringBuilder("select id,name,parentId from " + this.getTableName() + " where 1=1  and logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "city"))) {
             builder.append(" and city like concat('%',#{city},'%')");
         }
@@ -77,7 +77,7 @@ public class AreasSql extends BaseProvider {
     }
 
     public String queryByLevel(Map map) {
-        StringBuilder builder = new StringBuilder("select * from " + this.getTableName() + " where 1=1  and logicalDel=0");
+        StringBuilder builder = new StringBuilder("select id,name from " + this.getTableName() + " where 1=1  and logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "level"))) {
             builder.append(" and level =#{level}");
         }

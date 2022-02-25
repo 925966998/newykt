@@ -365,11 +365,11 @@ $("#table").datagrid({
     striped: true,
     queryParams: {flag: 2},
     pagination: true,
-    pageSize: 10,
+    pageSize: 20,
     method: "GET",
     width: '100%',
     rownumbers: true,
-    pageList: [10, 20],
+    //pageList: [10, 20],
     pageNumber: 1,
     nowrap: false,
     height: 'auto',
@@ -400,7 +400,7 @@ $("#table").datagrid({
         {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',
             formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
-        {field: 'remark', title: '描述', width: 100, align: 'left'},
+        {field: 'remark', title: '描述', width: 100, align: 'center'},
         {field: 'state', title: '审核状态', width: 100, align: 'center',
             formatter: function (value, row, index) {
                 if (value == 0) {

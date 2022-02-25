@@ -28,7 +28,17 @@ public class ProjectSourceSql extends BaseProvider {
 
     @Override
     protected String _query(Map map) {
-        StringBuilder builder = new StringBuilder("select ps.*,pt.name  as projectTypeName ,d.departmentName from project_source ps LEFT JOIN department d ON ps.department =d.id LEFT JOIN project_type pt ON pt.id=ps.projectType where 1=1  and ps.logicalDel=0");
+        StringBuilder builder = new StringBuilder("select ps.id,\n" +
+                "\tps.totalAmount,\n" +
+                "\tps.countyAmount,\n" +
+                "\tps.cityAmount,\n" +
+                "\tps.provinceAmount,\n" +
+                "\tps.centerAmount,\n" +
+                "\tps.documentNum,\n" +
+                "\tps.projectName,\n" +
+                "\tps.startTime,\n" +
+                "\tps.surplusAmount,\n" +
+                "\tps.createTime,ps.note,pt.name  as projectTypeName ,d.departmentName from project_source ps LEFT JOIN department d ON ps.department =d.id LEFT JOIN project_type pt ON pt.id=ps.projectType where 1=1  and ps.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and ps.projectName = #{projectName}");
         }
@@ -39,7 +49,17 @@ public class ProjectSourceSql extends BaseProvider {
 
     @Override
     public String _queryPage(Map map) {
-        StringBuilder builder = new StringBuilder("select ps.*,pt.name  as projectTypeName ,d.departmentName from project_source ps LEFT JOIN department d ON ps.department =d.id LEFT JOIN project_type pt ON pt.id=ps.projectType where 1=1  and ps.logicalDel=0");
+        StringBuilder builder = new StringBuilder("select ps.id,\n" +
+                "\tps.totalAmount,\n" +
+                "\tps.countyAmount,\n" +
+                "\tps.cityAmount,\n" +
+                "\tps.provinceAmount,\n" +
+                "\tps.centerAmount,\n" +
+                "\tps.documentNum,\n" +
+                "\tps.projectName,\n" +
+                "\tps.startTime,\n" +
+                "\tps.surplusAmount,\n" +
+                "\tps.createTime,ps.note,pt.name  as projectTypeName ,d.departmentName from project_source ps LEFT JOIN department d ON ps.department =d.id LEFT JOIN project_type pt ON pt.id=ps.projectType where 1=1  and ps.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and ps.projectName = #{projectName}");
         }

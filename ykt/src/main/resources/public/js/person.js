@@ -8,7 +8,7 @@ function doQuery(url) {
         fitColumns: true,
         striped: true,
         pagination: true,
-        pageSize: 10,
+        pageSize: 20,
         width: '100%',
         rownumbers: true,
         pageNumber: 1,

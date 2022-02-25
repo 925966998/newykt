@@ -2131,3 +2131,16 @@ fieldset {
 .borderRed {
     border-left: 3px solid #ff4646;
 }
+
+.staAn06 {
+    width: 97.7%;
+    height: 800px;
+    float: left;
+    margin-right: 0.5%;
+    margin-top: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.pChart1 {
+    height: 780px;
+}

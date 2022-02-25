@@ -56,4 +56,14 @@ public class ProjectTypeSql extends BaseProvider {
         builder.append(pageSize);
         return builder;
     }
+
+
+    public String queryProjectTree(Map map) {
+        StringBuilder builder = new StringBuilder("select DISTINCT pt.*,ptp.projectTypeName AS projectTypeParentName from project_type pt LEFT JOIN project_type_parent ptp ON pt.projectTypeParent=ptp.id LEFT JOIN user_projecttype up ON up.projectTypeId=pt.id WHERE pt.logicalDel=0 ");
+        if (StringUtils.isNotBlank(MapUtils.getString(map, "userId"))) {
+            builder.append(" and up.userId = #{userId}");
+        }
+        builder.append(" order by createTime desc");
+        return builder.toString();
+    }
 }

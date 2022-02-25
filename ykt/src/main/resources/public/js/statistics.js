@@ -70,7 +70,6 @@ function statistics1 () {
                     formatter: "{a} <br/>{b} : {c} ({d}%)"
                 },
                 legend: {
-
                     left: 'left',
                     data: qq
                 },

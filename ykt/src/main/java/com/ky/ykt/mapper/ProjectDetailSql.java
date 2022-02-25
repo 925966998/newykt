@@ -29,7 +29,14 @@ public class ProjectDetailSql extends BaseProvider {
 
     @Override
     protected String _query(Map map) {
-        StringBuilder builder = new StringBuilder("select pd.*,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName " );
+        StringBuilder builder = new StringBuilder("select pd.id,\n" +
+                "\tpd.projectId,\n" +
+                "\tpd.surplusAmount,\n" +
+                "\tpd.paymentAmount,\n" +
+                "\tpd.startTime,\n" +
+                "\tpd.endTime,\n" +
+                "\tpd.state,\n" +
+                "\tpd.reason,pd.totalAmount,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName " );
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" ,upt.userId ");
         }
@@ -88,7 +95,14 @@ public class ProjectDetailSql extends BaseProvider {
 
     @Override
     public String _queryPage(Map map) {
-        StringBuilder builder = new StringBuilder("select pd.*,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName");
+        StringBuilder builder = new StringBuilder("select pd.id,\n" +
+                "\tpd.projectId,\n" +
+                "\tpd.surplusAmount,\n" +
+                "\tpd.paymentAmount,\n" +
+                "\tpd.startTime,\n" +
+                "\tpd.endTime,\n" +
+                "\tpd.state,\n" +
+                "\tpd.reason,pd.totalAmount,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" ,upt.userId ");
         }

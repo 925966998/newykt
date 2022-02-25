@@ -13,7 +13,7 @@ function doQuery(url,data) {
         method: "GET",
         width: '100%',
         rownumbers: true,
-        pageList: [10, 20],
+        //pageList: [10, 20],
         pageNumber: 1,
         nowrap: false,
         height: 'auto',

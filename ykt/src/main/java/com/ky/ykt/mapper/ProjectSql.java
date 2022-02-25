@@ -28,7 +28,17 @@ public class ProjectSql extends BaseProvider {
 
     @Override
     protected String _query(Map map) {
-        StringBuilder builder = new StringBuilder("select p.*,CONCAT_WS('-',pt.name,p.batchNumber) as projectTypeName,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=1) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId ");
+        StringBuilder builder = new StringBuilder("select p.id,\n" +
+                "\tp.totalAmount,\n" +
+                "\tp.countyAmount,\n" +
+                "\tp.cityAmount,\n" +
+                "\tp.provinceAmount,\n" +
+                "\tp.centerAmount,\n" +
+                "\tp.documentNum,\n" +
+                "\tp.startTime,\n" +
+                "\tp.paymentAmount,\n" +
+                "\tp.surplusAmount,\n" +
+                "\tp.state,CONCAT_WS('-',pt.name,p.batchNumber) as projectTypeName,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=1) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId ");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
         }
@@ -60,7 +70,17 @@ public class ProjectSql extends BaseProvider {
 
     @Override
     public String _queryPage(Map map) {
-        StringBuilder builder = new StringBuilder("select p.*,CONCAT_WS('-',pt.name,p.batchNumber)  as projectTypeName ,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=3) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId");
+        StringBuilder builder = new StringBuilder("select p.id,\n" +
+                "\tp.totalAmount,\n" +
+                "\tp.countyAmount,\n" +
+                "\tp.cityAmount,\n" +
+                "\tp.provinceAmount,\n" +
+                "\tp.centerAmount,\n" +
+                "\tp.documentNum,\n" +
+                "\tp.startTime,\n" +
+                "\tp.paymentAmount,\n" +
+                "\tp.surplusAmount,\n" +
+                "\tp.state,CONCAT_WS('-',pt.name,p.batchNumber)  as projectTypeName ,ps.projectName as projectSourceName ,d.departmentName,(select SUM(pd.paymentAmount) from project_detail pd WHERE pd.projectId=p.id and pd.state=3) AS paymentAmountResult from project p LEFT JOIN department d ON p.paymentDepartment =d.id LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN project_source ps ON ps.id=p.projectSourceId");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" left join user_projecttype upt on p.projectName = upt.projectTypeId");
         }
@@ -97,7 +117,17 @@ public class ProjectSql extends BaseProvider {
     }
 
     public String queryProject(Map map) {
-        StringBuilder builder = new StringBuilder("select p.*,CONCAT_WS('-',pt.name,p.batchNumber) as projectTypeName from project p LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN user_projecttype up ON up.projectTypeId= p.projectType ");
+        StringBuilder builder = new StringBuilder("select p.id,\n" +
+                "\tp.totalAmount,\n" +
+                "\tp.countyAmount,\n" +
+                "\tp.cityAmount,\n" +
+                "\tp.provinceAmount,\n" +
+                "\tp.centerAmount,\n" +
+                "\tp.documentNum,\n" +
+                "\tp.startTime,\n" +
+                "\tp.paymentAmount,\n" +
+                "\tp.surplusAmount,\n" +
+                "\tp.state,CONCAT_WS('-',pt.name,p.batchNumber) as projectTypeName from project p LEFT JOIN project_type pt ON pt.id=p.projectType LEFT JOIN user_projecttype up ON up.projectTypeId= p.projectType ");
         builder.append(" where 1=1  and p.logicalDel=0");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "projectName"))) {
             builder.append(" and p.projectName = #{projectName}");
@@ -118,7 +148,17 @@ public class ProjectSql extends BaseProvider {
     public String queryFFproject(Map map) {
     StringBuilder builder =
         new StringBuilder(
-            "SELECT p.*,CONCAT_WS( '-', pt.NAME, p.batchNumber ) AS projectTypeName,(\n"
+            "SELECT p.id,\n" +
+                    "\tp.totalAmount,\n" +
+                    "\tp.countyAmount,\n" +
+                    "\tp.cityAmount,\n" +
+                    "\tp.provinceAmount,\n" +
+                    "\tp.centerAmount,\n" +
+                    "\tp.documentNum,\n" +
+                    "\tp.startTime,\n" +
+                    "\tp.paymentAmount,\n" +
+                    "\tp.surplusAmount,\n" +
+                    "\tp.state,CONCAT_WS( '-', pt.NAME, p.batchNumber ) AS projectTypeName,(\n"
                 + "\tSELECT\n"
                 + "\t\tSUM( pd.paymentAmount ) \n"
                 + "\tFROM\n"

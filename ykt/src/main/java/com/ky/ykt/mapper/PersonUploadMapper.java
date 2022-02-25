@@ -108,7 +108,16 @@ public interface PersonUploadMapper extends BaseMapper {
     @Select("SELECT departmentId FROM person_upload WHERE personId = #{id} GROUP BY departmentId")
     PersonUploadEntity _queryPersonIdoperDepartmentChildren(@Param("id") String id);
 
-    @Select("SELECT pu.*,d.departmentName AS departmentName,pd.projectName AS projectName ,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person_upload pu LEFT JOIN  project_detail pd ON pu.projectId = pd.id LEFT JOIN  department d ON d.id = pd.paymentDepartment  left join areas a1 on a1.id=pu.county left join areas a2 on a2.id=pu.town  left join areas a3 on a3.id=pu.village WHERE pu.id = #{id} AND pu.logicalDel = 0 ")
+    @Select("SELECT pu.id,\n" +
+            "\tpu.name,\n" +
+            "\tpu.phone,\n" +
+            "\tpu.idCardNo,\n" +
+            "\tpu.openingBank,\n" +
+            "\tpu.bankCardNo,\n" +
+            "\tpu.village,\n" +
+            "\tpu.county,\n" +
+            "\tpu.town,\n" +
+            "\tpu.address,d.departmentName AS departmentName,pd.projectName AS projectName ,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person_upload pu LEFT JOIN  project_detail pd ON pu.projectId = pd.id LEFT JOIN  department d ON d.id = pd.paymentDepartment  left join areas a1 on a1.id=pu.county left join areas a2 on a2.id=pu.town  left join areas a3 on a3.id=pu.village WHERE pu.id = #{id} AND pu.logicalDel = 0 ")
     PersonUploadEntity queryByAll(Map params);
 
     @Select("select * from person_upload where id = #{personId}")

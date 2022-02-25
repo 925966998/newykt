@@ -83,9 +83,10 @@ public interface ProjectTypeMapper extends BaseMapper {
      */
     @InsertProvider(type = ProjectTypeSql.class, method = "_updateEntity")
     int _updateEntity(ProjectTypeEntity bean);
+
     @Select("select * from project_type where id = #{id}")
     List<ProjectTypeEntity> queryByProjectTypeId(String id);
 
-  @Select("select pt.*,ptp.projectTypeName AS projectTypeParentName from project_type pt LEFT JOIN project_type_parent ptp ON pt.projectTypeParent=ptp.id LEFT JOIN user_projecttype up ON up.projectTypeId=pt.id WHERE up.userId = #{userId}  and  pt.logicalDel=0")
-  List<ProjectTypeEntity> queryProjectTree(Map params);
+    @SelectProvider(type = ProjectTypeSql.class, method = "queryProjectTree")
+    List<ProjectTypeEntity> queryProjectTree(Map params);
 }

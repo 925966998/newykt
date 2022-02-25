@@ -8,7 +8,7 @@ function doQuery(url) {
         fitColumns: true,
         striped: true,
         pagination: true,
-        pageSize: 10,
+        pageSize: 20,
         width: '100%',
         rownumbers: true,
         pageNumber: 1,
@@ -37,11 +37,11 @@ function doQuery(url) {
             {field: "opr", title: '操作', width: 120, align: 'center',
                 formatter: function (val, row) {
                     s = '<a  id="add" data-id="98" class=" operA"  onclick="obj.show(\'' + row.id + '\')">查看</a> ';
-                    e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a><br>';
+                    e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a>';
                     //c = '<a  id="sub" data-id="98" class=" operA"  onclick="obj.submitAudit(\'' + row.id + '\')">提交</a> ';
                     d = '<a  id="del" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';
-                    f = '<a  id="add" data-id="98" class=" operA"  onclick="obj.replace(\'' + row.id + '\')">发放记录</a> ';
-                    return s +e+ d + f;
+                    //f = '<a  id="add" data-id="98" class=" operA"  onclick="obj.replace(\'' + row.id + '\')">发放记录</a> ';
+                    return s +e+ d;
                 }
             }
         ]],
@@ -82,7 +82,7 @@ $(function () {
         url: '/ky-ykt/projectType/queryProjectTree',
         method: 'get',
         height: 26,
-        width: '15%',
+        //width: '15%',
         valueField: 'id',
         textField: 'name',
         loadFilter: function (data) {
@@ -279,7 +279,7 @@ obj = {
         //$('#department').hide()
         //doQueryProject('projectId');
         //doQueryDepartment('departId');
-        console.log(id);
+        //console.log(id);
         $.ajax({
             url: '/ky-ykt/personUpload/queryById?id=' + id,
             type: 'get',
@@ -290,7 +290,7 @@ obj = {
             success: function (data) {
                 $.messager.progress('close');
                 var data = data.data;
-                console.log(data);
+                //console.log(data);
                 if (data) {
                     $("#id").val(data.id);
                     $("#name").val(data.name);
@@ -600,9 +600,9 @@ $("#addBox").dialog({
 
 // 弹出框加载
 $("#showBox").dialog({
-    title: "查看",
-    width: 500,
-    height: 400,
+    title: "查看人员信息",
+    width: 800,
+    height: 200,
     resizable: true,
     minimizable: true,
     maximizable: true,
