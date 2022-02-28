@@ -152,7 +152,7 @@ public interface PersonMapper extends BaseMapper {
     @Delete("delete from person_replacement where projectId = #{id} and personId = #{personId}")
     void deleteReplaceProjectId(String id,String personId);
 
-    @Select("select id,name,phone,idCardNo,openingBank,bankCardNo,grantAmount,updateTime,address,status,itemId,county,town,village,issuingUnit,failReason, from person where projectId = #{id} and  status != '1'")
+    @Select("select id,name,phone,idCardNo,openingBank,bankCardNo,grantAmount,updateTime,address,status,itemId,county,town,village,issuingUnit,failReason from person where projectId = #{id} and  status != '1'")
     List<PersonEntity> queryProjectId(String id);
 
     @Delete("delete from person_upload where personId = #{id}")

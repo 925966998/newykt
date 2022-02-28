@@ -373,6 +373,7 @@ public class PersonController {
         List<PersonEntity> personEntities = personMapper._queryAll(map);
         */
         //去重
+
         List<PersonEntity> distProject = getDistProject(personEntityList);
 
         List<ProjectTypeEntity> projectTypeEntities = projectTypeMapper.queryByProjectTypeId(projectTypeId);

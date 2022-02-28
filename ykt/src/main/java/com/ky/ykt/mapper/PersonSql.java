@@ -38,7 +38,7 @@ public class PersonSql extends BaseProvider {
                 "\tp.county,\n" +
                 "\tp.town,\n" +
                 "\tp.village,\n" +
-                "\tp.issuingUnit,p.failReason,pt.name as projectName,d.departmentName AS departmentName,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person p LEFT JOIN department d ON d.id = p.departmentId ");
+                "\tp.issuingUnit,p.failReason,p.projectId,pt.name as projectName,d.departmentName AS departmentName,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person p LEFT JOIN department d ON d.id = p.departmentId ");
         builder.append(" left join areas a1 on a1.id=p.county left join areas a2 on a2.id=p.town  left join areas a3 on a3.id=p.village ");
         builder.append(" left join project_detail pd on pd.id=p.projectId");
         builder.append(" left join project_type pt on pd.projectName=pt.id");
@@ -193,7 +193,7 @@ public class PersonSql extends BaseProvider {
                 "\tp.county,\n" +
                 "\tp.town,\n" +
                 "\tp.village,\n" +
-                "\tp.issuingUnit,p.failReason,ac.cname AS cname,d.departmentName AS departmentName,pt.name as projectName,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person p LEFT JOIN areas_county ac ON p.county = ac.id LEFT JOIN department d ON d.id = p.departmentId LEFT JOIN project_detail  pd ON pd.id = p.projectId");
+                "\tp.issuingUnit,p.failReason,p.projectId,ac.cname AS cname,d.departmentName AS departmentName,pt.name as projectName,a1.name as countyName,a2.name as townName ,a3.name as villageName FROM person p LEFT JOIN areas_county ac ON p.county = ac.id LEFT JOIN department d ON d.id = p.departmentId LEFT JOIN project_detail  pd ON pd.id = p.projectId");
         builder.append(" left join areas a1 on a1.id=p.county left join areas a2 on a2.id=p.town  left join areas a3 on a3.id=p.village ");
         builder.append(" left join project_type pt on pd.projectName=pt.id");
         if (StringUtils.isNotBlank(MapUtils.getString(map, "userProjectType")) && map.get("userProjectType").equals("userProjectType")) {
