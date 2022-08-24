@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.ky.ykt.entity.xml.*;
 import com.ky.ykt.utils.Ass;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -23,22 +25,23 @@ import java.util.List;
  */
 public class SocketServer {
 
-    public static void SoketPull(String host, int port, String message) throws Exception {
+    public static String SoketPull(String host, int port, String message) throws Exception {
 
         // 要连接的服务端IP地址和端口
-        host = "127.0.0.1";
-        port = 8088;
+//        host = "127.0.0.1";
+//        port = 8088;
         // 与服务端建立连接
         Socket socket = new Socket(host, port);
+        socket.setSoTimeout(50000);
         // 建立连接后获得输出流
         OutputStream outputStream = socket.getOutputStream();
 
-        message = getData();
         socket.getOutputStream().write(message.getBytes("UTF-8"));
         //通过shutdownOutput高速服务器已经发送完数据，后续只能接受数据
         socket.shutdownOutput();
 
         InputStream inputStream = socket.getInputStream();
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
         byte[] bytes = new byte[1024];
         int len;
         StringBuilder sb = new StringBuilder();
@@ -46,11 +49,12 @@ public class SocketServer {
             sb.append(new String(bytes, 0, len, "UTF-8"));
         }
         System.out.println("get message from server: " + sb);
-
         inputStream.close();
         outputStream.close();
         socket.close();
+        return sb.toString();
     }
+
 
     public static String getData() {
         Head head = new Head();
@@ -59,13 +63,13 @@ public class SocketServer {
         head.setCallTime("111");
         head.setCallUser("111");
         head.setDistrict("111");
-        head.setID("111");
+        head.setiD("111");
         head.setToken("111");
         head.setUUID("111");
         Body body = new Body();
-        body.setRowCnt("222");
-        body.setFailRowCnt("222");
-        body.setSucRowCnt("222");
+        body.setRowCnt(2);
+        body.setFailRowCnt(2);
+        body.setSucRowCnt(2);
         body.setExtend3("222");
         body.setExtend4("222");
         body.setExtend5("222");
@@ -103,10 +107,10 @@ public class SocketServer {
         return s1;
     }
 
-    public static void main(String[] args) throws Exception {
-        SoketPull("",1,"");
-
-    }
+//    public static void main(String[] args) throws Exception {
+//        SoketPull("",1,"");
+//
+//    }
 }
 
 

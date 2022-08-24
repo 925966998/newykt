@@ -19,7 +19,7 @@ function doQuery(url) {
         sortOrder: 'asc',
         toolbar: '#tabelBut',
         columns: [[
-            /*{checkbox: true, field: 'no', width: 100, align: 'center'},*/
+            {checkbox: true, field: 'no', width: 100, align: 'center'},
             {field: 'name', title: '姓名', width: 100, align: 'center'},
            /* {field: 'phone', title: '手机号', width: 100, align: 'center'},*/
             {field: 'idCardNo', title: '身份证号', width: 100, align: 'center'},
@@ -39,7 +39,7 @@ function doQuery(url) {
                     s = '<a  id="add" data-id="98" class=" operA"  onclick="obj.show(\'' + row.id + '\')">查看</a> ';
                     e = '<a  id="add" data-id="98" class=" operA"  onclick="obj.edit(\'' + row.id + '\')">编辑</a>';
                     //c = '<a  id="sub" data-id="98" class=" operA"  onclick="obj.submitAudit(\'' + row.id + '\')">提交</a> ';
-                    d = '<a  id="del" data-id="98" class=" operA01"  onclick="obj.delOne(\'' + row.id + '\')">删除</a> ';
+                    d = '<a  id="del" data-id="98" class=" operA01"  onclick="obj.del(\'' + row.id + '\')">删除</a> ';
                     //f = '<a  id="add" data-id="98" class=" operA"  onclick="obj.replace(\'' + row.id + '\')">发放记录</a> ';
                     return s +e+ d;
                 }

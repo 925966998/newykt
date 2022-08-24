@@ -55,6 +55,9 @@ public interface PersonMapper extends BaseMapper {
     @SelectProvider(type = PersonSql.class, method = "_get")
     PersonEntity _get(String id);
 
+    @SelectProvider(type = PersonSql.class, method = "_queryAll")
+    PersonEntity _getPerson(Map params);
+
     /**
      * 删除（逻辑） 参数： id ： 要删除的记录的id
      */
@@ -99,6 +102,9 @@ public interface PersonMapper extends BaseMapper {
     @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId} ")
     PersonEntity queryByIdCardNo(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
+    @Select("select * from person where idCardNo = #{idCardNo}  ")
+    PersonEntity queryIdCardNo(@Param("idCardNo") String idCardNo);
+
     @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId}")
     PersonEntity queryByIdCardNoProject(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
@@ -111,21 +117,7 @@ public interface PersonMapper extends BaseMapper {
     @Update("update person set status = 3  where id = #{id}")
     void submitToBuss(@Param("id") String id);
 
-    @Select("SELECT p.id,\n" +
-            "\tp.name,\n" +
-            "\tp.phone,\n" +
-            "\tp.idCardNo,\n" +
-            "\tp.openingBank,\n" +
-            "\tp.bankCardNo,\n" +
-            "\tp.grantAmount,\n" +
-            "\tp.updateTime,\n" +
-            "\tp.address,\n" +
-            "\tp.status,\n" +
-            "\tp.itemId,\n" +
-            "\tp.county,\n" +
-            "\tp.town,\n" +
-            "\tp.village,\n" +
-            "\tp.issuingUnit,p.failReason,d.departmentName AS departmentName,pt.name as projectName ,a1.name as countyName,a2.name as townName ,a3.name as villageName  FROM person p LEFT JOIN department d ON p.departmentId=d.id LEFT JOIN project_detail pd ON p.projectId=pd.id   left join areas a1 on a1.id=p.county left join areas a2 on a2.id=p.town  left join areas a3 on a3.id=p.village  left join project_type pt on pd.projectName=pt.id WHERE p.id = #{id}")
+    @Select("SELECT p.*,d.departmentName AS departmentName,pt.name as projectName ,a1.name as countyName,a2.name as townName ,a3.name as villageName  FROM person p LEFT JOIN department d ON p.departmentId=d.id LEFT JOIN project_detail pd ON p.projectId=pd.id   left join areas a1 on a1.id=p.county left join areas a2 on a2.id=p.town  left join areas a3 on a3.id=p.village  left join project_type pt on pd.projectName=pt.id WHERE p.id = #{id}")
     PersonEntity queryByAll(Map params);
 
     @Select("SELECT SUM(grantAmount) FROM person WHERE  projectId = #{projectId} and departmentId = #{departmentId} and logicalDel = 0")
@@ -137,10 +129,10 @@ public interface PersonMapper extends BaseMapper {
     @SelectProvider(type = PersonSql.class, method = "_queryByPage")
     List<PersonEntity> _queryByPage(Map params);
 
-    @Select("select id,name,phone,idCardNo,openingBank,bankCardNo,grantAmount,updateTime,address,status,itemId,county,town,village,issuingUnit,failReason from person where id = #{personId} ")
+    @Select("select * from person where id = #{personId} ")
     PersonEntity querypersonId(@Param("personId") String personId);
 
-    @Select("select id,name,phone,idCardNo,openingBank,bankCardNo,grantAmount,updateTime,address,status,itemId,county,town,village,issuingUnit,failReason from person where name = #{name} and  idCardNo = #{idCardNo} and bankCardNo = #{bankCardNo} and status = 4 order by createTime")
+    @Select("select * from person where name = #{name} and  idCardNo = #{idCardNo} and bankCardNo = #{bankCardNo} and status = 4 order by createTime")
     List<PersonEntity> queryWechatPerson(Map params);
 
     @Select("select pu.*,a1.`name` AS countyName,a2.`name` as townName,a3.`name` AS villageName from person_Upload pu left join areas a1 on a1.id=pu.county left join areas a2 on a2.id=pu.town  left join areas a3 on a3.id=pu.village where pu.name = #{name} and  pu.idCardNo = #{idCardNo} and pu.bankCardNo = #{bankCardNo}")
@@ -152,11 +144,13 @@ public interface PersonMapper extends BaseMapper {
     @Delete("delete from person_replacement where projectId = #{id} and personId = #{personId}")
     void deleteReplaceProjectId(String id,String personId);
 
-    @Select("select id,name,phone,idCardNo,openingBank,bankCardNo,grantAmount,updateTime,address,status,itemId,county,town,village,issuingUnit,failReason from person where projectId = #{id} and  status != '1'")
+    @Select("select * from person where projectId = #{id} and  status != '1'")
     List<PersonEntity> queryProjectId(String id);
 
     @Delete("delete from person_upload where personId = #{id}")
     void deletePeople(String id);
-    @Select("select sum(grantAmount) from person where projectId = #{projectId} and status = '1'")
+    @Select("select cast( \n" +
+            "sum(grantAmount) AS DECIMAL (19, 2) \n" +
+            ") AS grantAmount from person where projectId = #{projectId} and status = '1'")
     BigDecimal querySuccess(String projectId);
 }

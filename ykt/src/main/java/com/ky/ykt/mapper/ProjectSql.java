@@ -141,6 +141,9 @@ public class ProjectSql extends BaseProvider {
         if(StringUtils.isNotBlank(MapUtils.getString(map, "userId"))){
             builder.append(" and up.userId = #{userId}");
         }
+        if(StringUtils.isNotBlank(MapUtils.getString(map, "departmentId"))){
+            builder.append(" and p.paymentDepartment = #{departmentId}");
+        }
         builder.append(" order by p.startTime desc");
         return builder.toString();
     }

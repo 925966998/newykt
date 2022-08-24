@@ -1,6 +1,6 @@
 package com.ky.ykt.entity.xml;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 /**
@@ -9,23 +9,33 @@ import java.util.List;
  * @Author czw
  * @Date 2020/5/25
  **/
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"RowCnt","SucRowCnt","FailRowCnt","Extend3","Extend4","Extend5","Extend6","Data"})
+@XmlRootElement(name = "xml")
 public class Body {
     //总行数
-    private String RowCnt;
+    @XmlElement(name="RowCnt")
+    private long RowCnt;
     //验证通过行数
-    private String SucRowCnt;
+    @XmlElement(name="SucRowCnt")
+    private long SucRowCnt;
     //验证失败行数
-    private String FailRowCnt;
+    @XmlElement(name="FailRowCnt")
+    private long FailRowCnt;
     //预留字段3
+    @XmlElement(name="Extend3")
     private String Extend3;
     //预留字段4
+    @XmlElement(name="Extend4")
     private String Extend4;
     //预留字段5
+    @XmlElement(name="Extend5")
     private String Extend5;
     //预留字段6
+    @XmlElement(name="Extend6")
     private String Extend6;
     //明细数据
+    @XmlElement(name="Data")
     private List<Data> Data;
 
     public List<com.ky.ykt.entity.xml.Data> getData() {
@@ -36,27 +46,27 @@ public class Body {
         Data = data;
     }
 
-    public String getRowCnt() {
+    public long getRowCnt() {
         return RowCnt;
     }
 
-    public void setRowCnt(String rowCnt) {
+    public void setRowCnt(long rowCnt) {
         RowCnt = rowCnt;
     }
 
-    public String getSucRowCnt() {
+    public long getSucRowCnt() {
         return SucRowCnt;
     }
 
-    public void setSucRowCnt(String sucRowCnt) {
+    public void setSucRowCnt(long sucRowCnt) {
         SucRowCnt = sucRowCnt;
     }
 
-    public String getFailRowCnt() {
+    public long getFailRowCnt() {
         return FailRowCnt;
     }
 
-    public void setFailRowCnt(String failRowCnt) {
+    public void setFailRowCnt(long failRowCnt) {
         FailRowCnt = failRowCnt;
     }
 
@@ -91,4 +101,5 @@ public class Body {
     public void setExtend6(String extend6) {
         Extend6 = extend6;
     }
+
 }

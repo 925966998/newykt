@@ -13,6 +13,7 @@ public class DateUtil {
     private final static SimpleDateFormat sdfDays = new SimpleDateFormat("yyyyMMdd");
 
     private final static SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final static SimpleDateFormat sdfTimehms = new SimpleDateFormat("HH:mm:ss");
 
     private final static SimpleDateFormat sdfMonth = new SimpleDateFormat("yyyy-MM");
 
@@ -48,6 +49,10 @@ public class DateUtil {
      */
     public static String getDay() {
         return sdfDay.format(new Date());
+    }
+
+    public static String getHms() {
+        return sdfTimehms.format(new Date());
     }
 
     public static String getDay(Date d) {
@@ -318,7 +323,8 @@ public class DateUtil {
         calendar.add(calendar.MONTH, 1);
         return calendar.getTime();
     }
-    public static Date getaddMonth(Date date,int num) {
+
+    public static Date getaddMonth(Date date, int num) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
         calendar.add(calendar.MONTH, num);
