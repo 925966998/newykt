@@ -76,10 +76,10 @@ public class PersonController {
     @Autowired
     ProjectTypeMapper projectTypeMapper;
 
-    private static String CallUser = "";
+    private static String CallUser = "350355000001";
     private static String checkId = "YH008";
-    private static String BankNo = "";
-    private static String BankDep = "";
+    private static String BankNo = "601103";
+    private static String BankDep = "350355000001";
     @Value("${hexKey}")
     private String hexKey;
 
@@ -600,14 +600,17 @@ public class PersonController {
             }
 
           String s = this.getDataCheckOne(personEntity);
+          System.out.println(s);
 
           ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s.substring(77, s.length()));
+
           if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getiD() != null) {
               if (!service1.getBody().getResult().equals("1")) {
                   personEntity.setFailReason(service1.getBody().getErrorMsg());
                   stringBufferError.append("该表中第" + i + "行人员" + service1.getBody().getErrorMsg() + "</br>");
                   //failReason += service1.getBody().getErrorMsg();
               }
+
           }
 
             String personId = UUID.randomUUID().toString();
@@ -714,10 +717,10 @@ public class PersonController {
             logger.info("execute success {}", personEntities.size());
         } catch (Exception e) {
             logger.error("{}", e);
-            personEntityList.clear();
-            uploadFile.delete();
+            //personEntityList.clear();
+            //uploadFile.delete();
         } finally {
-            uploadFile.delete();
+            //uploadFile.delete();
         }
         if (personEntityList != null && personEntityList.size() > 0) {
             for (PersonEntity personEntity : personEntityList
@@ -1022,8 +1025,9 @@ public class PersonController {
         String z = getByteStream(d);
         String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
 
-        String sb = SocketServer.SoketPull("192.168.192.17", 14019, y);
+        String sb = SocketServer.SoketPull("202.99.212.80", 8167, y);
         String s = decryptEcb(hexKey, sb);
+        System.out.println(s);
         return s;
     }
 
