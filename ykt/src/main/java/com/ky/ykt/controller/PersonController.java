@@ -600,6 +600,7 @@ public class PersonController {
             }
 
           String s = this.getDataCheckOne(personEntity);
+
           ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s.substring(77, s.length()));
           if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getiD() != null) {
               if (!service1.getBody().getResult().equals("1")) {
@@ -1017,10 +1018,11 @@ public class PersonController {
         service.setBody(body);
         service.setHead(head);
         String s1 = convertToXmlService(service, "UTF-8");
-        String z = getByteStream(s1);
-        String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + s1;
-        String d = encryptEcb(hexKey, y);
-        String sb = SocketServer.SoketPull("192.168.192.17", 14019, d);
+        String d = encryptEcb(hexKey, s1);
+        String z = getByteStream(d);
+        String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
+
+        String sb = SocketServer.SoketPull("192.168.192.17", 14019, y);
         String s = decryptEcb(hexKey, sb);
         return s;
     }
