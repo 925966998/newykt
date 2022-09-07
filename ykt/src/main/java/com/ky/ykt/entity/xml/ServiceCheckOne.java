@@ -32,4 +32,12 @@ public class ServiceCheckOne {
     public void setBody(BodyCheckOne Body) {
         this.Body = Body;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceCheckOne{" +
+                "Head=" + Head +
+                ", Body=" + Body +
+                '}';
+    }
 }

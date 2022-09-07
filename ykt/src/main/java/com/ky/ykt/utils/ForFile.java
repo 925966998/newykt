@@ -2,6 +2,7 @@ package com.ky.ykt.utils;
 
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public class ForFile {
         //生成文件路径
@@ -12,7 +13,7 @@ public class ForFile {
         /**
          * 创建文件
          * @param fileName  文件名称
-         * @param filecontent   文件内容
+         * @param
          * @return  是否创建成功，成功则返回true
          */
         public static boolean createFile(String fileName){
@@ -44,9 +45,9 @@ public class ForFile {
          */
         public static boolean writeFileContent(String filepath,String newstr) throws IOException {
             Boolean bool = false;
-//            byte[] bytes = newstr.getBytes(Charset.forName("GB18030"));
+           // byte[] bytes = newstr.getBytes(Charset.forName("GB18030"));
 //            String str4 = new String(bytes, "GB18030");
-            String filein = newstr+"\r\n";//新写入的行，换行
+            String filein = newstr;//新写入的行，换行
 
             String temp  = "";
 
@@ -73,7 +74,7 @@ public class ForFile {
 
                 fos = new FileOutputStream(file);
                 pw = new PrintWriter(fos);
-//                pw = new PrintWriter(new OutputStreamWriter(fos, "GB18030"));
+                //pw = new PrintWriter(new OutputStreamWriter(fos, "GB18030"));
                 pw.write(buffer.toString().toCharArray());
 
                 pw.flush();
@@ -101,6 +102,23 @@ public class ForFile {
             }
             return bool;
         }
+
+    /**
+     * 向文件中写入内容
+     * @param filepath 文件路径与名称
+     * @param
+     * @return
+     * @throws IOException
+     */
+    public static String readFileContent(String filepath) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), Charset.forName("GBK")));
+        StringBuilder sb = new StringBuilder();
+        String str;
+        while((str = br.readLine()) != null){
+            sb.append(str);
+        }
+        return sb.toString();
+    }
 
         /**
          * 删除文件

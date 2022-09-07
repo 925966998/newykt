@@ -99,7 +99,7 @@ public interface PersonUploadMapper extends BaseMapper {
     @Update("update person_upload set status = #{status},auditReason=#{auditReason},auditTime=now() where id = #{id}")
     int audit(Map params);
 
-    @Select("SELECT SUM(grantAmount) FROM person_upload WHERE status = 0 AND projectId = #{projectId}")
+    @Select("SELECT SUM(grantAmount) FROM person_upload WHERE projectId = #{projectId}")
     BigDecimal queryPaymentAmount(@Param("projectId") String projectId);
 
     @Select("SELECT * FROM person_upload WHERE personId = #{id}")

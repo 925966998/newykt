@@ -44,36 +44,12 @@ public class Head {
     @XmlElement(name="BankNo")
     private String BankNo;
 
-    public String getCallSerialNo() {
-        return CallSerialNo;
-    }
-
-    public void setCallSerialNo(String callSerialNo) {
-        CallSerialNo = callSerialNo;
-    }
-
-    public String getCallRes() {
-        return CallRes;
-    }
-
-    public void setCallRes(String callRes) {
-        CallRes = callRes;
-    }
-
-    public String getError() {
-        return Error;
-    }
-
-    public void setError(String error) {
-        Error = error;
-    }
-
-    public String getiD() {
+    public String getID() {
         return ID;
     }
 
-    public void setiD(String iD) {
-        this.ID = iD;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public String getUUID() {
@@ -98,6 +74,30 @@ public class Head {
 
     public void setCallTime(String callTime) {
         CallTime = callTime;
+    }
+
+    public String getCallSerialNo() {
+        return CallSerialNo;
+    }
+
+    public void setCallSerialNo(String callSerialNo) {
+        CallSerialNo = callSerialNo;
+    }
+
+    public String getCallRes() {
+        return CallRes;
+    }
+
+    public void setCallRes(String callRes) {
+        CallRes = callRes;
+    }
+
+    public String getError() {
+        return Error;
+    }
+
+    public void setError(String error) {
+        Error = error;
     }
 
     public String getCallUser() {

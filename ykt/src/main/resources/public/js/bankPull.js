@@ -49,7 +49,13 @@ obj = {
             })
         }
     },
+    pullLook: function (id) {
+        $("#pullLookBox").dialog({
+            closed: false
+        });
+    },
 }
+
 // 加载表格
 $("#table").datagrid({
     title: "数据列表",
@@ -74,8 +80,8 @@ $("#table").datagrid({
     toolbar: '#tabelBut',
     columns: [[
         {checkbox: true, field: 'no', width: 100, align: 'center'},
-        {field: 'projectName', title: '项目名称', width: 100, align: 'center'},
-        {field: 'stateNew', title: '上卡状态', width: 100, align: 'center',
+        {field: 'projectTypeName', title: '项目名称', width: 100, align: 'center'},
+        {field: 'cardState', title: '上卡状态', width: 100, align: 'center',
             formatter: function (val, row) {
                 if (val == '5')
                     return '已上卡，请等待结果';
@@ -98,12 +104,14 @@ $("#table").datagrid({
         {field: 'totalAmount', title: '总金额', width: 100, align: 'center'},
         {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center'},
         {field: 'departmentName', title: '发放单位', width: 100, align: 'center'},
+        /*
         {field: "opr", title: '操作', width: 100, align: 'center',
             formatter: function (val, row) {
                 c = '<a  id="look"   onclick="obj.pullLook(\'' + row.id + '\')">查看</a> ';
                 return c;
             }
         }
+        */
     ]],
     onLoadError: function (request) {
         if (request.status == 401) {

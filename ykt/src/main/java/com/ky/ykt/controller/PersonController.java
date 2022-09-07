@@ -78,8 +78,8 @@ public class PersonController {
 
     private static String CallUser = "350355000001";
     private static String checkId = "YH008";
-    private static String BankNo = "601103";
-    private static String BankDep = "350355000001";
+    private static String BankNo = "402161002352";
+    private static String BankDep = "601103";
     @Value("${hexKey}")
     private String hexKey;
 
@@ -128,7 +128,7 @@ public class PersonController {
         personEntity1.setIdCardNo(personEntity.getIdCardNo());
         String s = this.getDataCheckOne(personEntity1);
         ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s.substring(77, s.length()));
-        if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getiD() != null) {
+        if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getID() != null) {
             if (!service1.getBody().getResult().equals("1")) {
                 personEntity.setFailReason(service1.getBody().getErrorMsg());
                 return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, personEntity.getName() + service1.getBody().getErrorMsg());
@@ -515,7 +515,7 @@ public class PersonController {
 
     }
 
-    @Log(description = "发放人员信息表导入操作", module = "人员管理")
+    //@Log(description = "发放人员信息表导入操作", module = "人员管理")
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     @Transactional
     public RestResult importExcel(@RequestParam MultipartFile file, HttpServletRequest request) {
@@ -598,21 +598,6 @@ public class PersonController {
                   }
               }
             }
-
-          String s = this.getDataCheckOne(personEntity);
-          System.out.println(s);
-
-          ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s.substring(77, s.length()));
-
-          if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getiD() != null) {
-              if (!service1.getBody().getResult().equals("1")) {
-                  personEntity.setFailReason(service1.getBody().getErrorMsg());
-                  stringBufferError.append("该表中第" + i + "行人员" + service1.getBody().getErrorMsg() + "</br>");
-                  //failReason += service1.getBody().getErrorMsg();
-              }
-
-          }
-
             String personId = UUID.randomUUID().toString();
 
           List<AreasEntity> townEntities = new ArrayList<>();
@@ -643,84 +628,106 @@ public class PersonController {
                     }
                 }
             }
+          String s = this.getDataCheckOne(personEntity);
+          System.out.println(s);
+          //String s="<?xml version='1.0' encoding='UTF-8'?><Service><Head><ID>YH008</ID><UUID>abbe274a-87e4-4694-a67b-a046c85b229c</UUID><CallDate>2022-09-06</CallDate><CallTime>14:50:10</CallTime><CallUser>350355000001</CallUser><CallRes>1</CallRes><Error></Error><District>140725</District><BankNo>402161002352</BankNo></Head><Body><Name>张旭</Name><IdNo>142423199407130019</IdNo><BankAcct>6212806010004109088</BankAcct><Result>1</Result><ErrorMsg></ErrorMsg><Extend1></Extend1><Extend2></Extend2></Body></Service>";
+          ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s);
+          System.out.println("service1="+service1);
+          if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getID() != null) {
+              if (!service1.getBody().getResult().equals("1")) {
+                  personEntity.setFailReason(service1.getBody().getErrorMsg());
+                  stringBufferError.append("该表中第" + i + "行人员" + service1.getBody().getErrorMsg() + "</br>");
+                  //failReason += service1.getBody().getErrorMsg();
+              }
 
-            if(StringUtils.isEmpty(stringBufferError)){
-                // 查询人员档案
-                List<PersonUploadEntity> personUploadEntityList =
-                        personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                if (personUploadEntityList == null || personUploadEntityList.size() == 0 ) {
+              if(StringUtils.isEmpty(stringBufferError)){
+                  // 查询人员档案
+                  List<PersonUploadEntity> personUploadEntityList =
+                          personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
+                  if (personUploadEntityList.isEmpty() || personUploadEntityList.size() == 0 ) {
                 /*
               return new RestResult(
                   RestResult.ERROR_CODE,
                   RestResult.ERROR_MSG,
                   "第" + i + "行，" + personEntity.getName() + "此人员不存在人员档案中，请补全档案信息，重新上传");
                 */
-                    ProjectEntity projectEntity = projectMapper._get(projectId);
-                    personEntity.setCounty(countyEntity.getId());
-                    personEntity.setTown(townEntities.get(0).getId());
-                    personEntity.setVillage(villageEntities.get(0).getId());
-                    personEntity.setAddress(personEntity.getAddress());
-                    personEntity.setPhone(personEntity.getPhone());
-                    personEntity.setOpeningBank(personEntity.getOpeningBank());
-                    personEntity.setBankCardNo(personEntity.getBankCardNo());
+                      ProjectEntity projectEntity = projectMapper._get(projectId);
+                      personEntity.setCounty(countyEntity.getId());
+                      personEntity.setTown(townEntities.get(0).getId());
+                      personEntity.setVillage(villageEntities.get(0).getId());
+                      personEntity.setAddress(personEntity.getAddress());
+                      personEntity.setPhone(personEntity.getPhone());
+                      personEntity.setOpeningBank(personEntity.getOpeningBank());
+                      personEntity.setBankCardNo(personEntity.getBankCardNo());
 
-                    personEntity.setId(personId);
-                    personEntity.setItemId(projectId);
-                    personEntity.setStatus("3"); // 新增状态是未提交 3
-                    personEntity.setDepartmentId(user.getDepartmentId());
-                    personEntity.setUserId(user.getId());
-                    personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
-                    // personMapper._addEntity(personEntity);
-                    // 去除名字之间的空格
-                    personEntity.setName(personEntity.getName().replaceAll(" ", ""));
-                    personEntityList.add(personEntity);
-                }else if(personUploadEntityList.size() == 1){
-                    if(!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
-                            || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo())){
-                        //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
-                        return new RestResult(
-                                RestResult.ERROR_CODE,
-                                RestResult.ERROR_MSG,
-                                "第" + i + "行的信息中,"+personEntity.getName()+"姓名/身份证/银行卡与档案中数据不匹配<br>");
-                    }
-                    ProjectEntity projectEntity = projectMapper._get(projectId);
-                    personEntity.setCounty(personUploadEntityList.get(0).getCounty());
-                    personEntity.setTown(personUploadEntityList.get(0).getTown());
-                    personEntity.setVillage(personUploadEntityList.get(0).getVillage());
-                    personEntity.setAddress(personEntity.getAddress());
-                    personEntity.setPhone(personEntity.getPhone());
-                    personEntity.setOpeningBank(personEntity.getOpeningBank());
-                    personEntity.setBankCardNo(personEntity.getBankCardNo());
-                    personEntity.setId(personId);
-                    personEntity.setItemId(projectId);
-                    personEntity.setStatus("3"); // 新增状态是未提交 3
-                    personEntity.setDepartmentId(user.getDepartmentId());
-                    personEntity.setUserId(user.getId());
-                    personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
-                    // personMapper._addEntity(personEntity);
-                    // 去除名字之间的空格
-                    personEntity.setName(personEntity.getName().replaceAll(" ", ""));
-                    personEntityList.add(personEntity);
-                }else{
-                    return new RestResult(
-                            RestResult.ERROR_CODE,
-                            RestResult.ERROR_MSG,
-                            "第" + i + "行的信息与档案中数据不匹配<br>");
-                }
-            }else{
-                return new RestResult(
-                        RestResult.ERROR_CODE,
-                        RestResult.ERROR_MSG,
-                        stringBufferError);
-            }
+                      personEntity.setId(personId);
+                      personEntity.setItemId(projectId);
+                      personEntity.setStatus("3"); // 新增状态是未提交 3
+                      personEntity.setDepartmentId(user.getDepartmentId());
+                      personEntity.setUserId(user.getId());
+                      personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
+                      // personMapper._addEntity(personEntity);
+                      // 去除名字之间的空格
+                      personEntity.setName(personEntity.getName().replaceAll(" ", ""));
+                      personEntityList.add(personEntity);
+                  }else if(personUploadEntityList.size() == 1){
+                      if(!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
+                              || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo())){
+                          //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
+                          return new RestResult(
+                                  RestResult.ERROR_CODE,
+                                  RestResult.ERROR_MSG,
+                                  "第" + i + "行的信息中,"+personEntity.getName()+"姓名/身份证/银行卡与档案中数据不匹配<br>");
+                      }
+                      ProjectEntity projectEntity = projectMapper._get(projectId);
+                      personEntity.setCounty(personUploadEntityList.get(0).getCounty());
+                      personEntity.setTown(personUploadEntityList.get(0).getTown());
+                      personEntity.setVillage(personUploadEntityList.get(0).getVillage());
+                      personEntity.setAddress(personEntity.getAddress());
+                      personEntity.setPhone(personEntity.getPhone());
+                      personEntity.setOpeningBank(personEntity.getOpeningBank());
+                      personEntity.setBankCardNo(personEntity.getBankCardNo());
+                      personEntity.setId(personId);
+                      personEntity.setItemId(projectId);
+                      personEntity.setStatus("3"); // 新增状态是未提交 3
+                      personEntity.setDepartmentId(user.getDepartmentId());
+                      personEntity.setUserId(user.getId());
+                      personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
+                      // personMapper._addEntity(personEntity);
+                      // 去除名字之间的空格
+                      personEntity.setName(personEntity.getName().replaceAll(" ", ""));
+                      personEntityList.add(personEntity);
+                  }else{
+                      return new RestResult(
+                              RestResult.ERROR_CODE,
+                              RestResult.ERROR_MSG,
+                              "第" + i + "行的信息与档案中数据不匹配<br>");
+                  }
+              }else{
+                  return new RestResult(
+                          RestResult.ERROR_CODE,
+                          RestResult.ERROR_MSG,
+                          stringBufferError);
+              }
+          }else{
+              return new RestResult(
+                      RestResult.ERROR_CODE,
+                      RestResult.ERROR_MSG,
+                      "人员信息有误，请重新发送");
+          }
+
         }
             logger.info("execute success {}", personEntities.size());
         } catch (Exception e) {
             logger.error("{}", e);
-            //personEntityList.clear();
-            //uploadFile.delete();
+            personEntityList.clear();
+            uploadFile.delete();
+            return new RestResult(
+                    RestResult.ERROR_CODE,
+                    RestResult.ERROR_MSG,
+                    stringBufferError);
         } finally {
-            //uploadFile.delete();
+            uploadFile.delete();
         }
         if (personEntityList != null && personEntityList.size() > 0) {
             for (PersonEntity personEntity : personEntityList
@@ -1003,12 +1010,12 @@ public class PersonController {
 
     public String getDataCheckOne(PersonEntity personEntity) throws Exception {
         Head head = new Head();
-        head.setiD(checkId);
+        head.setID(checkId);
         head.setUUID(UUID.randomUUID().toString());
         head.setCallDate(DateUtil.getDay());
         head.setCallTime(DateUtil.getHms());
         head.setCallUser(CallUser);
-        head.setDistrict("140622");
+        head.setDistrict("140725");
         head.setBankNo(BankNo);
         ServiceCheckOne service = new ServiceCheckOne();
         BodyCheckOne body = new BodyCheckOne();
@@ -1024,9 +1031,9 @@ public class PersonController {
         String d = encryptEcb(hexKey, s1);
         String z = getByteStream(d);
         String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
-
+        logger.info("报头{}",y);
         String sb = SocketServer.SoketPull("202.99.212.80", 8167, y);
-        String s = decryptEcb(hexKey, sb);
+        String s = decryptEcb(hexKey, sb.substring(76,sb.length()));
         System.out.println(s);
         return s;
     }

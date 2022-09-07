@@ -37,12 +37,12 @@ public class SocketServer {
         OutputStream outputStream = socket.getOutputStream();
 
         socket.getOutputStream().write(message.getBytes("UTF-8"));
-        //通过shutdownOutput高速服务器已经发送完数据，后续只能接受数据
-        socket.shutdownOutput();
+
+        outputStream.flush();
+
 
         InputStream inputStream = socket.getInputStream();
-        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[inputStream.read()];
         int len;
         StringBuilder sb = new StringBuilder();
         while ((len = inputStream.read(bytes)) != -1) {
@@ -63,7 +63,7 @@ public class SocketServer {
         head.setCallTime("111");
         head.setCallUser("111");
         head.setDistrict("111");
-        head.setiD("111");
+        head.setID("111");
         head.setToken("111");
         head.setUUID("111");
         Body body = new Body();

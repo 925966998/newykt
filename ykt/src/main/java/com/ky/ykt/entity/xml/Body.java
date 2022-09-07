@@ -101,5 +101,4 @@ public class Body {
     public void setExtend6(String extend6) {
         Extend6 = extend6;
     }
-
 }

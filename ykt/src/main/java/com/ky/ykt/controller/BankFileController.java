@@ -1,5 +1,6 @@
 package com.ky.ykt.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.ky.ykt.entity.*;
 import com.ky.ykt.entity.xml.*;
 import com.ky.ykt.excle.ExcelStyle;
@@ -12,6 +13,7 @@ import com.ky.ykt.service.PersonService;
 import com.ky.ykt.service.ProjectDetailService;
 import com.ky.ykt.service.ProjectService;
 import com.ky.ykt.utils.DateUtil;
+import com.ky.ykt.utils.GBKUTFutils;
 import com.ky.ykt.utils.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -54,9 +58,9 @@ public class BankFileController {
     //调用人
     private static String CallUser = "350355000001";
     //银行代码
-    private static String BankNo = "601103";
+    private static String BankNo = "402161002352";
     //
-    private static String BankDep = "350355000001";
+    private static String BankDep = "601103";
     //区县标识
     private static String District = "140725";
     //生成文件路径
@@ -82,6 +86,8 @@ public class BankFileController {
     DepartmentMapper departmentMapper;
     @Autowired
     ProjectMapper projectMapper;
+    @Autowired
+    PersonUploadMapper personUploadMapper;
 
     //进入请求上卡接口
     @SuppressWarnings("rawtypes")
@@ -99,23 +105,29 @@ public class BankFileController {
                 if (projectDetailEntity.getState() != null && projectDetailEntity.getState() != 5) {
                     String dataPull = getDataPull(request, data);
                     String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataPull);
-                    String s = decryptEcb(hexKey.toString(), sb);
-                    System.out.println(s);
-                    Service service = (Service) xmlToBean(Service.class, s.substring(77, s.length()));
-                    System.out.println(service.getHead().getiD());
-                    if (service != null && service.getHead().getCallRes() != null && service.getHead().getiD() != null) {
+                    //String sb = SocketServer.SoketPull("127.0.0.1", 8890, dataPull+"/n");
+                    //String sb = null;
+                    System.out.println("sb="+sb);
+                    String s = decryptEcb(hexKey.toString(), sb.substring(76,sb.length()));
+                    System.out.println("s="+s);
+                    ServiceOne service = (ServiceOne) xmlToBean(ServiceOne.class, s);
+                    System.out.println(service.getHead().getID());
+                    if (service.getHead().getCallRes().equals("1")) {
                         projectDetailEntity.setState(5);
+                        projectDetailEntity.setCardState(3);
                         projectDetailMapper._updateEntity(projectDetailEntity);
+                        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, "成功发送上卡");
+                    }else{
+                        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, service.getHead().getError());
                     }
-                    return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, "成功发送上卡");
                 }
             } else {
-                return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "数据错误，请联系管理员");
+                return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "数据异常，请联系管理员");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "请稍后再试");
+        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "系统异常，请稍后再试");
     }
 
 
@@ -144,7 +156,7 @@ public class BankFileController {
         file.delete();
         createFile(fileName);
         Head head = new Head();
-        head.setiD(checkAllId);
+        head.setID(checkAllId);
         head.setUUID(projectDetailEntity.getId());
         head.setCallDate(DateUtil.getDay());
         head.setCallTime(DateUtil.getHms());
@@ -173,9 +185,10 @@ public class BankFileController {
             datas.add(data);
             i++;
             writeResult += format.format(i) + "@|$" + personEntity.getName() + "@|$" + personEntity.getIdCardNo()
-                    + "@|$" + personEntity.getBankCardNo() + "@|$" + "" + "@|$" + "" + "\n";
+                    + "@|$" + personEntity.getBankCardNo() + "@|$" + "" + "@|$" + "";
         }
-        System.out.println(writeResult);
+        System.out.println("wr="+writeResult);
+
         writeFileContent(filenameTemp, encryptEcb(hexKey, writeResult));
         Service service = new Service();
 //        body.setData(datas);
@@ -184,7 +197,7 @@ public class BankFileController {
         String s1 = convertToXmlService(service, "UTF-8");
         String b = this.getByteStream(s1);
         String c = b + checkAllId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + s1;
-        String d = encryptEcb(hexKey, c);
+        String d = encryptEcb(hexKey, c,"UTF-8");
         System.out.println(s1);
         return d;
 
@@ -199,7 +212,7 @@ public class BankFileController {
         projectDetailEntity.setState(4);
         projectDetailMapper._updateEntity(projectDetailEntity);
         Head head = new Head();
-        head.setiD(checkId);
+        head.setID(checkId);
         head.setUUID(projectDetailEntity.getId());
         head.setCallDate(DateUtil.getDay());
         head.setCallTime(DateUtil.getHms());
@@ -228,42 +241,62 @@ public class BankFileController {
 
 
     public String getDataPull(HttpServletRequest request, List<PersonEntity> personEntities) throws Exception {
-        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+
+        logger.info("into BankFileController getDataPull method params personEntities is {}", JSON.toJSONString(personEntities));
+
         Map map = new HashMap();
         map.put("projectId", personEntities.get(0).getProjectId());
         ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntities.get(0).getProjectId());
-        String fileName = CallUser + "_" + "140725" + "To" + BankNo + "_" + projectDetailEntity.getId();
-        filenameTemp = path + fileName + ".txt";
-        createFile(fileName);
+        List<ProjectEntity> projectEntities = projectMapper.queryProject(map);
+        logger.info("获得补贴项目 {}",JSON.toJSONString(projectEntities));
+        String fileName = path + "140725" + "To" + BankNo;
+        File file = new File(fileName);
+        if(!file.exists()){
+            file.mkdir();
+        }
+        //createFile(fileName);
+        String fileName1 = fileName + File.separator + CallUser + "_" + 140725 + "To" + BankNo + "_" + projectDetailEntity.getId() + ".txt";
+        File file1 = new File(fileName1);
+        logger.info("文件路径 {}",file1);
+        if(!file1.exists()){
+            file1.createNewFile();
+        }else{
+            file1.delete();
+            file1.createNewFile();
+        }
+
         java.text.DecimalFormat format = new java.text.DecimalFormat("000000");
         Head head = new Head();
-        head.setiD(infoId);
+        head.setID(infoId);
         head.setUUID(projectDetailEntity.getId());
         head.setCallDate(DateUtil.getDay());
         head.setCallTime(DateUtil.getHms());
         head.setCallUser(CallUser);
         head.setDistrict("140725");
         head.setBankNo(BankNo);
+        logger.info("报文head {}",JSON.toJSONString(head));
         BodyPull body = new BodyPull();
         //一卡通测试账户
-        //601103010300000250149
-        //205103
         //付款人账号
         body.setPayeeAcctNo("601103010300000250149");
         //付款人名称
         body.setPayeeAcctName("晋中市财政局一卡通");
         //付款人开户行
+        //body.setPayeeAcctDep("402161002352");
         body.setPayeeAcctDep("601103");
-        body.setProjName(projectDetailEntity.getProjectName());
-        body.setAmtSum(new BigDecimal(String.valueOf(projectDetailEntity.getPaymentAmount().multiply(BigDecimal.valueOf(100)))).setScale(0, BigDecimal.ROUND_HALF_UP));
+        body.setProjName(projectEntities.get(0).getProjectTypeName());
+        BigDecimal bigDecimal = personUploadMapper.queryPaymentAmount(personEntities.get(0).getProjectId());
+        body.setAmtSum(bigDecimal.multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP));
         body.setRowCnt(personEntities.size());
         body.setExtend3("");
         body.setExtend4("");
         body.setExtend5("");
         body.setExtend6("");
+        logger.info("报文body {}",JSON.toJSONString(body));
         int i = 0;
-        String writeResult = "";
-        List<Data> datas = new ArrayList<>();
+       // String writeResult = "000001@|$介休市第一幼儿园@|$444333222111000111@|$5000@|$601103010300000283805@|$0@|$@|$@|$@|$";
+        String writeResult ="";
+
         for (PersonEntity personEntity : personEntities
         ) {
             i++;
@@ -277,19 +310,31 @@ public class BankFileController {
                     + "@|$" + "0"
                     + "@|$" + ""
                     + "@|$" + ""
-                    + "@|$" + "" + "@|$" + "" + "\n";
+                    + "@|$" + ""
+                    + "@|$" + ""
+                    + "\n";
             //personEntity.getProjectId()
         }
-        writeFileContent(filenameTemp, encryptEcb(hexKey, writeResult));
+        logger.info("文件内容 {}",writeResult);
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName1);
+        String wwe = encryptEcb(hexKey,writeResult,"GB18030");
+        logger.info("加密之后的文件内容 {}",wwe);
+
+        fileOutputStream.write(wwe.getBytes());
+        fileOutputStream.flush();
+        fileOutputStream.close();
+        logger.info("文件输出完毕 {}",fileName1);
+        //writeFileContent(fileName1,a);
         ServicePull service = new ServicePull();
         service.setBody(body);
         service.setHead(head);
         String s1 = convertToXmlService(service, "UTF-8");
-        String b = this.getByteStream(s1);
-        String c = b + infoId + " " + "       " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + s1;
-        String d = encryptEcb(hexKey, c);
-        System.out.println(s1);
-        return d;
+        logger.info("convertToXmlService result is {}", s1 );
+        String d = encryptEcb(hexKey, s1);
+        String b = getByteStream(d);
+        String c = b + infoId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
+        logger.info("加密后的xml {},长度 {},拼装好的报文 {}",d,b,c);
+        return c;
     }
 
 
@@ -309,9 +354,9 @@ public class BankFileController {
                 String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataCheckAll);
                 String s = decryptEcb(hexKey, sb);
                 System.out.println(s);
-                ServiceCheckOne service = (ServiceCheckOne) xmlToBean(ServiceCheckOne.class, s.substring(77, s.length()));
-                System.out.println(service.getHead().getiD());
-                if (service != null && service.getHead().getCallRes() != null && service.getHead().getiD() != null) {
+                ServiceCheckOne service = (ServiceCheckOne) xmlToBean(ServiceCheckOne.class, s.substring(76, s.length()));
+                System.out.println(service.getHead().getID());
+                if (service != null && service.getHead().getCallRes() != null && service.getHead().getID() != null) {
                     System.out.println(service.getBody().getResult());
                     if (service.getBody().getResult().equals("1")) {
                         //成功
@@ -380,9 +425,9 @@ public class BankFileController {
                 }
                 String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataCheckAll);
                 String s = decryptEcb(hexKey.toString(), sb);
-                Service service = (Service) xmlToBean(Service.class, s.substring(77, s.length()));
-                System.out.println(service.getHead().getiD());
-                if (service != null && service.getHead().getCallRes() != null && service.getHead().getiD() != null) {
+                Service service = (Service) xmlToBean(Service.class, s.substring(76, s.length()));
+                System.out.println(service.getHead().getID());
+                if (service != null && service.getHead().getCallRes() != null && service.getHead().getID() != null) {
                     projectDetailEntity.setState(4);
                     projectDetailMapper._updateEntity(projectDetailEntity);
                 }
@@ -400,9 +445,9 @@ public class BankFileController {
 
 
 
-    //http:172.30.32.253:1005/ky-ykt/bankFile/notifyPullAll
-    //10.32.48.128.1005
-    //34022  14019
+    //http:47.93.246.103:7011/ky-ykt/bankFile/notifyPullAll
+    //202.99.212.80
+    //8167/8168
     //多笔校验和上卡接口返回
     @RequestMapping(value = "/notifyCheckAll", method = RequestMethod.POST)
     @ResponseBody
@@ -422,10 +467,10 @@ public class BankFileController {
             outSteam.close();
             inStream.close();
             System.out.println(result1);
-            Service service = (Service) xmlToBean(Service.class, result1.substring(77, result1.length()));
+            Service service = (Service) xmlToBean(Service.class, result1.substring(76, result1.length()));
             Head head = service.getHead();
-            System.out.println(service.getHead().getiD());
-            if (head.getiD().equals(notifycheckId)) {
+            System.out.println(service.getHead().getID());
+            if (head.getID().equals(notifycheckId)) {
                 dataCheckAll = getCheckAllInfo(request, service.getHead().getUUID());
                 String fileName1 = CallUser + "_" + BankNo + "To" + "140725" + "_" + service.getHead().getUUID() + ".txt";
                 filenameTemp = path + fileName1 + "\\" + fileName1;
@@ -496,7 +541,7 @@ public class BankFileController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (head.getiD().equals(notifypullId)) {
+            } else if (head.getID().equals(notifypullId)) {
                 dataCheckAll = getCheckPullInfo(request, service.getHead().getUUID());
                 String fileName1 = CallUser + "_" + BankNo + "To" + "140725" + "_" + service.getHead().getUUID() + ".txt";
                 filenameTemp = path + fileName1 + "\\" + fileName1;
@@ -570,7 +615,7 @@ public class BankFileController {
     public String getCheckAllInfo(HttpServletRequest request, String id) throws Exception {
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         Head head = new Head();
-        head.setiD(notifycheckId);
+        head.setID(notifycheckId);
         head.setUUID(id);
         head.setCallDate(DateUtil.getDay());
         head.setCallTime(DateUtil.getHms());
@@ -592,7 +637,7 @@ public class BankFileController {
     public String getCheckPullInfo(HttpServletRequest request, String id) throws Exception {
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         Head head = new Head();
-        head.setiD(notifypullId);
+        head.setID(notifypullId);
         head.setUUID(id);
         head.setCallDate(DateUtil.getDay());
         head.setCallTime(DateUtil.getHms());

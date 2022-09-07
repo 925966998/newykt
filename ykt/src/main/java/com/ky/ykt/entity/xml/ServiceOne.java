@@ -1,6 +1,6 @@
 package com.ky.ykt.entity.xml;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 /**
  * @ClassName Service
@@ -8,10 +8,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @Author czw
  * @Date 2020/5/25
  **/
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Service")
-public class Service {
+public class ServiceOne {
+    @XmlElement(name="Head")
     private Head head;
-    private Body body;
 
     public Head getHead() {
         return head;
@@ -21,11 +22,4 @@ public class Service {
         this.head = head;
     }
 
-    public Body getBody() {
-        return body;
-    }
-
-    public void setBody(Body body) {
-        this.body = body;
-    }
 }

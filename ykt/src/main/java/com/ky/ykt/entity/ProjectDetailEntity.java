@@ -33,6 +33,15 @@ public class ProjectDetailEntity extends BaseEntity {
     private String projectTypeName;
     private Integer batchNumber;
     private BigDecimal grantAmount;
+    private Integer cardState;
+
+    public Integer getCardState() {
+        return cardState;
+    }
+
+    public void setCardState(Integer cardState) {
+        this.cardState = cardState;
+    }
 
     public BigDecimal getGrantAmount() {
         return grantAmount;

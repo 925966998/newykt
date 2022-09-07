@@ -22,7 +22,7 @@ public class P_Sm4Util {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	private static final String ENCODING = "UTF-8";
+	private static String ENCODING = "UTF-8";
 	public static final String ALGORITHM_NAME = "SM4";
 	// 加密算法/分组加密模式/分组填充方式
 	// PKCS5Padding-以8个字节为一组进行分组加密
@@ -57,8 +57,8 @@ public class P_Sm4Util {
 	 * 
 	 * @explain
 	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws NoSuchProviderException
+	 * @throws
+	 * @throws
 	 */
 	public static byte[] generateKey() throws Exception {
 		return generateKey(DEFAULT_KEY_SIZE);
@@ -95,6 +95,27 @@ public class P_Sm4Util {
 //		Base64Encoder encoder = new Base64Encoder();
 //		Base64 encoder = new Base64();
 		
+//		BASE64Encoder encoder = new BASE64Encoder();
+		String cipherText = "";
+		// 16进制字符串-->byte[]
+		byte[] keyData = ByteUtils.fromHexString(hexKey);
+//		System.out.println(keyData.length);
+		// String-->byte[]
+		byte[] srcData = paramStr.getBytes(ENCODING);
+		// 加密后的数组
+		byte[] cipherArray = encrypt_Ecb_Padding(keyData, srcData);
+		// byte[]-->base64String
+		cipherText = new String(Base64.encode(cipherArray));
+//		cipherText = ByteUtils.toHexString(cipherArray);
+		return cipherText;
+	}
+
+
+	public static String encryptEcb(String hexKey, String paramStr,String charSet)
+			throws Exception {
+//		Base64Encoder encoder = new Base64Encoder();
+//		Base64 encoder = new Base64();
+		ENCODING = charSet;
 //		BASE64Encoder encoder = new BASE64Encoder();
 		String cipherText = "";
 		// 16进制字符串-->byte[]
@@ -211,7 +232,7 @@ public class P_Sm4Util {
 
 	public static void main(String[] args) {
 		try {
-			String json = "ftppub";
+			String json = "000001@|$½鐝ʐµڒ»ӗ¶ù\u0530@|$444333222111000111@|$5000@|$601103010300000283805@|$0@|$@|$@|$@|$\n";
 			// 自定义的32位 16进制密钥713784A8F7284941CB9C1FC522B637BA
 //			String key = "4A65463855397748464F4D6673325938";
 			String key = "4A65463855397748464F4D6673325938";
@@ -222,7 +243,8 @@ public class P_Sm4Util {
 			
 //			System.out.println(cipher.toUpperCase());// 05a087dc798bb0b3e80553e6a2e73c4ccc7651035ea056e43bea9d125806bf41c45b4263109c8770c48c5da3c6f32df444f88698c5c9fdb5b0055b8d042e3ac9d4e3f7cc67525139b64952a3508a7619
 //			System.out.println(verifyEcb(key, cipher, json));// true
-			json = decryptEcb(key, "krnjSOxZn636gnu2E1vq9g==");
+			json = decryptEcb(key, "hcXDOVn2gu5rSSQEurNDfiEfmjohiHSNszg0dVkzLb9sRApzQGEtk3RNL9ABAECRB0ow7e0vkawK1yOj3xSytHg7LJC+crhvZhOEReIvWu63uSOoK8xuYwe9cufSbr3P");
+
 			System.out.println(json);
 //			System.out.println(ByteUtils.toHexString(generateKey())
 //					.toUpperCase());

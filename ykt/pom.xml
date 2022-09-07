@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.56</version>
+            <version>1.2.75</version>
         </dependency>
         <!-- httpclient -->
         <dependency>
@@ -127,7 +127,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
-            <scope>true</scope>
+            <!--<scope>true</scope>-->
         </dependency>
 
         <!-- 打包 -->
@@ -163,9 +163,15 @@
             <artifactId>jxl</artifactId>
             <version>2.6.12</version>
         </dependency>
+
         <dependency>
             <groupId>e-icebule</groupId>
             <artifactId>commons.lang.2.5</artifactId>
+            <version>2.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>bcprov</groupId>
+            <artifactId>bcprov</artifactId>
             <version>2.6.3</version>
         </dependency>
 
