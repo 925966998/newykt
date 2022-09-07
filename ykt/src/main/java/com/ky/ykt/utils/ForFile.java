@@ -45,9 +45,9 @@ public class ForFile {
          */
         public static boolean writeFileContent(String filepath,String newstr) throws IOException {
             Boolean bool = false;
-           // byte[] bytes = newstr.getBytes(Charset.forName("GB18030"));
-//            String str4 = new String(bytes, "GB18030");
-            String filein = newstr;//新写入的行，换行
+            byte[] bytes = newstr.getBytes(Charset.forName("GB18030"));
+            String str4 = new String(bytes, "GB18030");
+            String filein = str4;//新写入的行，换行
 
             String temp  = "";
 
@@ -75,7 +75,9 @@ public class ForFile {
                 fos = new FileOutputStream(file);
                 pw = new PrintWriter(fos);
                 //pw = new PrintWriter(new OutputStreamWriter(fos, "GB18030"));
-                pw.write(buffer.toString().toCharArray());
+                String s = P_Sm4Util.encryptEcb("4A65463855397748464F4D6673325938", buffer.toString(),"GB18030");
+                pw.write(s.toCharArray());
+                //pw.write(buffer.toString().toCharArray());
 
                 pw.flush();
                 bool = true;

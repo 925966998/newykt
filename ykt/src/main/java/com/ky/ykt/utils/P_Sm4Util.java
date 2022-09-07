@@ -232,7 +232,7 @@ public class P_Sm4Util {
 
 	public static void main(String[] args) {
 		try {
-			String json = "000001@|$½鐝ʐµڒ»ӗ¶ù\u0530@|$444333222111000111@|$5000@|$601103010300000283805@|$0@|$@|$@|$@|$\n";
+			String json = "000001@|$?鐝??????ù\u0530@|$444333222111000111@|$5000@|$601103010300000283805@|$0@|$@|$@|$@|$\n";
 			// 自定义的32位 16进制密钥713784A8F7284941CB9C1FC522B637BA
 //			String key = "4A65463855397748464F4D6673325938";
 			String key = "4A65463855397748464F4D6673325938";
@@ -243,9 +243,12 @@ public class P_Sm4Util {
 			
 //			System.out.println(cipher.toUpperCase());// 05a087dc798bb0b3e80553e6a2e73c4ccc7651035ea056e43bea9d125806bf41c45b4263109c8770c48c5da3c6f32df444f88698c5c9fdb5b0055b8d042e3ac9d4e3f7cc67525139b64952a3508a7619
 //			System.out.println(verifyEcb(key, cipher, json));// true
-			json = decryptEcb(key, "hcXDOVn2gu5rSSQEurNDfiEfmjohiHSNszg0dVkzLb9sRApzQGEtk3RNL9ABAECRB0ow7e0vkawK1yOj3xSytHg7LJC+crhvZhOEReIvWu63uSOoK8xuYwe9cufSbr3P");
+			//json = decryptEcb(key, "sRP+EprvZ/2AUjim4MmWRPa1SrE4QyEqcXjggQZHzQFRq/ElbKwKYv8SpPPFsgq7KbC3khbdHVKpQY45pJpMDmWbvzR/adf5i83RzgZGEh1+8LxJp1mgWI3b6MbtBpCF");
+			json = decryptEcb(key, "dVS3PAtNQ1ydykAS8Az6wISj0JQH3arAyz8XjOPfdq7SMY5WNA+wE6ZH7Hujl9rPutaDIy8VkJFCqIfPR9N8lH+lTC4dJmCU+oDOfp9uIFDVfDU3VpGgLX5iQBZIUeR+");
+			//json = decryptEcb(key, "dVS3PAtNQ1ydykAS8Az6wISj0JQH3arAyz8XjOPfdq7SMY5WNA+wE6ZH7Hujl9rPutaDIy8VkJFCqIfPR9N8lH+lTC4dJmCU+oDOfp9uIFDVfDU3VpGgLX5iQBZIUeR+");
 
 			System.out.println(json);
+			System.out.println(getEncoding(json));
 //			System.out.println(ByteUtils.toHexString(generateKey())
 //					.toUpperCase());
 //			System.out.println(ByteUtils.toHexString(generateKey(256))
@@ -253,6 +256,47 @@ public class P_Sm4Util {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 判断字符串的编码
+	 * @param str
+	 * @return
+	 */
+	public static String getEncoding(String str){
+		String encode = "GB2312";
+		try{
+			if(str.equals(new String(str.getBytes(encode),encode))){
+				String s = encode;
+				return s;
+			}
+		}catch(Exception exception){
+		}
+		encode = "ISO-8859-1";
+		try{
+			if(str.equals(new String(str.getBytes(encode),encode))){
+				String s1 = encode;
+				return s1;
+			}
+		}catch(Exception exception1){
+		}
+		encode = "UTF-8";
+		try{
+			if(str.equals(new String(str.getBytes(encode),encode))){
+				String s2 = encode;
+				return s2;
+			}
+		}catch(Exception exception2){
+		}
+		encode = "GBK";
+		try{
+			if(str.equals(new String(str.getBytes(encode),encode))){
+				String s3 = encode;
+				return s3;
+			}
+		}catch(Exception exception3){
+		}
+		return "";
 	}
 
 }

@@ -316,6 +316,8 @@ public class BankFileController {
             //personEntity.getProjectId()
         }
         logger.info("文件内容 {}",writeResult);
+/*
+
         FileOutputStream fileOutputStream = new FileOutputStream(fileName1);
         String wwe = encryptEcb(hexKey,writeResult,"GB18030");
         logger.info("加密之后的文件内容 {}",wwe);
@@ -324,13 +326,15 @@ public class BankFileController {
         fileOutputStream.flush();
         fileOutputStream.close();
         logger.info("文件输出完毕 {}",fileName1);
-        //writeFileContent(fileName1,a);
+*/
+
+        writeFileContent(fileName1,writeResult);
         ServicePull service = new ServicePull();
         service.setBody(body);
         service.setHead(head);
         String s1 = convertToXmlService(service, "UTF-8");
         logger.info("convertToXmlService result is {}", s1 );
-        String d = encryptEcb(hexKey, s1);
+        String d = encryptEcb(hexKey, s1,"UTF-8");
         String b = getByteStream(d);
         String c = b + infoId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
         logger.info("加密后的xml {},长度 {},拼装好的报文 {}",d,b,c);

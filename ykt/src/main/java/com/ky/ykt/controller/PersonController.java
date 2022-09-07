@@ -1028,7 +1028,7 @@ public class PersonController {
         service.setBody(body);
         service.setHead(head);
         String s1 = convertToXmlService(service, "UTF-8");
-        String d = encryptEcb(hexKey, s1);
+        String d = encryptEcb(hexKey, s1,"utf-8");
         String z = getByteStream(d);
         String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
         logger.info("报头{}",y);
