@@ -41,6 +41,7 @@ public class ProjectDetailService {
     ProjectMapper projectMapper;
     @Autowired
     ProjectSourceMapper projectSourceMapper;
+
     public Object queryAll(Map params) {
         List<ProjectDetailEntity> projectDetailEntities = projectDetailMapper._queryAll(params);
         return projectDetailEntities;
@@ -55,14 +56,14 @@ public class ProjectDetailService {
         List<ProjectDetailEntity> list = projectDetailMapper._queryPage(params);
         List<ProjectDetailEntity> list1 = new ArrayList<>();
         for (ProjectDetailEntity projectDetailEntity : list) {
-            List<PersonEntity> personEntities = personMapper.queryProjectId(projectDetailEntity.getId());
+            List<PersonEntity> personEntities = personMapper.queryProjectId1(projectDetailEntity.getId());
             BigDecimal zero = BigDecimal.ZERO;
-            if(personEntities.size()>0 && personEntities != null){
-        for (int i = 0; i < personEntities.size(); i++){
-            if(personEntities.get(i).getStatus().equals("0") ||  personEntities.get(i).getStatus().equals("4")){
-                zero = zero.add(new BigDecimal(personEntities.get(i).getGrantAmount()));
-            }
-        }
+            if (personEntities.size() > 0 && personEntities != null) {
+                for (int i = 0; i < personEntities.size(); i++) {
+                    /*if (personEntities.get(i).getStatus().equals("0") || personEntities.get(i).getStatus().equals("4")) {*/
+                        zero = zero.add(new BigDecimal(personEntities.get(i).getGrantAmount()));
+                   /* }*/
+                }
             }
             //统计成功的
             ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());

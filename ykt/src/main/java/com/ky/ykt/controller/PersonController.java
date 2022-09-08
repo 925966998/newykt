@@ -3,9 +3,7 @@ package com.ky.ykt.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ky.ykt.entity.*;
-import com.ky.ykt.entity.xml.BodyCheckOne;
-import com.ky.ykt.entity.xml.Head;
-import com.ky.ykt.entity.xml.ServiceCheckOne;
+import com.ky.ykt.entity.xml.*;
 import com.ky.ykt.excle.ExcelHead;
 import com.ky.ykt.excle.ExcelStyle;
 import com.ky.ykt.excle.ExcelUtils;
@@ -40,9 +38,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.ky.ykt.interceptor.DeleteFileSchedul.delFolder;
+import static com.ky.ykt.utils.ForFile.createFile;
+import static com.ky.ykt.utils.ForFile.writeFileContent;
 import static com.ky.ykt.utils.P_Sm4Util.decryptEcb;
 import static com.ky.ykt.utils.P_Sm4Util.encryptEcb;
 import static com.ky.ykt.utils.xmlUtilToBean.convertToXmlService;
+import static com.ky.ykt.utils.xmlUtilToBean.xmlToBean;
 
 /**
  *
@@ -78,10 +80,13 @@ public class PersonController {
 
     private static String CallUser = "350355000001";
     private static String checkId = "YH008";
+    private static String checkAllId = "YH010";
     private static String BankNo = "402161002352";
     private static String BankDep = "601103";
     @Value("${hexKey}")
     private String hexKey;
+    //生成文件路径
+    private static String path = "D:\\file\\";
 
     /**
      * 根据条件查询数据（不分页）
@@ -136,8 +141,8 @@ public class PersonController {
                 if (personEntity.getId() != null && personEntity.getId().length() > 0) {
                     //ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntity.getProjectId());
                     //ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
-                    PersonUploadEntity personUploadEntity = personUploadMapper.queryPersonIdProject(personEntity.getId(),personEntity.getProjectId());
-                    if(personUploadEntity != null){
+                    PersonUploadEntity personUploadEntity = personUploadMapper.queryPersonIdProject(personEntity.getId(), personEntity.getProjectId());
+                    if (personUploadEntity != null) {
                         //删除默认人员信息
                         personUploadMapper.deleteIdcardNo(personUploadEntity.getIdCardNo());
                         personUploadEntity.setPhone(personEntity.getPhone());
@@ -240,10 +245,10 @@ public class PersonController {
                 departmentIdList.add(user.getDepartmentId());
                 params.put("departmentIdList", departmentIdList);
                 params.put("departmentIdListFlag", "departmentIdListFlag");
-                params.put("userProjectType","userProjectType");
+                params.put("userProjectType", "userProjectType");
             }
-            if(params.get("status") != null){
-                if(params.get("status").equals("2")){
+            if (params.get("status") != null) {
+                if (params.get("status").equals("2")) {
                     DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
                     AreasEntity areasEntity = areasMapper._get(departmentEntity.getAreaId());
                     params.put("level", areasEntity.getLevel());
@@ -251,27 +256,27 @@ public class PersonController {
                     params.put("userId", user.getId());
                 }
             }
-        }else  if (user.getRoleId().equals("c4d895ca-9dd7-4c58-b686-d078d65422ac")){
+        } else if (user.getRoleId().equals("c4d895ca-9dd7-4c58-b686-d078d65422ac")) {
             params.put("issuingUnit", user.getDepartmentId());
-            if(params.get("status") != null){
-                if(params.get("status").equals("2")){
+            if (params.get("status") != null) {
+                if (params.get("status").equals("2")) {
                     List<ProjectTypeEntity> projectTypeEntities = departmentMapper.queryProjectType(user.getDepartmentId());
                     List<String> projectTypeList = new ArrayList<String>();
-                    if(projectTypeEntities != null && projectTypeEntities.size()>0){
+                    if (projectTypeEntities != null && projectTypeEntities.size() > 0) {
                         for (int i = 0; i < projectTypeEntities.size(); i++) {
-                            ProjectTypeEntity projectTypeEntity =  projectTypeEntities.get(i);
+                            ProjectTypeEntity projectTypeEntity = projectTypeEntities.get(i);
                             List<ProjectEntity> projectEntities = projectMapper.queryProjectType(projectTypeEntity.getId());
-                            if(projectEntities != null && projectEntities.size()>0){
+                            if (projectEntities != null && projectEntities.size() > 0) {
                                 for (int j = 0; j < projectEntities.size(); j++) {
-                                    ProjectEntity projectEntity =  projectEntities.get(j);
+                                    ProjectEntity projectEntity = projectEntities.get(j);
                                     projectTypeList.add(projectEntity.getId());
                                 }
-                            }else{
+                            } else {
                                 params.put("statusTwo", "");
                             }
                         }
                         params.put("statusTwo", projectTypeList);
-                    }else{
+                    } else {
                         params.put("statusTwo", "");
 
                     }
@@ -285,7 +290,7 @@ public class PersonController {
                         }
 
                     }
-                    params.put("stringList",strings);
+                    params.put("stringList", strings);
                 }
             }
 
@@ -337,10 +342,10 @@ public class PersonController {
                 departmentIdList.add(user.getDepartmentId());
                 params.put("departmentIdList", departmentIdList);
                 params.put("departmentIdListFlag", "departmentIdListFlag");
-                params.put("userProjectType","userProjectType");
+                params.put("userProjectType", "userProjectType");
             }
-            if(params.get("status") != null){
-                if(params.get("status").equals("2")){
+            if (params.get("status") != null) {
+                if (params.get("status").equals("2")) {
                     DepartmentEntity departmentEntity = departmentMapper._get(user.getDepartmentId());
                     AreasEntity areasEntity = areasMapper._get(departmentEntity.getAreaId());
                     params.put("level", areasEntity.getLevel());
@@ -348,27 +353,27 @@ public class PersonController {
                     params.put("userId", user.getId());
                 }
             }
-        }else  if (user.getRoleId().equals("c4d895ca-9dd7-4c58-b686-d078d65422ac")){
+        } else if (user.getRoleId().equals("c4d895ca-9dd7-4c58-b686-d078d65422ac")) {
             params.put("issuingUnit", user.getDepartmentId());
-            if(params.get("status") != null){
-                if(params.get("status").equals("2")){
+            if (params.get("status") != null) {
+                if (params.get("status").equals("2")) {
                     List<ProjectTypeEntity> projectTypeEntities = departmentMapper.queryProjectType(user.getDepartmentId());
                     List<String> projectTypeList = new ArrayList<String>();
-                    if(projectTypeEntities != null && projectTypeEntities.size()>0){
+                    if (projectTypeEntities != null && projectTypeEntities.size() > 0) {
                         for (int i = 0; i < projectTypeEntities.size(); i++) {
-                            ProjectTypeEntity projectTypeEntity =  projectTypeEntities.get(i);
+                            ProjectTypeEntity projectTypeEntity = projectTypeEntities.get(i);
                             List<ProjectEntity> projectEntities = projectMapper.queryProjectType(projectTypeEntity.getId());
-                            if(projectEntities != null && projectEntities.size()>0){
+                            if (projectEntities != null && projectEntities.size() > 0) {
                                 for (int j = 0; j < projectEntities.size(); j++) {
-                                    ProjectEntity projectEntity =  projectEntities.get(j);
+                                    ProjectEntity projectEntity = projectEntities.get(j);
                                     projectTypeList.add(projectEntity.getId());
                                 }
-                            }else{
+                            } else {
                                 params.put("statusTwo", "");
                             }
                         }
                         params.put("statusTwo", projectTypeList);
-                    }else{
+                    } else {
                         params.put("statusTwo", "");
 
                     }
@@ -382,7 +387,7 @@ public class PersonController {
                         }
 
                     }
-                    params.put("stringList",strings);
+                    params.put("stringList", strings);
                 }
             }
         }
@@ -407,15 +412,15 @@ public class PersonController {
 
         List<ProjectTypeEntity> projectTypeEntities = projectTypeMapper.queryByProjectTypeId(projectTypeId);
         for (PersonEntity per : distProject) {
-            if(per.getProjectName().equals(projectTypeEntities.get(0).getName())){
-            ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(per.getProjectId());
-            ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
-            params.remove("stringList");
-            params.put("itemId",projectEntity.getId());
-            List<PersonEntity> personEntities1 = personMapper._queryAll(params);
-            for (PersonEntity personEntity : personEntities1) {
-                //projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-                //projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
+            if (per.getProjectName().equals(projectTypeEntities.get(0).getName())) {
+                ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(per.getProjectId());
+                ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
+                params.remove("stringList");
+                params.put("itemId", projectEntity.getId());
+                List<PersonEntity> personEntities1 = personMapper._queryAll(params);
+                for (PersonEntity personEntity : personEntities1) {
+                    //projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().add(new BigDecimal(personEntity.getGrantAmount())));
+                    //projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
 
                     projectDetailEntity.setState(0);
                     projectDetailMapper._updateEntity(projectDetailEntity);
@@ -537,8 +542,8 @@ public class PersonController {
         String filePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         //对文件名进行修改
         String[] split = fileName.split("\\.");
-        fileName = UUID.randomUUID().toString()+"."+split[1];
-        String path = filePath +fileName;
+        fileName = UUID.randomUUID().toString() + "." + split[1];
+        String path = filePath + fileName;
         File uploadFile = new File(path);
         List<ExcelHead> headList = personMapper._queryColumnAndComment();
         SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
@@ -550,8 +555,6 @@ public class PersonController {
             InputStream inputStream = new FileInputStream(uploadFile);
             List<PersonEntity> personEntities = ExcelUtils.readExcelToEntity(PersonEntity.class, inputStream, uploadFile.getName(), headList);
 
-            //计算发放剩余金额
-            //BigDecimal bigDecimal = new BigDecimal(BigInteger.ZERO);
             //校验录入的表的字段是否合格
             //EXCAL表身份证号校验
             //String idCardNoRegex = "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)|(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)";
@@ -559,164 +562,169 @@ public class PersonController {
             //EXCAL手机号校验
             //String phoneRegex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\\d{8}$";
             int i = 1;
-      for (PersonEntity personEntity : personEntities) {
-          i++;
-            if (StringUtils.isEmpty(personEntity.getName())
-                || StringUtils.isEmpty(personEntity.getGrantAmount())
-                || StringUtils.isEmpty(personEntity.getCounty())
-                || StringUtils.isEmpty(personEntity.getAddress())
-                || StringUtils.isEmpty(personEntity.getCounty())
-                || StringUtils.isEmpty(personEntity.getTown())
-                || StringUtils.isEmpty(personEntity.getVillage())
-                || StringUtils.isEmpty(personEntity.getBankCardNo())
-                || StringUtils.isEmpty(personEntity.getOpeningBank())
-                || StringUtils.isEmpty(personEntity.getIdCardNo())) {
-                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "有数据为空，请检查后录取<br>");
-            }
-            boolean idCardMatches = personEntity.getIdCardNo().matches(idCardNoRegex);
-            if (personEntity.getIdCardNo() == null
-                || personEntity.getIdCardNo() == ""
-                || idCardMatches == false) {
-                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的身份证号有误，请重新录入<br>");
-            }
-        // 身份账号+银行卡号+发放部门+资金项目 需要唯一
-        PersonEntity personEntity2 =
-            personMapper.queryByIdCardNoProject(
-                personEntity.getIdCardNo(), projectId);
-            if (personEntity2 != null) {
-                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "信息已经录过，请检查后再重新录入<br>");
-            }
-            // 本次录入检查唯一
-            if (personEntityList != null && personEntityList.size() > 0) {
-              for (int j = 0; j < personEntityList.size(); j++) {
-                PersonEntity personEntity1 = personEntityList.get(j);
-                if (personEntity1.getIdCardNo().equals(personEntity.getIdCardNo())) {
-                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的身份证号已录过，请检查后再重新录入<br>");
+            for (PersonEntity personEntity : personEntities) {
+                i++;
+                if (StringUtils.isEmpty(personEntity.getName())
+                        || StringUtils.isEmpty(personEntity.getGrantAmount())
+                        || StringUtils.isEmpty(personEntity.getCounty())
+                        || StringUtils.isEmpty(personEntity.getAddress())
+                        || StringUtils.isEmpty(personEntity.getCounty())
+                        || StringUtils.isEmpty(personEntity.getTown())
+                        || StringUtils.isEmpty(personEntity.getVillage())
+                        || StringUtils.isEmpty(personEntity.getBankCardNo())
+                        || StringUtils.isEmpty(personEntity.getOpeningBank())
+                        || StringUtils.isEmpty(personEntity.getIdCardNo())) {
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "有数据为空，请检查后录取<br>");
                 }
-                  if (personEntity1.getBankCardNo().equals(personEntity.getBankCardNo())) {
-                      stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的银行卡号已录过，请检查后再重新录入<br>");
-                  }
-              }
-            }
-            String personId = UUID.randomUUID().toString();
-
-          List<AreasEntity> townEntities = new ArrayList<>();
-          List<AreasEntity> villageEntities = new ArrayList<>();
-
-            AreasEntity countyEntity = areasMapper.queryByIdByName(personEntity.getCounty(), 2);
-            if (countyEntity == null) {
-                stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属区县在系统不存在<br>");
-                //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属区县在系统不存在");
-            }else{
-                 townEntities = areasMapper.queryByAreasPid(personEntity.getTown(), countyEntity.getId());
-                if (townEntities == null || townEntities.size() == 0) {
-                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属乡镇在系统不存在<br>");
-                    //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属乡镇在系统不存在");
-                }else{
-                    for (AreasEntity areasEntity :
-                            townEntities) {
-                        villageEntities.addAll(areasMapper.queryByAreasPid(personEntity.getVillage(), areasEntity.getId()));
-                    }
-                    if (villageEntities == null || villageEntities.size() == 0) {
-                        stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属村组在系统不存在<br>");
-                        //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属村组在系统不存在");
-                    }else{
-                        //乡镇
-                        List<AreasEntity> collect = villageEntities.stream()
-                                .filter(AreasEntity -> AreasEntity.getName().equals(personEntity.getVillage()))
-                                .collect(Collectors.toList());
+                boolean idCardMatches = personEntity.getIdCardNo().matches(idCardNoRegex);
+                if (personEntity.getIdCardNo() == null
+                        || personEntity.getIdCardNo() == ""
+                        || idCardMatches == false) {
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的身份证号有误，请重新录入<br>");
+                }
+                // 身份账号+银行卡号+发放部门+资金项目 需要唯一
+                PersonEntity personEntity2 =
+                        personMapper.queryByIdCardNoProject(personEntity.getIdCardNo(), projectId);
+                if (personEntity2 != null) {
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "信息已经录过，请检查后再重新录入<br>");
+                }
+                // 本次录入检查唯一
+                if (personEntityList != null && personEntityList.size() > 0) {
+                    for (int j = 0; j < personEntityList.size(); j++) {
+                        PersonEntity personEntity1 = personEntityList.get(j);
+                        if (personEntity1.getIdCardNo().equals(personEntity.getIdCardNo())) {
+                            stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的身份证号已录过，请检查后再重新录入<br>");
+                        }
+                        if (personEntity1.getBankCardNo().equals(personEntity.getBankCardNo())) {
+                            stringBufferError.append("第" + i + "行，" + personEntity.getName() + "的银行卡号已录过，请检查后再重新录入<br>");
+                        }
                     }
                 }
-            }
-          String s = this.getDataCheckOne(personEntity);
-          System.out.println(s);
-          //String s="<?xml version='1.0' encoding='UTF-8'?><Service><Head><ID>YH008</ID><UUID>abbe274a-87e4-4694-a67b-a046c85b229c</UUID><CallDate>2022-09-06</CallDate><CallTime>14:50:10</CallTime><CallUser>350355000001</CallUser><CallRes>1</CallRes><Error></Error><District>140725</District><BankNo>402161002352</BankNo></Head><Body><Name>张旭</Name><IdNo>142423199407130019</IdNo><BankAcct>6212806010004109088</BankAcct><Result>1</Result><ErrorMsg></ErrorMsg><Extend1></Extend1><Extend2></Extend2></Body></Service>";
-          ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s);
-          System.out.println("service1="+service1);
-          if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getID() != null) {
-              if (!service1.getBody().getResult().equals("1")) {
-                  personEntity.setFailReason(service1.getBody().getErrorMsg());
-                  stringBufferError.append("该表中第" + i + "行人员" + service1.getBody().getErrorMsg() + "</br>");
-                  //failReason += service1.getBody().getErrorMsg();
-              }
+                String personId = UUID.randomUUID().toString();
 
-              if(StringUtils.isEmpty(stringBufferError)){
-                  // 查询人员档案
-                  List<PersonUploadEntity> personUploadEntityList =
-                          personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
-                  if (personUploadEntityList.isEmpty() || personUploadEntityList.size() == 0 ) {
+                List<AreasEntity> townEntities = new ArrayList<>();
+                List<AreasEntity> villageEntities = new ArrayList<>();
+
+                AreasEntity countyEntity = areasMapper.queryByIdByName(personEntity.getCounty(), 2);
+                if (countyEntity == null) {
+                    stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属区县在系统不存在<br>");
+                    //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属区县在系统不存在");
+                } else {
+                    townEntities = areasMapper.queryByAreasPid(personEntity.getTown(), countyEntity.getId());
+                    if (townEntities == null || townEntities.size() == 0) {
+                        stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属乡镇在系统不存在<br>");
+                        //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属乡镇在系统不存在");
+                    } else {
+                        for (AreasEntity areasEntity :
+                                townEntities) {
+                            villageEntities.addAll(areasMapper.queryByAreasPid(personEntity.getVillage(), areasEntity.getId()));
+                        }
+                        if (villageEntities == null || villageEntities.size() == 0) {
+                            stringBufferError.append("第" + i + "行，" + personEntity.getName() + "所属村组在系统不存在<br>");
+                            //return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "第" + i + "行，"+personEntity.getName()+"所属村组在系统不存在");
+                        } else {
+                            //乡镇
+                            List<AreasEntity> collect = villageEntities.stream()
+                                    .filter(AreasEntity -> AreasEntity.getName().equals(personEntity.getVillage()))
+                                    .collect(Collectors.toList());
+                        }
+                    }
+                }
+                //发送单个校验
+                String s = this.getDataCheckOne(personEntity);
+                System.out.println(s);
+                if (StringUtils.isNotEmpty(s)) {
+                    ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s);
+                    System.out.println("service1=" + service1);
+                    if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getID() != null) {
+                        if (!service1.getBody().getResult().equals("1")) {
+                            personEntity.setFailReason(service1.getBody().getErrorMsg());
+                            stringBufferError.append("该表中第" + i + "行人员" + service1.getBody().getErrorMsg() + "</br>");
+                            //failReason += service1.getBody().getErrorMsg();
+                        }
+
+                        if (StringUtils.isEmpty(stringBufferError)) {
+                            // 查询人员档案
+                            List<PersonUploadEntity> personUploadEntityList =
+                                    personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
+                            if (personUploadEntityList.isEmpty() || personUploadEntityList.size() == 0) {
                 /*
               return new RestResult(
                   RestResult.ERROR_CODE,
                   RestResult.ERROR_MSG,
                   "第" + i + "行，" + personEntity.getName() + "此人员不存在人员档案中，请补全档案信息，重新上传");
                 */
-                      ProjectEntity projectEntity = projectMapper._get(projectId);
-                      personEntity.setCounty(countyEntity.getId());
-                      personEntity.setTown(townEntities.get(0).getId());
-                      personEntity.setVillage(villageEntities.get(0).getId());
-                      personEntity.setAddress(personEntity.getAddress());
-                      personEntity.setPhone(personEntity.getPhone());
-                      personEntity.setOpeningBank(personEntity.getOpeningBank());
-                      personEntity.setBankCardNo(personEntity.getBankCardNo());
+                                ProjectEntity projectEntity = projectMapper._get(projectId);
+                                personEntity.setCounty(countyEntity.getId());
+                                personEntity.setTown(townEntities.get(0).getId());
+                                personEntity.setVillage(villageEntities.get(0).getId());
+                                personEntity.setAddress(personEntity.getAddress());
+                                personEntity.setPhone(personEntity.getPhone());
+                                personEntity.setOpeningBank(personEntity.getOpeningBank());
+                                personEntity.setBankCardNo(personEntity.getBankCardNo());
 
-                      personEntity.setId(personId);
-                      personEntity.setItemId(projectId);
-                      personEntity.setStatus("3"); // 新增状态是未提交 3
-                      personEntity.setDepartmentId(user.getDepartmentId());
-                      personEntity.setUserId(user.getId());
-                      personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
-                      // personMapper._addEntity(personEntity);
-                      // 去除名字之间的空格
-                      personEntity.setName(personEntity.getName().replaceAll(" ", ""));
-                      personEntityList.add(personEntity);
-                  }else if(personUploadEntityList.size() == 1){
-                      if(!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
-                              || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo())){
-                          //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
-                          return new RestResult(
-                                  RestResult.ERROR_CODE,
-                                  RestResult.ERROR_MSG,
-                                  "第" + i + "行的信息中,"+personEntity.getName()+"姓名/身份证/银行卡与档案中数据不匹配<br>");
-                      }
-                      ProjectEntity projectEntity = projectMapper._get(projectId);
-                      personEntity.setCounty(personUploadEntityList.get(0).getCounty());
-                      personEntity.setTown(personUploadEntityList.get(0).getTown());
-                      personEntity.setVillage(personUploadEntityList.get(0).getVillage());
-                      personEntity.setAddress(personEntity.getAddress());
-                      personEntity.setPhone(personEntity.getPhone());
-                      personEntity.setOpeningBank(personEntity.getOpeningBank());
-                      personEntity.setBankCardNo(personEntity.getBankCardNo());
-                      personEntity.setId(personId);
-                      personEntity.setItemId(projectId);
-                      personEntity.setStatus("3"); // 新增状态是未提交 3
-                      personEntity.setDepartmentId(user.getDepartmentId());
-                      personEntity.setUserId(user.getId());
-                      personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
-                      // personMapper._addEntity(personEntity);
-                      // 去除名字之间的空格
-                      personEntity.setName(personEntity.getName().replaceAll(" ", ""));
-                      personEntityList.add(personEntity);
-                  }else{
-                      return new RestResult(
-                              RestResult.ERROR_CODE,
-                              RestResult.ERROR_MSG,
-                              "第" + i + "行的信息与档案中数据不匹配<br>");
-                  }
-              }else{
-                  return new RestResult(
-                          RestResult.ERROR_CODE,
-                          RestResult.ERROR_MSG,
-                          stringBufferError);
-              }
-          }else{
-              return new RestResult(
-                      RestResult.ERROR_CODE,
-                      RestResult.ERROR_MSG,
-                      "人员信息有误，请重新发送");
-          }
-
-        }
+                                personEntity.setId(personId);
+                                personEntity.setItemId(projectId);
+                                personEntity.setStatus("3"); // 新增状态是未提交 3
+                                personEntity.setDepartmentId(user.getDepartmentId());
+                                personEntity.setUserId(user.getId());
+                                personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
+                                // personMapper._addEntity(personEntity);
+                                // 去除名字之间的空格
+                                personEntity.setName(personEntity.getName().replaceAll(" ", ""));
+                                personEntityList.add(personEntity);
+                            } else if (personUploadEntityList.size() == 1) {
+                                if (!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
+                                        || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo())) {
+                                    //stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
+                                    return new RestResult(
+                                            RestResult.ERROR_CODE,
+                                            RestResult.ERROR_MSG,
+                                            "第" + i + "行的信息中," + personEntity.getName() + "姓名/身份证/银行卡与档案中数据不匹配<br>");
+                                }
+                                ProjectEntity projectEntity = projectMapper._get(projectId);
+                                personEntity.setCounty(personUploadEntityList.get(0).getCounty());
+                                personEntity.setTown(personUploadEntityList.get(0).getTown());
+                                personEntity.setVillage(personUploadEntityList.get(0).getVillage());
+                                personEntity.setAddress(personEntity.getAddress());
+                                personEntity.setPhone(personEntity.getPhone());
+                                personEntity.setOpeningBank(personEntity.getOpeningBank());
+                                personEntity.setBankCardNo(personEntity.getBankCardNo());
+                                personEntity.setId(personId);
+                                personEntity.setItemId(projectId);
+                                personEntity.setStatus("3"); // 新增状态是未提交 3
+                                personEntity.setDepartmentId(user.getDepartmentId());
+                                personEntity.setUserId(user.getId());
+                                personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
+                                // personMapper._addEntity(personEntity);
+                                // 去除名字之间的空格
+                                personEntity.setName(personEntity.getName().replaceAll(" ", ""));
+                                personEntityList.add(personEntity);
+                            } else {
+                                return new RestResult(
+                                        RestResult.ERROR_CODE,
+                                        RestResult.ERROR_MSG,
+                                        "第" + i + "行的信息与档案中数据不匹配<br>");
+                            }
+                        } else {
+                            return new RestResult(
+                                    RestResult.ERROR_CODE,
+                                    RestResult.ERROR_MSG,
+                                    stringBufferError);
+                        }
+                    } else {
+                        return new RestResult(
+                                RestResult.ERROR_CODE,
+                                RestResult.ERROR_MSG,
+                                "人员信息有误，请重新发送");
+                    }
+                } else {
+                    return new RestResult(
+                            RestResult.ERROR_CODE,
+                            RestResult.ERROR_MSG,
+                            "服务器异常，请稍后重试");
+                }
+            }
             logger.info("execute success {}", personEntities.size());
         } catch (Exception e) {
             logger.error("{}", e);
@@ -725,7 +733,7 @@ public class PersonController {
             return new RestResult(
                     RestResult.ERROR_CODE,
                     RestResult.ERROR_MSG,
-                    stringBufferError);
+                    "服务器异常,请稍后重试");
         } finally {
             uploadFile.delete();
         }
@@ -752,8 +760,8 @@ public class PersonController {
 
         //对文件名进行修改
         String[] split = fileName.split("\\.");
-        fileName = UUID.randomUUID().toString()+"."+split[1];
-        String path = filePath +fileName;
+        fileName = UUID.randomUUID().toString() + "." + split[1];
+        String path = filePath + fileName;
 
         File uploadFile = new File(path);
         List<ExcelHead> headList = personMapper._queryColumnAndComment();
@@ -768,40 +776,23 @@ public class PersonController {
                         || personEntity.getGrantAmount() != null) {
 
                     if (StringUtils.isEmpty(personEntity.getProjectId()) || StringUtils.isEmpty(personEntity.getName()) || StringUtils.isEmpty(personEntity.getBankCardNo()) || StringUtils.isEmpty(personEntity.getGrantAmount())
-                            || StringUtils.isEmpty(personEntity.getIdCardNo()) ) {
+                            || StringUtils.isEmpty(personEntity.getIdCardNo())) {
                         return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "流水号/姓名/银行卡号/身份证号/发放金额/回执状态均不能为空");
                     }
                     Map map = new HashMap();
                     ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntity.getProjectId());
                     map.put("projectId", personEntity.getProjectId());
-                    //map.put("bankCardNo", personEntity.getBankCardNo());
                     map.put("idCardNo", personEntity.getIdCardNo());
                     map.put("departmentId", user.getDepartmentId());
                     PersonEntity personEntity1 = personMapper._queryAll(map).get(0);
-                    /*
-                    if (projectDetailEntity.getParentId() != null) {
-                        map.put("projectId", projectDetailEntity.getParentId());
-                    }
-                    */
                     map.put("personId", personEntity1.getId());
                     PersonReplacementEntity personReplacementEntity = personReplacementMapper.queryPersonId(map);
-                    if(personReplacementEntity == null){
+                    if (personReplacementEntity == null) {
                         PersonReplacementEntity pentity = personReplacementMapper.queryPersonIdtwo(map);
                         if (personEntity.getStatus().contains("成功")) {
                             personEntity1.setStatus("1");
                             personEntity1.setFailReason(" ");
                             pentity.setStatus("1");
-                            /*
-                            //成功发放资金
-                            ProjectEntity projectEntity = projectMapper._get(personEntity1.getItemId());
-                            projectEntity.setPaymentAmount(projectEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-                            projectEntity.setSurplusAmount(projectEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-                            projectMapper._updateEntity(projectEntity);
-
-                            projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-                            projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-                            projectDetailMapper._updateEntity(projectDetailEntity);
-                            */
                         } else if (personEntity.getStatus().contains("失败")) {
                             personEntity1.setStatus("2");
                             personEntity1.setFailReason(personEntity.getFailReason());
@@ -809,7 +800,7 @@ public class PersonController {
                         }
                         personMapper._updateEntity(personEntity1);
                         personReplacementMapper._updateEntity(pentity);
-                    }else{
+                    } else {
                         if (personEntity.getStatus().contains("成功")) {
                             personEntity1.setStatus("1");
                             personEntity1.setFailReason(" ");
@@ -818,16 +809,6 @@ public class PersonController {
                             personEntity1.setStatus("2");
                             personEntity1.setFailReason(personEntity.getFailReason());
                             personReplacementEntity.setStatus("2");
-                            /*
-                            ProjectEntity projectEntity = projectMapper._get(personEntity1.getItemId());
-                            projectEntity.setPaymentAmount(projectEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-                            projectEntity.setSurplusAmount(projectEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-                            projectMapper._updateEntity(projectEntity);
-
-                            projectDetailEntity.setPaymentAmount(projectDetailEntity.getPaymentAmount().subtract(new BigDecimal(personEntity.getGrantAmount())));
-                            projectDetailEntity.setSurplusAmount(projectDetailEntity.getSurplusAmount().add(new BigDecimal(personEntity.getGrantAmount())));
-                            projectDetailMapper._updateEntity(projectDetailEntity);
-                            */
                         }
                         personMapper._updateEntity(personEntity1);
                         personReplacementMapper._updateEntity(personReplacementEntity);
@@ -857,9 +838,9 @@ public class PersonController {
      */
     @SuppressWarnings("rawtypes")
     @RequestMapping(value = "checkIdCard", method = RequestMethod.GET)
-    public Boolean checkIdCard(String idCardNo,String projectId) {
-        logger.info("The PersonController queryByParams method params are {}", idCardNo,projectId);
-        PersonEntity personEntity = personMapper.queryByIdCardNo(idCardNo,projectId);
+    public Boolean checkIdCard(String idCardNo, String projectId) {
+        logger.info("The PersonController queryByParams method params are {}", idCardNo, projectId);
+        PersonEntity personEntity = personMapper.queryByIdCardNo(idCardNo, projectId);
         if (personEntity != null) {
             return true;
         }
@@ -870,7 +851,7 @@ public class PersonController {
     @Log(description = "发放录入提交操作", module = "人员管理")
     @RequestMapping(value = "/doSubmit", method = RequestMethod.POST)
     @Transactional
-    public Object doSubmit(HttpSession session) {
+    public Object doSubmit(HttpSession session) throws Exception {
         SysUserEntity user = (SysUserEntity) session.getAttribute("user");
         HashMap params = new HashMap();
         Object roleCodeSession = session.getAttribute("roleCode");
@@ -899,53 +880,90 @@ public class PersonController {
         params.put("status", "3");//未提交
         String itemId = null;
         List<PersonEntity> personEntities = personMapper._queryAll(params);
+        //ProjectEntity projectEntity = projectMapper._get(personEntities.get(0).getItemId());
         PersonReplacementEntity personReplacementEntity = new PersonReplacementEntity();
         String projectDetailId = UUID.randomUUID().toString();
-        if (personEntities.size() > 0) {
-            itemId = personEntities.get(0).getItemId();
-            ProjectEntity projectEntity = projectMapper._get(itemId);
-            BigDecimal totalAmount = new BigDecimal("0");
-            for (PersonEntity personEntity : personEntities) {
-                BigDecimal bigDecimal = new BigDecimal(personEntity.getGrantAmount());
-                totalAmount = totalAmount.add(bigDecimal);
-                PersonUploadEntity personUploadEntity1 = personUploadMapper._queryPersonId(personEntity.getId());
-                if (personUploadEntity1 != null) {
-                    BeanUtils.copyProperties(personEntity, personUploadEntity1);
-                    personUploadEntity1.setProjectId(projectDetailId);
-                    personUploadEntity1.setProjectType(projectEntity.getProjectType());
-                    personUploadMapper._updateEntity(personUploadEntity1);
-                } else {
-                    params.put("idCardNo",personEntity.getIdCardNo());
-                    params.put("bankCardNo",personEntity.getBankCardNo());
-                    PersonUploadEntity personUploadEntity2 = personUploadMapper.queryPerson(params);
-                    if(personUploadEntity2 == null){
+        /*
+        //批量校验
+        String s = getDataCheckAll(personEntities, projectDetailId);
+        String sb = SocketServer.SoketPull("202.99.212.80", 8167, s);
+        System.out.println("sb=" + sb);
+        String s1 = decryptEcb(hexKey, sb.substring(76));
+        System.out.println("s1=" + s1);
+        ServiceOne service = (ServiceOne) xmlToBean(ServiceOne.class, s1);
+
+        if (service.getHead().getCallRes().equals("1")) {
+            */
+
+            if (personEntities.size() > 0) {
+                itemId = personEntities.get(0).getItemId();
+                ProjectEntity projectEntity = projectMapper._get(itemId);
+                BigDecimal totalAmount = new BigDecimal("0");
+                for (PersonEntity personEntity : personEntities) {
+                    BigDecimal bigDecimal = new BigDecimal(personEntity.getGrantAmount());
+                    totalAmount = totalAmount.add(bigDecimal);
+                    PersonUploadEntity personUploadEntity1 = personUploadMapper._queryPersonId(personEntity.getId());
+                    if (personUploadEntity1 != null) {
+                        BeanUtils.copyProperties(personEntity, personUploadEntity1);
+                        personUploadEntity1.setProjectId(projectDetailId);
+                        personUploadEntity1.setProjectType(projectEntity.getProjectType());
+                        personUploadMapper._updateEntity(personUploadEntity1);
+                    } else {
+                        params.put("idCardNo",personEntity.getIdCardNo());
+                        params.put("bankCardNo",personEntity.getBankCardNo());
+                        PersonUploadEntity personUploadEntity2 = personUploadMapper.queryPerson(params);
+                        if(personUploadEntity2 == null){
+                            PersonUploadEntity personUploadEntity = new PersonUploadEntity();
+                            BeanUtils.copyProperties(personEntity, personUploadEntity);
+                            personUploadEntity.setId(UUID.randomUUID().toString());
+                            personUploadEntity.setProjectType("0");
+                            personUploadMapper._addEntity(personUploadEntity);
+                        }
                         PersonUploadEntity personUploadEntity = new PersonUploadEntity();
                         BeanUtils.copyProperties(personEntity, personUploadEntity);
-                        personUploadEntity.setId(UUID.randomUUID().toString());
-                        personUploadEntity.setProjectType("0");
+                        personUploadEntity.setPersonId(personEntity.getId());
+                        personUploadEntity.setProjectId(projectDetailId);
+                        personUploadEntity.setProjectType(projectEntity.getProjectType());
                         personUploadMapper._addEntity(personUploadEntity);
                     }
-                    PersonUploadEntity personUploadEntity = new PersonUploadEntity();
-                    BeanUtils.copyProperties(personEntity, personUploadEntity);
-                    personUploadEntity.setPersonId(personEntity.getId());
-                    personUploadEntity.setProjectId(projectDetailId);
-                    personUploadEntity.setProjectType(projectEntity.getProjectType());
-                    personUploadMapper._addEntity(personUploadEntity);
+
+                    personReplacementEntity.setId(UUID.randomUUID().toString());
+                    personReplacementEntity.setPersonId(personEntity.getId());
+                    personReplacementEntity.setReplacementAmount(personEntity.getGrantAmount());
+                    personReplacementEntity.setDepartmentId(personEntity.getDepartmentId());
+                    personReplacementEntity.setUserId(user.getId());
+                    personReplacementEntity.setStatus("4");
+                    personReplacementEntity.setProjectId(projectDetailId);
+                    personReplacementMapper._addEntity(personReplacementEntity);
+                    personEntity.setStatus("4");//已提交
+                    personEntity.setProjectId(projectDetailId);
+                    personMapper._updateEntity(personEntity);
                 }
 
-                personReplacementEntity.setId(UUID.randomUUID().toString());
-                personReplacementEntity.setPersonId(personEntity.getId());
-                personReplacementEntity.setReplacementAmount(personEntity.getGrantAmount());
-                personReplacementEntity.setDepartmentId(personEntity.getDepartmentId());
-                personReplacementEntity.setUserId(user.getId());
-                personReplacementEntity.setStatus("4");
-                personReplacementEntity.setProjectId(projectDetailId);
-                personReplacementMapper._addEntity(personReplacementEntity);
-                personEntity.setStatus("4");//已提交
-                personEntity.setProjectId(projectDetailId);
-                personMapper._updateEntity(personEntity);
-            }
+                ProjectDetailEntity projectDetailEntity = new ProjectDetailEntity();
+                projectDetailEntity.setId(projectDetailId);
+                //BigDecimal totalAmount1 = projectEntity.getSurplusAmount();
 
+                projectDetailEntity.setTotalAmount(projectEntity.getTotalAmount());
+                projectDetailEntity.setPaymentAmount(projectEntity.getPaymentAmount());
+                //发放剩余金额
+                projectDetailEntity.setSurplusAmount(projectEntity.getSurplusAmount());
+                projectDetailEntity.setProjectId(itemId);
+                projectDetailEntity.setProjectName(projectEntity.getProjectName());
+                projectDetailEntity.setStartTime(new Date());
+                //操作人
+                projectDetailEntity.setOperUser(user.getId());
+                //操作单位
+                projectDetailEntity.setOperDepartment(user.getDepartmentId());
+                projectDetailEntity.setPaymentDepartment(projectEntity.getPaymentDepartment());
+                projectDetailEntity.setState(0);
+                projectDetailMapper._addEntity(projectDetailEntity);
+
+                return new RestResult(RestResult.SUCCESS_CODE,RestResult.SUCCESS_MSG,"提交成功！");
+            } else {
+                return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "数据不能为空，请重新录入！");
+            }
+            /*
             ProjectDetailEntity projectDetailEntity = new ProjectDetailEntity();
             projectDetailEntity.setId(projectDetailId);
             //BigDecimal totalAmount1 = projectEntity.getSurplusAmount();
@@ -964,17 +982,12 @@ public class PersonController {
             projectDetailEntity.setPaymentDepartment(projectEntity.getPaymentDepartment());
             projectDetailEntity.setState(0);
             projectDetailMapper._addEntity(projectDetailEntity);
-            /*
-            BigDecimal addAmount = totalAmount.add(projectEntity.getPaymentAmount());
+            return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, "成功发送验证！");
 
-            projectEntity.setPaymentAmount(addAmount);
-            projectEntity.setSurplusAmount(projectEntity.getTotalAmount().subtract(addAmount));
-            projectMapper._updateEntity(projectEntity);
-            */
         } else {
-            return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "数据不能为空，请重新录入！！");
+            return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, service.getHead().getError());
         }
-        return new RestResult();
+        */
     }
 
     /**
@@ -985,9 +998,9 @@ public class PersonController {
         Map params = HttpUtils.getParams(request);
         params.put("currentPage", params.get("page"));
         params.put("pageSize", params.get("rows"));
-        if(params.get("areaId") != null && StringUtils.isNotEmpty(params.get("areaId").toString())){
+        if (params.get("areaId") != null && StringUtils.isNotEmpty(params.get("areaId").toString())) {
             AreasEntity areasEntity = areasMapper._get(params.get("areaId").toString());
-            params.put("level",areasEntity.getLevel());
+            params.put("level", areasEntity.getLevel());
         }
         logger.info("The PersonController queryByPage method params are {}", params);
         params = setDepartmentIdForMap(request, params);
@@ -995,10 +1008,10 @@ public class PersonController {
     }
 
     //项目去重
-    public List<PersonEntity> getDistProject(List<PersonEntity> list){
+    public List<PersonEntity> getDistProject(List<PersonEntity> list) {
         for (int i = 0; i < list.size(); i++) {
-            for (int j = i+1; j < list.size(); j++) {
-                if(list.get(i).getProjectId().equals(list.get(j).getProjectId())){
+            for (int j = i + 1; j < list.size(); j++) {
+                if (list.get(i).getProjectId().equals(list.get(j).getProjectId())) {
                     list.remove(j);
                     j--;
                 }
@@ -1028,14 +1041,70 @@ public class PersonController {
         service.setBody(body);
         service.setHead(head);
         String s1 = convertToXmlService(service, "UTF-8");
-        String d = encryptEcb(hexKey, s1,"utf-8");
+        String d = encryptEcb(hexKey, s1, "utf-8");
         String z = getByteStream(d);
         String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
-        logger.info("报头{}",y);
+        logger.info("报头{}", y);
         String sb = SocketServer.SoketPull("202.99.212.80", 8167, y);
-        String s = decryptEcb(hexKey, sb.substring(76,sb.length()));
+        String s = decryptEcb(hexKey, sb.substring(76, sb.length()));
         System.out.println(s);
         return s;
+    }
+
+    public String getDataCheckAll(List<PersonEntity> personEntities, String projectDetailId) throws Exception {
+
+        String fileName = path + "140725" + "To" + BankNo;
+        File file = new File(fileName);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String fileName1 = fileName + File.separator + CallUser + "_" + 140725 + "To" + BankNo + projectDetailId + ".txt";
+        File file1 = new File(fileName1);
+        if (!file1.exists()) {
+            file1.createNewFile();
+        } else {
+            file1.delete();
+            file1.createNewFile();
+        }
+
+        Head head = new Head();
+        head.setID(checkAllId);
+        head.setUUID(projectDetailId);
+        head.setCallDate(DateUtil.getDay());
+        head.setCallTime(DateUtil.getHms());
+        head.setCallUser(CallUser);
+        head.setDistrict("140725");
+        head.setBankNo(BankNo);
+        BodyCheckAll body = new BodyCheckAll();
+        body.setRowCnt(personEntities.size());
+        body.setExtend1("");
+        body.setExtend2("");
+        java.text.DecimalFormat format = new java.text.DecimalFormat("000000");
+        int i = 0;
+        String writeResult = "";
+//        writeResult=personEntities.size()+"@|$"+""+"@|$"+""+"\n";
+        for (PersonEntity personEntity : personEntities
+        ) {
+            i++;
+            writeResult += format.format(i)
+                    + "@|$" + personEntity.getName()
+                    + "@|$" + personEntity.getIdCardNo()
+                    + "@|$" + personEntity.getBankCardNo()
+                    + "@|$" + ""
+                    + "@|$" + ""
+                    + "\n";
+        }
+        System.out.println("wr=" + writeResult);
+
+        writeFileContent(fileName1, writeResult);
+        ServiceCheckAll service = new ServiceCheckAll();
+        service.setBody(body);
+        service.setHead(head);
+        String s1 = convertToXmlService(service, "UTF-8");
+        String d = encryptEcb(hexKey, s1, "UTF-8");
+        String b = getByteStream(d);
+        String c = b + checkAllId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
+        return c;
     }
 
     public String getByteStream(String xml) throws UnsupportedEncodingException {

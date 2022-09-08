@@ -23,7 +23,7 @@ public class Interceptor implements HandlerInterceptor {
     }
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
-        if (request.getRequestURL().toString().contains("login") || request.getRequestURL().toString().contains("wechat")) {
+        if (request.getRequestURL().toString().contains("login") || request.getRequestURL().toString().contains("wechat")|| request.getRequestURL().toString().contains("bankFile")) {
             LicenseVerify licenseVerify = new LicenseVerify();
             return licenseVerify.verify();
         } else {

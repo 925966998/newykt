@@ -178,6 +178,25 @@ public class P_Sm4Util {
 		return decryptStr;
 	}
 
+	public static String decryptEcb(String hexKey, String cipherText,String charSet)
+			throws Exception {
+//		BASE64Decoder decoder = new BASE64Decoder();
+		// 用于接收解密后的字符串
+		String decryptStr = "";
+
+//		if(hexKey==null || "".equals(hexKey)){
+//			hexKey = getDefaultKey();
+//		}
+		// hexString-->byte[]
+		byte[] keyData = ByteUtils.fromHexString(hexKey);
+		// base64String-->byte[]
+		byte[] cipherData = Base64.decode(cipherText);
+		// 解密
+		byte[] srcData = decrypt_Ecb_Padding(keyData, cipherData);
+		// byte[]-->String
+		decryptStr = new String(srcData, charSet);
+		return decryptStr;
+	}
 	/**
 	 * 解密
 	 * 
@@ -232,7 +251,7 @@ public class P_Sm4Util {
 
 	public static void main(String[] args) {
 		try {
-			String json = "000001@|$?鐝??????ù\u0530@|$444333222111000111@|$5000@|$601103010300000283805@|$0@|$@|$@|$@|$\n";
+			String json = "<Service><Head><ID>BT006</ID><UUID>12fc5b58-aedd-42be-85c3-dc53f4512f40</UUID><CallDate>2022-09-08</CallDate><CallTime>17:00:00</CallTime><CallUser>350355000001</CallUser><District>140725</District><BankNo>601103</BankNo></Head><Body><Result>1</Result><ResultReason></ResultReason><SubAmt>105</SubAmt><SubRowCnt>2</SubRowCnt><SucAmt>105</SucAmt><SucRowCnt>2</SucRowCnt><Extend1></Extend1><Extend2></Extend2></Body></Service>\n";
 			// 自定义的32位 16进制密钥713784A8F7284941CB9C1FC522B637BA
 //			String key = "4A65463855397748464F4D6673325938";
 			String key = "4A65463855397748464F4D6673325938";
@@ -244,7 +263,7 @@ public class P_Sm4Util {
 //			System.out.println(cipher.toUpperCase());// 05a087dc798bb0b3e80553e6a2e73c4ccc7651035ea056e43bea9d125806bf41c45b4263109c8770c48c5da3c6f32df444f88698c5c9fdb5b0055b8d042e3ac9d4e3f7cc67525139b64952a3508a7619
 //			System.out.println(verifyEcb(key, cipher, json));// true
 			//json = decryptEcb(key, "sRP+EprvZ/2AUjim4MmWRPa1SrE4QyEqcXjggQZHzQFRq/ElbKwKYv8SpPPFsgq7KbC3khbdHVKpQY45pJpMDmWbvzR/adf5i83RzgZGEh1+8LxJp1mgWI3b6MbtBpCF");
-			json = decryptEcb(key, "dVS3PAtNQ1ydykAS8Az6wISj0JQH3arAyz8XjOPfdq7SMY5WNA+wE6ZH7Hujl9rPutaDIy8VkJFCqIfPR9N8lH+lTC4dJmCU+oDOfp9uIFDVfDU3VpGgLX5iQBZIUeR+");
+			json = decryptEcb(key, "M6jY4tPTvR6s7/22w8n4lyiHK/RnOXwHSHJ8amyD6dQ6Mp1097yvEKNsPFJFtm6P2062kotpfiiZSOPIJFlQejj7UwwjlmR9QedUV4zHbk0Z2EeZAJSmY12x7PGf1dMrpODsttMOqBED35Mc0pLj4+ZzmyPZSbkrOC0+3Vgsj5kzYFX3krAZvreK6jXhX7IEq/6cpgkF6oFDD3zm+iK0sVnTJfRKEAwUH4Y83rgX7aWWlJuuyq77CHcQ0iZI5oltDN4YuCBLxWGkGa+jiyam/nLEdhDXob9VrtjBxZPDo2Tic+tJVFYpFCQWx40k9K+2lPuEEtvTt+a35EpzLU9N7p8LbWvsEEAYpb5ze/lblDw=");
 			//json = decryptEcb(key, "dVS3PAtNQ1ydykAS8Az6wISj0JQH3arAyz8XjOPfdq7SMY5WNA+wE6ZH7Hujl9rPutaDIy8VkJFCqIfPR9N8lH+lTC4dJmCU+oDOfp9uIFDVfDU3VpGgLX5iQBZIUeR+");
 
 			System.out.println(json);

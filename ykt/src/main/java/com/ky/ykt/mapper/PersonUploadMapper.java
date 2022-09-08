@@ -124,7 +124,7 @@ public interface PersonUploadMapper extends BaseMapper {
     PersonUploadEntity querypersonId(@Param("personId") String personId);
 
     @Select("select * from person_upload where idCardNo = #{idCardNo} and bankCardNo = #{bankCardNo} and projectType ='0' ")
-    PersonUploadEntity queryPerson(HashMap params);
+    PersonUploadEntity queryPerson(Map params);
     @Delete("delete from person_upload where idCardNo = #{idCardNo} and projectType = '0' ")
     void deleteIdcardNo(String idCardNo);
     @Select("SELECT * FROM person_upload WHERE personId = #{id} and projectId = #{projectId}")

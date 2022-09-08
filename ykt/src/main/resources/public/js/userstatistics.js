@@ -107,7 +107,11 @@ $("#table").datagrid({
         },
         {field: 'jtzz', title: '所在区县', width: 100, align: 'center',
             formatter: function (value, row, index) {
+            if(row.county == null ||  row.town == null || row.village == null ){
+                return '<div> </div>';
+            }else {
                 return  row.county + '' + row.town+ '' + row.village+''+row.address;
+            }
             }
         },
        /* {field: 'town', title: '所在乡镇', width: 100, align: 'center',},

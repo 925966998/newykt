@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 public class ForFile {
         //生成文件路径
         private static String path = "D:\\file\\";
+    private static String hexKey = "4A65463855397748464F4D6673325938";
 
         //文件路径+名称
         private static String filenameTemp;
@@ -75,7 +76,7 @@ public class ForFile {
                 fos = new FileOutputStream(file);
                 pw = new PrintWriter(fos);
                 //pw = new PrintWriter(new OutputStreamWriter(fos, "GB18030"));
-                String s = P_Sm4Util.encryptEcb("4A65463855397748464F4D6673325938", buffer.toString(),"GB18030");
+                String s = P_Sm4Util.encryptEcb(hexKey, buffer.toString(),"GB18030");
                 pw.write(s.toCharArray());
                 //pw.write(buffer.toString().toCharArray());
 

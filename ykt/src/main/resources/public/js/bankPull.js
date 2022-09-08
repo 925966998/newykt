@@ -81,10 +81,17 @@ $("#table").datagrid({
     columns: [[
         {checkbox: true, field: 'no', width: 100, align: 'center'},
         {field: 'projectTypeName', title: '项目名称', width: 100, align: 'center'},
-        {field: 'cardState', title: '上卡状态', width: 100, align: 'center',
+        {field: 'state', title: '上卡状态', width: 100, align: 'center',
             formatter: function (val, row) {
-                if (val == '5')
-                    return '已上卡，请等待结果';
+                switch (val) {
+                    case 0:  return '<div>待审核</div>';
+                    case 1:  return '<div>审核通过，待发放</div>';
+                    case 2:  return '<div>审核不通过</div>';
+                    case 3:  return '<div>审核通过，已发放</div>';
+                    case 4:  return '<div>已发送上卡</div>';
+                    case 5:  return '<div>上卡成功</div>';
+                    case 6:  return '<div>上卡失败</div>';
+                }
             }
         },
         {field: 'startTime', title: '开始发放时间', width: 100, align: 'center',

@@ -61,10 +61,10 @@ public class StatisticsService {
         StatisticEntity statisticEntity = new StatisticEntity();
         statisticEntity.setUserName("合计");
         statisticEntity.setGrantAmount(isNullBig(bigDecimal));
-        statisticEntity.setCounty(" ");
+        /*statisticEntity.setCounty(" ");
         statisticEntity.setCounty(" ");
         statisticEntity.setAddress(" ");
-        statisticEntity.setVillage(" ");
+        statisticEntity.setVillage(" ");*/
         statisticEntityList.add(statisticEntity);
         long count = personMapper.statisticsCount(params);
         PagerResult pagerResult = new PagerResult(personUploadEntities,statisticEntityList, count, MapUtils.getLongValue(params, "page"),

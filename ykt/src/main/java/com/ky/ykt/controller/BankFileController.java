@@ -15,6 +15,7 @@ import com.ky.ykt.service.ProjectService;
 import com.ky.ykt.utils.DateUtil;
 import com.ky.ykt.utils.GBKUTFutils;
 import com.ky.ykt.utils.HttpUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -68,7 +70,7 @@ public class BankFileController {
     //文件路径+名称
     private static String filenameTemp;
     @Value("${hexKey}")
-    private String hexKey;
+    private static String hexKey;
 
     @Autowired
     ProjectService projectService;
@@ -88,12 +90,15 @@ public class BankFileController {
     ProjectMapper projectMapper;
     @Autowired
     PersonUploadMapper personUploadMapper;
+    @Autowired
+    PersonReplacementMapper personReplacementMapper;
 
     //进入请求上卡接口
     @SuppressWarnings("rawtypes")
     @Log(description = "银行上卡操作", module = "人员管理")
     @RequestMapping(value = "/pullAllInfo", method = RequestMethod.GET)
     public RestResult pullAllInfo(HttpServletRequest request) {
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
         logger.info("进入请求上卡接口");
         try {
             Map params = HttpUtils.getParams(request);
@@ -105,19 +110,24 @@ public class BankFileController {
                 if (projectDetailEntity.getState() != null && projectDetailEntity.getState() != 5) {
                     String dataPull = getDataPull(request, data);
                     String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataPull);
-                    //String sb = SocketServer.SoketPull("127.0.0.1", 8890, dataPull+"/n");
-                    //String sb = null;
-                    System.out.println("sb="+sb);
-                    String s = decryptEcb(hexKey.toString(), sb.substring(76,sb.length()));
-                    System.out.println("s="+s);
+                    System.out.println("sb=" + sb);
+                    String s = decryptEcb(hexKey.toString(), sb.substring(76, sb.length()));
+                    System.out.println("s=" + s);
                     ServiceOne service = (ServiceOne) xmlToBean(ServiceOne.class, s);
                     System.out.println(service.getHead().getID());
+                    BigDecimal bigDecimal = personUploadMapper.queryPaymentAmount(data.get(0).getProjectId());
+
                     if (service.getHead().getCallRes().equals("1")) {
+                        updatePerson(data, user, "成功");
                         projectDetailEntity.setState(5);
-                        projectDetailEntity.setCardState(3);
+                        projectDetailEntity.setPaymentAmount(bigDecimal);
+                        projectDetailEntity.setSurplusAmount(projectDetailEntity.getTotalAmount().subtract(bigDecimal));
                         projectDetailMapper._updateEntity(projectDetailEntity);
                         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, "成功发送上卡");
-                    }else{
+                    } else {
+                        updatePerson(data, user, "失败");
+                        projectDetailEntity.setState(6);
+                        projectDetailMapper._updateEntity(projectDetailEntity);
                         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, service.getHead().getError());
                     }
                 }
@@ -187,7 +197,7 @@ public class BankFileController {
             writeResult += format.format(i) + "@|$" + personEntity.getName() + "@|$" + personEntity.getIdCardNo()
                     + "@|$" + personEntity.getBankCardNo() + "@|$" + "" + "@|$" + "";
         }
-        System.out.println("wr="+writeResult);
+        System.out.println("wr=" + writeResult);
 
         writeFileContent(filenameTemp, encryptEcb(hexKey, writeResult));
         Service service = new Service();
@@ -197,10 +207,9 @@ public class BankFileController {
         String s1 = convertToXmlService(service, "UTF-8");
         String b = this.getByteStream(s1);
         String c = b + checkAllId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + s1;
-        String d = encryptEcb(hexKey, c,"UTF-8");
+        String d = encryptEcb(hexKey, c, "UTF-8");
         System.out.println(s1);
         return d;
-
     }
 
     //单笔生成
@@ -241,26 +250,24 @@ public class BankFileController {
 
 
     public String getDataPull(HttpServletRequest request, List<PersonEntity> personEntities) throws Exception {
-
         logger.info("into BankFileController getDataPull method params personEntities is {}", JSON.toJSONString(personEntities));
-
         Map map = new HashMap();
         map.put("projectId", personEntities.get(0).getProjectId());
         ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntities.get(0).getProjectId());
         List<ProjectEntity> projectEntities = projectMapper.queryProject(map);
-        logger.info("获得补贴项目 {}",JSON.toJSONString(projectEntities));
+        logger.info("获得补贴项目 {}", JSON.toJSONString(projectEntities));
         String fileName = path + "140725" + "To" + BankNo;
         File file = new File(fileName);
-        if(!file.exists()){
+        if (!file.exists()) {
             file.mkdir();
         }
         //createFile(fileName);
         String fileName1 = fileName + File.separator + CallUser + "_" + 140725 + "To" + BankNo + "_" + projectDetailEntity.getId() + ".txt";
         File file1 = new File(fileName1);
-        logger.info("文件路径 {}",file1);
-        if(!file1.exists()){
+        logger.info("文件路径 {}", file1);
+        if (!file1.exists()) {
             file1.createNewFile();
-        }else{
+        } else {
             file1.delete();
             file1.createNewFile();
         }
@@ -274,7 +281,7 @@ public class BankFileController {
         head.setCallUser(CallUser);
         head.setDistrict("140725");
         head.setBankNo(BankNo);
-        logger.info("报文head {}",JSON.toJSONString(head));
+        logger.info("报文head {}", JSON.toJSONString(head));
         BodyPull body = new BodyPull();
         //一卡通测试账户
         //付款人账号
@@ -292,10 +299,9 @@ public class BankFileController {
         body.setExtend4("");
         body.setExtend5("");
         body.setExtend6("");
-        logger.info("报文body {}",JSON.toJSONString(body));
+        logger.info("报文body {}", JSON.toJSONString(body));
         int i = 0;
-       // String writeResult = "000001@|$介休市第一幼儿园@|$444333222111000111@|$5000@|$601103010300000283805@|$0@|$@|$@|$@|$";
-        String writeResult ="";
+        String writeResult = "";
 
         for (PersonEntity personEntity : personEntities
         ) {
@@ -315,7 +321,7 @@ public class BankFileController {
                     + "\n";
             //personEntity.getProjectId()
         }
-        logger.info("文件内容 {}",writeResult);
+        logger.info("文件内容 {}", writeResult);
 /*
 
         FileOutputStream fileOutputStream = new FileOutputStream(fileName1);
@@ -328,24 +334,24 @@ public class BankFileController {
         logger.info("文件输出完毕 {}",fileName1);
 */
 
-        writeFileContent(fileName1,writeResult);
+        writeFileContent(fileName1, writeResult);
         ServicePull service = new ServicePull();
         service.setBody(body);
         service.setHead(head);
         String s1 = convertToXmlService(service, "UTF-8");
-        logger.info("convertToXmlService result is {}", s1 );
-        String d = encryptEcb(hexKey, s1,"UTF-8");
+        logger.info("convertToXmlService result is {}", s1);
+        String d = encryptEcb(hexKey, s1, "UTF-8");
         String b = getByteStream(d);
         String c = b + infoId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
-        logger.info("加密后的xml {},长度 {},拼装好的报文 {}",d,b,c);
+        logger.info("加密后的xml {},长度 {},拼装好的报文 {}", d, b, c);
         return c;
     }
 
 
     //上卡
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = "/checkOneInfo", method = RequestMethod.GET)
-    public RestResult checkOneInfo(HttpServletRequest request) {
+    //@RequestMapping(value = "/checkOneInfo", method = RequestMethod.GET)
+    public RestResult checkOneInfo1(HttpServletRequest request) {
         try {
             Map params = HttpUtils.getParams(request);
             RestResult restResult = (RestResult) personService.queryAll(params);
@@ -408,11 +414,136 @@ public class BankFileController {
         }
     }
 
+    //上卡
+    @SuppressWarnings("rawtypes")
+    //BT009
+    @RequestMapping(value = "/checkOneInfo", method = RequestMethod.POST)
+    public String checkOneInfo(HttpServletRequest request) {
+        logger.info("进入校验回调");
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        String dataCheckAll = "";
+        try {
+            InputStream inStream = request.getInputStream();
+            ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = inStream.read(buffer)) != -1) {
+                outSteam.write(buffer, 0, len);
+            }
+            String result = new String(outSteam.toByteArray(), "UTF-8");
+            String result1 = decryptEcb(hexKey, result);
+            outSteam.close();
+            inStream.close();
+            logger.info("进入校验回调返回的报文 {}", result1);
+            Service service = (Service) xmlToBean(Service.class, result1.substring(76));
+            Head head = service.getHead();
+            System.out.println(service.getHead().getID());
+            dataCheckAll = getCheckAllInfo(service.getHead().getUUID());
+            String fileName = path + "140725" + "To" + BankNo;
+            String fileName1 = fileName + File.separator + CallUser + "_" + 140725 + "To" + BankNo + service.getHead().getUUID() + ".txt";
+
+            File file = new File(fileName1);
+            try {
+                FileInputStream fis = new FileInputStream(file);
+                InputStreamReader isr = new InputStreamReader(fis, "GBK");//FileInputStream字符流转换成字节流要注意编码
+                BufferedReader br = new BufferedReader(isr);
+                String line;//用来保存读取到的数据
+                while ((line = br.readLine()) != null) {//每次读取一行不为空
+                    String s1 = decryptEcb(hexKey, line);
+                    logger.info("解密gbk {}", s1);
+                    String[] s = decryptEcb(hexKey, line).split("\\n");
+                    logger.info("解密gbk去掉换行 {}", s);
+                    BigDecimal bigDecimal = BigDecimal.ZERO;
+                    ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(service.getHead().getUUID());
+                    ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getId());
+                    for (int i = 0; i < s.length; i++) {
+                        String[] aa = s[i].split("@" + "\\|" + "\\$");
+                        if (aa[4].equals("1")) {
+                            Map map = new HashMap();
+                            map.put("idCardNo", aa[2]);
+                            map.put("bankCardNo", aa[3]);
+                            map.put("projectId", projectDetailEntity.getId());
+                            projectDetailEntity.setState(3);
+                            PersonEntity personEntity = personMapper._getPerson(map);
+                            PersonUploadEntity personUploadEntity1 = personUploadMapper._queryPersonId(personEntity.getId());
+                            PersonReplacementEntity personReplacementEntity = new PersonReplacementEntity();
+                            bigDecimal = bigDecimal.add(new BigDecimal(personEntity.getGrantAmount()));
+                            if (personUploadEntity1 != null) {
+                                BeanUtils.copyProperties(personEntity, personUploadEntity1);
+                                personUploadEntity1.setProjectId(service.getHead().getUUID());
+                                personUploadEntity1.setProjectType(projectEntity.getProjectType());
+                                personUploadMapper._updateEntity(personUploadEntity1);
+                            } else {
+                                PersonUploadEntity personUploadEntity2 = personUploadMapper.queryPerson(map);
+                                if (personUploadEntity2 == null) {
+                                    PersonUploadEntity personUploadEntity = new PersonUploadEntity();
+                                    BeanUtils.copyProperties(personEntity, personUploadEntity);
+                                    personUploadEntity.setId(UUID.randomUUID().toString());
+                                    personUploadEntity.setProjectType("0");
+                                    personUploadMapper._addEntity(personUploadEntity);
+                                }
+                                PersonUploadEntity personUploadEntity = new PersonUploadEntity();
+                                BeanUtils.copyProperties(personEntity, personUploadEntity);
+                                personUploadEntity.setPersonId(personEntity.getId());
+                                personUploadEntity.setProjectId(service.getHead().getUUID());
+                                personUploadEntity.setProjectType(projectEntity.getProjectType());
+                                personUploadMapper._addEntity(personUploadEntity);
+                            }
+                            personReplacementEntity.setId(UUID.randomUUID().toString());
+                            personReplacementEntity.setPersonId(personEntity.getId());
+                            personReplacementEntity.setReplacementAmount(personEntity.getGrantAmount());
+                            personReplacementEntity.setDepartmentId(personEntity.getDepartmentId());
+                            personReplacementEntity.setUserId(user.getId());
+                            personReplacementEntity.setStatus("4");
+                            personReplacementEntity.setProjectId(service.getHead().getUUID());
+                            personReplacementMapper._addEntity(personReplacementEntity);
+                            personEntity.setStatus("4");//已提交
+                            personEntity.setProjectId(service.getHead().getUUID());
+                            personMapper._updateEntity(personEntity);
+                            personEntity.setStatus("7");
+                            personService.update(personEntity);
+                        } else {
+                            Map map = new HashMap();
+                            map.put("idCardNo", aa[2]);
+                            map.put("bankCardNo", aa[3]);
+                            map.put("projectId", projectDetailEntity.getId());
+                            PersonEntity personEntity = personMapper._getPerson(map);
+                            personEntity.setStatus("6");
+                            personEntity.setFailReason(aa[5]);
+                            projectDetailEntity.setState(2);
+                            personService.update(personEntity);
+                        }
+                    }
+                    projectDetailEntity.setPaymentAmount(bigDecimal);
+                    projectDetailEntity.setSurplusAmount(projectDetailEntity.getTotalAmount().subtract(bigDecimal));
+                    projectDetailMapper._updateEntity(projectDetailEntity);
+                }
+                br.close();
+                isr.close();
+                fis.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("dataCheckAll {}", dataCheckAll);
+        return dataCheckAll;
+    }
+
 
     //多笔校验
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = "/checkAllInfo", method = RequestMethod.GET)
-    public RestResult checkAllInfo(HttpServletRequest request) {
+    //@RequestMapping(value = "/checkAllInfo", method = RequestMethod.GET)
+    public RestResult checkAllInfo1(HttpServletRequest request) {
         try {
             Map params = HttpUtils.getParams(request);
             RestResult restResult = (RestResult) personService.queryAll(params);
@@ -444,9 +575,91 @@ public class BankFileController {
         }
     }
 
+    //3.5	BT006
+    @RequestMapping(value = "/checkAllInfo", method = RequestMethod.POST)
+    public String checkAllInfo(HttpServletRequest request) throws Exception {
+        logger.info("进入校验回调");
+        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+        String dataCheckAll = "";
+        InputStream inStream = request.getInputStream();
+        ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while ((len = inStream.read(buffer)) != -1) {
+            outSteam.write(buffer, 0, len);
+        }
+        String result = new String(outSteam.toByteArray(), "UTF-8");
+        String result1 = decryptEcb(hexKey, result);
+        outSteam.close();
+        inStream.close();
+        logger.info("进入校验回调返回的报文 {}", result1);
+        Service service = (Service) xmlToBean(Service.class, result1.substring(76));
+        Head head = service.getHead();
+        System.out.println(service.getHead().getID());
+        dataCheckAll = getCheckPullInfo(request, service.getHead().getUUID());
+        String fileName = path + "140725" + "To" + BankNo;
+        String fileName1 = fileName + File.separator + CallUser + "_" + 140725 + "To" + BankNo + service.getHead().getUUID() + ".txt";
 
-
-
+        File file = new File(fileName1);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis, "GBK");//FileInputStream字符流转换成字节流要注意编码
+            BufferedReader br = new BufferedReader(isr);
+            String line;//用来保存读取到的数据
+            while ((line = br.readLine()) != null) {//每次读取一行不为空
+                String s1 = decryptEcb(hexKey, line);
+                System.out.println(s1);
+                String[] s = decryptEcb(hexKey, line).split("\\n");
+                for (int i = 0; i < s.length; i++) {
+                    String[] aa = s[i].split("@" + "\\|" + "\\$");
+                    if (aa[8].equals("1")) {
+                        Map map = new HashMap();
+                        map.put("idCardNo", aa[2]);
+                        map.put("bankCardNo", aa[4]);
+                        ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(service.getHead().getUUID());
+                        map.put("projectId", projectDetailEntity.getId());
+                        List<PersonEntity> personEntities = personMapper._queryAll(map);
+                        if (personEntities.size() > 0) {
+                            for (PersonEntity personEntity : personEntities) {
+                                personEntity.setStatus("1");
+                                personService.update(personEntity);
+                            }
+                        }
+                    } else {
+                        Map map = new HashMap();
+                        map.put("idCardNo", aa[2]);
+                        map.put("bankCardNo", aa[4]);
+                        ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(service.getHead().getUUID());
+                        map.put("projectId", projectDetailEntity.getId());
+                        List<PersonEntity> personEntities = personMapper._queryAll(map);
+                        if (personEntities.size() > 0) {
+                            for (PersonEntity personEntity : personEntities) {
+                                personEntity.setStatus("2");
+                                personEntity.setFailReason(aa[9]);
+                                personService.update(personEntity);
+                            }
+                        }
+                    }
+                }
+                ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(service.getHead().getUUID());
+                projectDetailEntity.setState(3);
+                projectDetailMapper._updateEntity(projectDetailEntity);
+            }
+            br.close();
+            isr.close();
+            fis.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("dataCheckAll {}", dataCheckAll);
+        return dataCheckAll;
+    }
 
 
     //http:47.93.246.103:7011/ky-ykt/bankFile/notifyPullAll
@@ -475,7 +688,7 @@ public class BankFileController {
             Head head = service.getHead();
             System.out.println(service.getHead().getID());
             if (head.getID().equals(notifycheckId)) {
-                dataCheckAll = getCheckAllInfo(request, service.getHead().getUUID());
+                dataCheckAll = getCheckAllInfo(service.getHead().getUUID());
                 String fileName1 = CallUser + "_" + BankNo + "To" + "140725" + "_" + service.getHead().getUUID() + ".txt";
                 filenameTemp = path + fileName1 + "\\" + fileName1;
                 File file = new File(filenameTemp);
@@ -616,8 +829,7 @@ public class BankFileController {
         return dataCheckAll;
     }
 
-    public String getCheckAllInfo(HttpServletRequest request, String id) throws Exception {
-        SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
+    public String getCheckAllInfo(String id) throws Exception {
         Head head = new Head();
         head.setID(notifycheckId);
         head.setUUID(id);
@@ -630,12 +842,13 @@ public class BankFileController {
         head.setBankNo(BankNo);
         ServicePull service = new ServicePull();
         service.setHead(head);
+
         String s1 = convertToXmlService(service, "UTF-8");
-        String b = this.getByteStream(s1);
-        String c = b + notifycheckId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + s1;
-        String d = encryptEcb(hexKey, c);
-        System.out.println(s1);
-        return d;
+        String d = encryptEcb(hexKey, s1, "UTF-8");
+        String b = this.getByteStream(d);
+        String c = b + notifycheckId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
+        System.out.println(c);
+        return c;
     }
 
     public String getCheckPullInfo(HttpServletRequest request, String id) throws Exception {
@@ -717,6 +930,7 @@ public class BankFileController {
             logger.error("exportExcel error:{}", e);
         }
     }
+
     @Autowired
     AreasService areasService;
 
@@ -749,8 +963,8 @@ public class BankFileController {
                     BigDecimal num2 = new BigDecimal(100);
                     String idCardNo = aa[2];
                     PersonEntity personEntity = personMapper.queryIdCardNo(idCardNo);
-                    String county=personEntity.getTown();
-                    String village=personEntity.getVillage();
+                    String county = personEntity.getTown();
+                    String village = personEntity.getVillage();
                     AreasEntity areasEntity = areasService.get(county);
                     AreasEntity areasEntity1 = areasService.get(village);
                     data.add(new String[]{
@@ -778,7 +992,7 @@ public class BankFileController {
             e.printStackTrace();
         }
         resultMap.put("header",
-                new String[]{"姓名", "身份证号", "金额", "卡号", "发放结果", "处理结果","乡镇","村名"});
+                new String[]{"姓名", "身份证号", "金额", "卡号", "发放结果", "处理结果", "乡镇", "村名"});
         resultMap.put("data", data);
         resultMap.put("style", style);
         return resultMap;
@@ -820,6 +1034,45 @@ public class BankFileController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updatePerson(List<PersonEntity> personEntityList, SysUserEntity user, String s) {
+        Map map = new HashMap<>();
+        for (PersonEntity personEntity : personEntityList) {
+            map.put("projectId", personEntity.getProjectId());
+            map.put("idCardNo", personEntity.getIdCardNo());
+            map.put("departmentId", user.getDepartmentId());
+            PersonEntity personEntity1 = personMapper._queryAll(map).get(0);
+            map.put("personId", personEntity1.getId());
+            PersonReplacementEntity personReplacementEntity = personReplacementMapper.queryPersonId(map);
+            if (personReplacementEntity == null) {
+                PersonReplacementEntity pentity = personReplacementMapper.queryPersonIdtwo(map);
+                if (s.contains("成功")) {
+                    personEntity1.setStatus("1");
+                    personEntity1.setFailReason(" ");
+                    pentity.setStatus("1");
+                } else if (s.contains("失败")) {
+                    personEntity1.setStatus("2");
+                    personEntity1.setFailReason(personEntity.getFailReason());
+                    pentity.setStatus("2");
+                }
+                personMapper._updateEntity(personEntity1);
+                personReplacementMapper._updateEntity(pentity);
+            } else {
+                if (s.contains("成功")) {
+                    personEntity1.setStatus("1");
+                    personEntity1.setFailReason(" ");
+                    personReplacementEntity.setStatus("1");
+                } else if (s.contains("失败")) {
+                    personEntity1.setStatus("2");
+                    personEntity1.setFailReason(personEntity.getFailReason());
+                    personReplacementEntity.setStatus("2");
+                }
+                personMapper._updateEntity(personEntity1);
+                personReplacementMapper._updateEntity(personReplacementEntity);
+            }
+        }
+
     }
 
 

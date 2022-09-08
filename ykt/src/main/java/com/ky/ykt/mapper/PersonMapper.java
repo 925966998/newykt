@@ -147,6 +147,9 @@ public interface PersonMapper extends BaseMapper {
     @Select("select * from person where projectId = #{id} and  status != '1'")
     List<PersonEntity> queryProjectId(String id);
 
+    @Select("select * from person where projectId = #{id}")
+    List<PersonEntity> queryProjectId1(String id);
+
     @Delete("delete from person_upload where personId = #{id}")
     void deletePeople(String id);
     @Select("select cast( \n" +

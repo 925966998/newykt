@@ -1,6 +1,7 @@
 package com.ky.ykt;
 
 
+import com.ky.ykt.controller.SocketServerD;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,8 +19,8 @@ public class Application {
 
         System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(Application.class, args);
-//        SocketServerD server = new SocketServerD();
-//        server.startSocketServer(8088);
+        SocketServerD server = new SocketServerD();
+        server.startSocketServer(7012);
     }
 
 }

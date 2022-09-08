@@ -11,11 +11,11 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {"Head","Body"})
 @XmlRootElement(name = "Service")
-public class ServiceCheckOne {
+public class ServiceCheckAll {
     @XmlElement(name="Head")
     private Head Head;
     @XmlElement(name="Body")
-    private BodyCheckOne Body;
+    private BodyCheckAll Body;
 
     public Head getHead() {
         return Head;
@@ -25,11 +25,12 @@ public class ServiceCheckOne {
         this.Head = head;
     }
 
-    public BodyCheckOne getBody() {
+    public BodyCheckAll getBody() {
         return Body;
     }
 
-    public void setBody(BodyCheckOne Body) {
+    public void setBody(BodyCheckAll Body) {
         this.Body = Body;
     }
+
 }

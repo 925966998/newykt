@@ -53,6 +53,9 @@ function doQuery(url,data) {
                         case 1:  return '<div>审核通过，待发放</div>';
                         case 2:  return '<div>审核不通过</div>';
                         case 3:  return '<div>审核通过，已发放</div>';
+                        case 4:  return '<div>已发送上卡</div>';
+                        case 5:  return '<div>上卡成功</div>';
+                        case 6:  return '<div>上卡失败</div>';
                     }
                 }
             },
