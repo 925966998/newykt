@@ -9,18 +9,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.io.IOException;
+
 @SpringBootApplication
 @MapperScan(basePackages = {"com.ky.ykt.mapper"})
 @Configuration
 @EnableTransactionManagement
 public class Application {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws IOException {
         System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(Application.class, args);
         SocketServerD server = new SocketServerD();
-        server.startSocketServer(7012);
+        server.startSocketServer(7011);
     }
 
 }

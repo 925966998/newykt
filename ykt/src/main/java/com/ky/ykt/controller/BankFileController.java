@@ -13,7 +13,6 @@ import com.ky.ykt.service.PersonService;
 import com.ky.ykt.service.ProjectDetailService;
 import com.ky.ykt.service.ProjectService;
 import com.ky.ykt.utils.DateUtil;
-import com.ky.ykt.utils.GBKUTFutils;
 import com.ky.ykt.utils.HttpUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -29,9 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -70,7 +69,7 @@ public class BankFileController {
     //文件路径+名称
     private static String filenameTemp;
     @Value("${hexKey}")
-    private static String hexKey;
+    private String hexKey;
 
     @Autowired
     ProjectService projectService;
@@ -116,7 +115,6 @@ public class BankFileController {
                     ServiceOne service = (ServiceOne) xmlToBean(ServiceOne.class, s);
                     System.out.println(service.getHead().getID());
                     BigDecimal bigDecimal = personUploadMapper.queryPaymentAmount(data.get(0).getProjectId());
-
                     if (service.getHead().getCallRes().equals("1")) {
                         updatePerson(data, user, "成功");
                         projectDetailEntity.setState(5);
@@ -1072,8 +1070,5 @@ public class BankFileController {
                 personReplacementMapper._updateEntity(personReplacementEntity);
             }
         }
-
     }
-
-
 }

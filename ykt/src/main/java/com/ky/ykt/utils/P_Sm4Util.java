@@ -263,7 +263,7 @@ public class P_Sm4Util {
 //			System.out.println(cipher.toUpperCase());// 05a087dc798bb0b3e80553e6a2e73c4ccc7651035ea056e43bea9d125806bf41c45b4263109c8770c48c5da3c6f32df444f88698c5c9fdb5b0055b8d042e3ac9d4e3f7cc67525139b64952a3508a7619
 //			System.out.println(verifyEcb(key, cipher, json));// true
 			//json = decryptEcb(key, "sRP+EprvZ/2AUjim4MmWRPa1SrE4QyEqcXjggQZHzQFRq/ElbKwKYv8SpPPFsgq7KbC3khbdHVKpQY45pJpMDmWbvzR/adf5i83RzgZGEh1+8LxJp1mgWI3b6MbtBpCF");
-			json = decryptEcb(key, "M6jY4tPTvR6s7/22w8n4lyiHK/RnOXwHSHJ8amyD6dQ6Mp1097yvEKNsPFJFtm6P2062kotpfiiZSOPIJFlQejj7UwwjlmR9QedUV4zHbk0Z2EeZAJSmY12x7PGf1dMrpODsttMOqBED35Mc0pLj4+ZzmyPZSbkrOC0+3Vgsj5kzYFX3krAZvreK6jXhX7IEq/6cpgkF6oFDD3zm+iK0sVnTJfRKEAwUH4Y83rgX7aWWlJuuyq77CHcQ0iZI5oltDN4YuCBLxWGkGa+jiyam/nLEdhDXob9VrtjBxZPDo2Tic+tJVFYpFCQWx40k9K+2lPuEEtvTt+a35EpzLU9N7p8LbWvsEEAYpb5ze/lblDw=");
+			json = decryptEcb(key, "GpatOZTzJCH5BjwaBBcWZ5wdznGe+/NufiWigbBPkoaop4S/Mw7gyAT34NSA84bn9D5XPQDfodXSJQK3J7ZyO23cdtOyfi0ZGYQP0qKx2c5clMWg4CO8Xsaz9Cp66XzjFqxC9Mhwe2HoAaXHE+meEtT+ljUjWTgKgmcImh4RvuxIPqTVznURfiQnQSSzz+v5QuoBU1fYoChTb806/xgGwMxJyzGHg5xMjXm5UXuY0Hx2ARnL7LFNlLCNCMnpiJOPVNVQ1tn7YZk0EDq92OIMv5c/eRbRbNnayqO5kR1UR1Lw1wVpsvg9QwfVn9NebA7gGbGvhrSH2cX0K4jD072a0NDgm+9jjxrKZEp0PNppRz/RjGVUE/MS2lrps2SJhKnl2RGUDYmJJiOkgH9JhXo2Gr+TbhA+S249F9BVZoqNIhIlJbl5YU0l/SJh6JLiuuoOIZIufmC6EBz5QKkgk9r5vZuJwklZ0e6paJQADLaoe7QTds6SogaZyCyqRGw7zQDUvpq5DdP7lWI94tB51f7+NjtkRooL0TyUrxS1ZYF0EaEEMO3DIs4EYQa78se2s/wc3gUFxcmRV+87hH3m4DHg9dxz5lX527bvJnsWFe+N5zU=","UTF-8");
 			//json = decryptEcb(key, "dVS3PAtNQ1ydykAS8Az6wISj0JQH3arAyz8XjOPfdq7SMY5WNA+wE6ZH7Hujl9rPutaDIy8VkJFCqIfPR9N8lH+lTC4dJmCU+oDOfp9uIFDVfDU3VpGgLX5iQBZIUeR+");
 
 			System.out.println(json);
