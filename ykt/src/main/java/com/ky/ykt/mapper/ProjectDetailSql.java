@@ -24,7 +24,7 @@ public class ProjectDetailSql extends BaseProvider {
     @Override
     protected String[] getColumns() {
         return new String[]{"projectId", "projectName", "startTime", "lastTime", "endTime", "totalAmount", "paymentAmount"
-                , "surplusAmount", "remark", "state","cardState", "fileId", "reason", "parentId", "paymentDepartment", "operDepartment", "operUser"};
+                , "surplusAmount", "remark", "state", "fileId", "reason", "parentId", "paymentDepartment", "operDepartment", "operUser"};
     }
 
     @Override
@@ -102,7 +102,6 @@ public class ProjectDetailSql extends BaseProvider {
                 "\tpd.startTime,\n" +
                 "\tpd.endTime,\n" +
                 "\tpd.state,\n" +
-                "\tpd.cardState,\n" +
                 "\tpd.reason,pd.totalAmount,d.departmentName as departmentName,dt.departmentName as departmentNames,pt.name as projectTypeName");
         if(StringUtils.isNotBlank(MapUtils.getString(map, "DJFlag")) && map.get("DJFlag").equals("4J")){
             builder.append(" ,upt.userId ");

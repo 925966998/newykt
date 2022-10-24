@@ -38,6 +38,7 @@ function doQuery(url) {
                         return '发放失败';
                 }
             },
+            {field: 'updateTime', title: '时间', width: 100, align: 'center'},
             {field: 'failReason', title: '失败原因', width: 100, align: 'center'},
             {field: "opr", title: '操作', width: 100, align: 'center',
                 formatter: function (val, row) {

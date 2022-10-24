@@ -93,4 +93,7 @@ public interface DepartmentMapper extends BaseMapper {
     int _updateEntity(DepartmentEntity bean);
     @Select("select * from project_type where department = #{departmentId}")
     List<ProjectTypeEntity> queryProjectType(String departmentId);
+
+    @Select("select * from project_type where department = #{departmentId} and id = #{projectTypeId}")
+    ProjectTypeEntity queryProjectTypeOne(@Param("departmentId")String departmentId,@Param("projectTypeId")String projectTypeId);
 }

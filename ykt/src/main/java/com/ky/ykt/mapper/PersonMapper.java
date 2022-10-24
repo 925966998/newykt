@@ -108,8 +108,8 @@ public interface PersonMapper extends BaseMapper {
     @Select("select * from person where idCardNo = #{idCardNo} and itemId = #{projectId}")
     PersonEntity queryByIdCardNoProject(@Param("idCardNo") String idCardNo,@Param("projectId") String projectId);
 
-    @Update("update person set status=4 and failReason = '' where id = #{id} ")
-    int doSubmitAudit(@Param("id") String id);
+    @Update("update person set projectId=#{projectId},status=4 and failReason = '' where id = #{id} ")
+    int doSubmitAudit(@Param("projectId") String projectId,@Param("id") String id);
 
     @Update("update person set status = #{status},auditReason=#{auditReason},auditTime=now() where id = #{id}")
     int audit(Map params);
@@ -142,7 +142,7 @@ public interface PersonMapper extends BaseMapper {
     void deleteProject(String id);
 
     @Delete("delete from person_replacement where projectId = #{id} and personId = #{personId}")
-    void deleteReplaceProjectId(String id,String personId);
+    void deleteReplaceProjectId(@Param("id")String id,@Param("personId")String personId);
 
     @Select("select * from person where projectId = #{id} and  status != '1'")
     List<PersonEntity> queryProjectId(String id);
@@ -152,8 +152,6 @@ public interface PersonMapper extends BaseMapper {
 
     @Delete("delete from person_upload where personId = #{id}")
     void deletePeople(String id);
-    @Select("select cast( \n" +
-            "sum(grantAmount) AS DECIMAL (19, 2) \n" +
-            ") AS grantAmount from person where projectId = #{projectId} and status = '1'")
+    @Select("select cast(sum(grantAmount) AS DECIMAL (19, 2)) AS grantAmount from person where projectId = #{projectId} and status = '1'")
     BigDecimal querySuccess(String projectId);
 }

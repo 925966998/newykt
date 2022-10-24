@@ -93,8 +93,8 @@ public class PersonService {
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, personMapper._deleteForce(id));
     }
 
-    public Object doSubmitAudit(String id) {
-        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, personMapper.doSubmitAudit(id));
+    public Object doSubmitAudit(String projectId,String id) {
+        return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG, personMapper.doSubmitAudit(projectId,id));
     }
 
     public Object push(String id) {

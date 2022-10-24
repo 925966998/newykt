@@ -53,6 +53,7 @@ public class ProjectDetailService {
     }
 
     public RestResult queryPage(Map params) {
+        params.put("logicalDel",0);
         List<ProjectDetailEntity> list = projectDetailMapper._queryPage(params);
         List<ProjectDetailEntity> list1 = new ArrayList<>();
         for (ProjectDetailEntity projectDetailEntity : list) {

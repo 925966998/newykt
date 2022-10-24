@@ -7,6 +7,7 @@ import com.ky.ykt.logUtil.Log;
 import com.ky.ykt.mapper.AreasMapper;
 import com.ky.ykt.mapper.DepartmentMapper;
 import com.ky.ykt.mapper.ProjectAreaMapper;
+import com.ky.ykt.mapper.ProjectDetailMapper;
 import com.ky.ykt.mybatis.PagerResult;
 import com.ky.ykt.mybatis.RestResult;
 import com.ky.ykt.service.AreasService;
@@ -49,6 +50,8 @@ public class ProjectController {
     DepartmentMapper departmentMapper;
     @Autowired
     AreasService areasService;
+    @Autowired
+    ProjectDetailMapper projectDetailMapper;
 
     @RequestMapping(value = "queryByParams", method = RequestMethod.GET, produces = "application/json;UTF-8")
     public Object queryParams(HttpServletRequest request) {
@@ -185,6 +188,7 @@ public class ProjectController {
             for (String id : ids
             ) {
                 projectService.delete(id);
+                projectDetailMapper.deleteProjectId(id);
             }
         }
         return new RestResult(RestResult.SUCCESS_CODE, RestResult.SUCCESS_MSG);

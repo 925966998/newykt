@@ -283,9 +283,9 @@ public class BankFileController {
         BodyPull body = new BodyPull();
         //一卡通测试账户
         //付款人账号
-        body.setPayeeAcctNo("601103010300000250149");
+        body.setPayeeAcctNo("601103010300000207631");
         //付款人名称
-        body.setPayeeAcctName("晋中市财政局一卡通");
+        body.setPayeeAcctName("晋中快云");
         //付款人开户行
         //body.setPayeeAcctDep("402161002352");
         body.setPayeeAcctDep("601103");

@@ -26,7 +26,7 @@ import static com.ky.ykt.utils.P_Sm4Util.encryptEcb;
 import static com.ky.ykt.utils.xmlUtilToBean.convertToXmlService;
 import static com.ky.ykt.utils.xmlUtilToBean.xmlToBean;
 
-public class clientHandler extends Thread{
+public class clientHandler extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketServerD.class);
 
@@ -77,50 +77,65 @@ public class clientHandler extends Thread{
     }
 
 
-    public clientHandler(Socket socket){
+    public clientHandler(Socket socket) {
         this.socket = socket;
     }
-
 
 
     @Override
     public void run() {
         super.run();
-        System.out.println("新客服端连接:"+socket.getInetAddress()+"P:"+socket.getPort());
+        System.out.println("新客服端连接:" + socket.getInetAddress() + "P:" + socket.getPort());
         try {
             //得到打印流,用于数据输出;服务器回送数据使用
-            PrintStream printStream = new PrintStream(socket.getOutputStream());
+            //PrintStream printStream = new PrintStream(socket.getOutputStream());
+            OutputStream outputStream = socket.getOutputStream();
+            //约定的报文头长度
+            int headLen = 8;
+            char [] xmlLen = new char[headLen];
+            int curHeadLength = 0;
             //得到输入流,用于接收数据
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-/*
-            do{
-                String s = bufferedReader.readLine();
-
-                if("bye".equalsIgnoreCase(s)){
-                    flag = false;
-                    //回送
-                    printStream.println("bye");
-                }else{
-                    //打印到屏幕.并回送数据长度
-                    System.out.println(s);
-                    printStream.println("回送"+s.length());
+            //String s = bufferedReader.readLine();
+            while(curHeadLength < headLen){
+                int readLen = bufferedReader.read(xmlLen,curHeadLength,headLen-curHeadLength);
+                //注意这里的判断不能省略 因为当报文结束时read()方法返回值为-1  此时如果我们读到的结束符 ， readLen 就会被赋值为-1 ，那么循环就会继续，结果就会造成xmlLen数组的下标越界，自然会得到错误的结果
+                if(readLen < 0){
+                    break;
                 }
+                curHeadLength += readLen;
+            }
 
-            }while (flag);
-            */
+            int bodyLength = Integer.parseInt(new String(xmlLen))+69;
+            char [] xml = new char[bodyLength];
+            int curBodyLength = 0;
+            while(curBodyLength < bodyLength){
+                int readLen2 = bufferedReader.read(xml,curBodyLength,bodyLength-curBodyLength);
+                if(readLen2 < 0){
+                    break;
+                }
+                curBodyLength += readLen2;
+            }
 
-                //String s = bufferedReader.readLine();
-                String s = "00000620BT006                                                                GpatOZTzJCH5BjwaBBcWZ5wdznGe+/NufiWigbBPkoaop4S/Mw7gyAT34NSA84bn9D5XPQDfodXSJQK3J7ZyO0RwPvrxEY23Kbjdn+MfyR/icne3MJZ3Q2WtHtrLawxq9aGO35Ru0CDmZl6nq+HkQtT+ljUjWTgKgmcImh4RvuxIPqTVznURfiQnQSSzz+v5JpfgXJtZl4YvOJW8RiAJuMxJyzGHg5xMjXm5UXuY0Hx2ARnL7LFNlLCNCMnpiJOPVNVQ1tn7YZk0EDq92OIMv5c/eRbRbNnayqO5kR1UR1Lw1wVpsvg9QwfVn9NebA7gGbGvhrSH2cX0K4jD072a0NDgm+9jjxrKZEp0PNppRz/RjGVUE/MS2lrps2SJhKnl2RGUDYmJJiOkgH9JhXo2Gr+TbhA+S249F9BVZoqNIhJiVtKyKvqUHjooRDi4rHXdbSCy3xFDLU4qaNjKwaGnvGpd4QVhWw5d1lBPFWJDIlwTds6SogaZyCyqRGw7zQDU3LrO+kE6Ws8debnGof+lZTtkRooL0TyUrxS1ZYF0EaEEMO3DIs4EYQa78se2s/wc3gUFxcmRV+87hH3m4DHg9dxz5lX527bvJnsWFe+N5zU=";
-                    //打印到屏幕.并回送数据长度
-                    System.out.println(s);
-            String s1 = checkAllInfo(s);
+            String s = new String(xml).substring(68);
+
+            //String s = bufferedReader.readLine();
+            //String s = "00000620BT006                                                                GpatOZTzJCH5BjwaBBcWZ5wdznGe+/NufiWigbBPkoaop4S/Mw7gyAT34NSA84bn9D5XPQDfodXSJQK3J7ZyO0RwPvrxEY23Kbjdn+MfyR/icne3MJZ3Q2WtHtrLawxq9aGO35Ru0CDmZl6nq+HkQtT+ljUjWTgKgmcImh4RvuxIPqTVznURfiQnQSSzz+v5JpfgXJtZl4YvOJW8RiAJuMxJyzGHg5xMjXm5UXuY0Hx2ARnL7LFNlLCNCMnpiJOPVNVQ1tn7YZk0EDq92OIMv5c/eRbRbNnayqO5kR1UR1Lw1wVpsvg9QwfVn9NebA7gGbGvhrSH2cX0K4jD072a0NDgm+9jjxrKZEp0PNppRz/RjGVUE/MS2lrps2SJhKnl2RGUDYmJJiOkgH9JhXo2Gr+TbhA+S249F9BVZoqNIhJiVtKyKvqUHjooRDi4rHXdbSCy3xFDLU4qaNjKwaGnvGpd4QVhWw5d1lBPFWJDIlwTds6SogaZyCyqRGw7zQDU3LrO+kE6Ws8debnGof+lZTtkRooL0TyUrxS1ZYF0EaEEMO3DIs4EYQa78se2s/wc3gUFxcmRV+87hH3m4DHg9dxz5lX527bvJnsWFe+N5zU=";
+            //打印到屏幕.并回送数据长度
+            System.out.println(s);
+            String s1 = checkAllInfo(s.trim());
             //printStream.println("回送"+s.length());
-            printStream.println(s1);
+            //printStream.println(s1);
+            outputStream.write(s1.getBytes("UTF-8"));
+            //通过shutdownOutput高速服务器已经发送完数据，后续只能接受数据
+            outputStream.flush();
             bufferedReader.close();
-            printStream.close();
-        }catch (Exception e){
+            //printStream.close();
+            outputStream.close();
+            //socket.shutdownOutput();
+        } catch (Exception e) {
             System.out.println("连接异常断开");
-        }finally {
+        } finally {
             //连接关闭
             try {
                 socket.close();
@@ -128,25 +143,13 @@ public class clientHandler extends Thread{
                 e.printStackTrace();
             }
         }
-        System.out.println("客户端已退出"+socket.getInetAddress()+"P:"+socket.getPort());
+        System.out.println("客户端已退出" + socket.getInetAddress() + "P:" + socket.getPort());
     }
 
     public String checkAllInfo(String result) throws Exception {
         logger.info("进入校验回调");
         String dataCheckAll = "";
-        /*
-        InputStream inStream = request.getInputStream();
-        ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int len = 0;
-        while ((len = inStream.read(buffer)) != -1) {
-            outSteam.write(buffer, 0, len);
-        }
-        String result = new String(outSteam.toByteArray(), "UTF-8");
-        outSteam.close();
-        inStream.close();
-        */
-        String result1 = decryptEcb(hexKey, result.substring(76),"UTF-8");
+        String result1 = decryptEcb(hexKey, result, "UTF-8");
         logger.info("进入校验回调返回的报文 {}", result1);
         ServiceFan service = (ServiceFan) xmlToBean(ServiceFan.class, result1);
         Head head = service.getHead();
@@ -162,7 +165,7 @@ public class clientHandler extends Thread{
             BufferedReader br = new BufferedReader(isr);
             String line;//用来保存读取到的数据
             while ((line = br.readLine()) != null) {//每次读取一行不为空
-                String s1 = decryptEcb(hexKey, line,"GBK");
+                String s1 = decryptEcb(hexKey, line, "GBK");
                 System.out.println(s1);
                 String[] s = s1.split("\\n");
                 for (int i = 0; i < s.length; i++) {

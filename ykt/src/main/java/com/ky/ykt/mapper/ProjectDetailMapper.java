@@ -106,4 +106,6 @@ public interface ProjectDetailMapper extends BaseMapper {
     ProjectDetailEntity queryId(@Param("projectId")String projectId);
     @Select("select * from project_detail where projectId = #{id}")
     List<ProjectDetailEntity> querysuccess(String id);
+    @Update("UPDATE project_detail SET logicalDel = 1 WHERE projectId = #{id}")
+    void deleteProjectId(String id);
 }
