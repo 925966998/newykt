@@ -34,13 +34,10 @@ public class SocketServer {
         Socket socket = new Socket(host, port);
         socket.setSoTimeout(50000);
         // 建立连接后获得输出流
+        /*
         OutputStream outputStream = socket.getOutputStream();
-
         socket.getOutputStream().write(message.getBytes("UTF-8"));
-
         outputStream.flush();
-
-
         InputStream inputStream = socket.getInputStream();
         byte[] bytes = new byte[inputStream.read()];
         int len;
@@ -48,8 +45,39 @@ public class SocketServer {
         while ((len = inputStream.read(bytes)) != -1) {
             sb.append(new String(bytes, 0, len, "UTF-8"));
         }
+        */
+
+        OutputStream outputStream = socket.getOutputStream();
+        //约定的报文头长度
+        int headLen = 8;
+        char [] xmlLen = new char[headLen];
+        int curHeadLength = 0;
+        //得到输入流,用于接收数据
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        //String s = bufferedReader.readLine();
+        while(curHeadLength < headLen){
+            int readLen = bufferedReader.read(xmlLen,curHeadLength,headLen-curHeadLength);
+            //注意这里的判断不能省略 因为当报文结束时read()方法返回值为-1  此时如果我们读到的结束符 ， readLen 就会被赋值为-1 ，那么循环就会继续，结果就会造成xmlLen数组的下标越界，自然会得到错误的结果
+            if(readLen < 0){
+                break;
+            }
+            curHeadLength += readLen;
+        }
+
+        int bodyLength = Integer.parseInt(new String(xmlLen))+69;
+        char [] xml = new char[bodyLength];
+        int curBodyLength = 0;
+        while(curBodyLength < bodyLength){
+            int readLen2 = bufferedReader.read(xml,curBodyLength,bodyLength-curBodyLength);
+            if(readLen2 < 0){
+                break;
+            }
+            curBodyLength += readLen2;
+        }
+
+        String sb = new String(xml).substring(68);
+
         System.out.println("get message from server: " + sb);
-        inputStream.close();
         outputStream.close();
         socket.close();
         return sb.toString();

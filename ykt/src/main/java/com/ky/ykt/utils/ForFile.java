@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 public class ForFile {
         //生成文件路径
         private static String path = "D:\\file\\";
-    private static String hexKey = "4A65463855397748464F4D6673325938";
+    private static String hexKey = "C7046F00DF1F8583F1AB0A488A5E470E";
 
         //文件路径+名称
         private static String filenameTemp;

@@ -108,7 +108,7 @@ public class BankFileController {
             if (!(projectDetailEntity.getTotalAmount().compareTo(projectEntity.getTotalAmount()) == 1)) {
                 if (projectDetailEntity.getState() != null && projectDetailEntity.getState() != 5) {
                     String dataPull = getDataPull(request, data);
-                    String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataPull);
+                    String sb = SocketServer.SoketPull("202.99.212.79", 8212, dataPull);
                     System.out.println("sb=" + sb);
                     String s = decryptEcb(hexKey.toString(), sb.substring(76, sb.length()));
                     System.out.println("s=" + s);
@@ -359,7 +359,7 @@ public class BankFileController {
                 return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "请使用多笔校验");
             } else {
                 dataCheckAll = getDataCheckOne(request, data.get(0));
-                String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataCheckAll);
+                String sb = SocketServer.SoketPull("202.99.212.79", 8212, dataCheckAll);
                 String s = decryptEcb(hexKey, sb);
                 System.out.println(s);
                 ServiceCheckOne service = (ServiceCheckOne) xmlToBean(ServiceCheckOne.class, s.substring(76, s.length()));
@@ -556,7 +556,7 @@ public class BankFileController {
                 } else {
                     return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "请使用单笔校验");
                 }
-                String sb = SocketServer.SoketPull("202.99.212.80", 8167, dataCheckAll);
+                String sb = SocketServer.SoketPull("202.99.212.79", 8212, dataCheckAll);
                 String s = decryptEcb(hexKey.toString(), sb);
                 Service service = (Service) xmlToBean(Service.class, s.substring(76, s.length()));
                 System.out.println(service.getHead().getID());
@@ -661,8 +661,8 @@ public class BankFileController {
 
 
     //http:47.93.246.103:7011/ky-ykt/bankFile/notifyPullAll
-    //202.99.212.80
-    //8167/8168
+    //202.99.212.79
+    //8212/8168
     //多笔校验和上卡接口返回
     @RequestMapping(value = "/notifyCheckAll", method = RequestMethod.POST)
     @ResponseBody

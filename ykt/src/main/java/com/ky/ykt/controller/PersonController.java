@@ -900,7 +900,7 @@ public class PersonController {
         /*
         //批量校验
         String s = getDataCheckAll(personEntities, projectDetailId);
-        String sb = SocketServer.SoketPull("202.99.212.80", 8167, s);
+        String sb = SocketServer.SoketPull("202.99.212.79", 8212, s);
         System.out.println("sb=" + sb);
         String s1 = decryptEcb(hexKey, sb.substring(76));
         System.out.println("s1=" + s1);
@@ -1059,7 +1059,7 @@ public class PersonController {
         String z = getByteStream(d);
         String y = z + checkId + "        " + "        " + "        " + "        " + "        " + "        " + "        " + "        " + d;
         logger.info("报头{}", y);
-        String sb = SocketServer.SoketPull("202.99.212.80", 8167, y);
+        String sb = SocketServer.SoketPull("202.99.212.79", 8212, y);
         String s = decryptEcb(hexKey, sb.substring(76, sb.length()));
         System.out.println(s);
         return s;
