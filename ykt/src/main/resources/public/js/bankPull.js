@@ -2,7 +2,7 @@ obj = {
     // 查询
     find: function () {
         $("#table").datagrid('load', {
-            state: 1,
+            state: 3,
             flag: 1,
             projectName: $("#projectNameSearch").val(),
         })
@@ -61,7 +61,7 @@ $("#table").datagrid({
     title: "数据列表",
     iconCls: "icon-left02",
     url: '/ky-ykt/projectDetail/queryPage',
-    queryParams: {state: 4, flag: 1},
+    queryParams: {state: 3},
     fitColumns: true,
     striped: true,
     pagination: true,
@@ -108,8 +108,10 @@ $("#table").datagrid({
                 }
             }
         },
-        {field: 'totalAmount', title: '总金额', width: 100, align: 'center'},
-        {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center'},
+        {field: 'totalAmount', title: '总金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}}},
+        {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}}},
         {field: 'departmentName', title: '发放单位', width: 100, align: 'center'},
         /*
         {field: "opr", title: '操作', width: 100, align: 'center',
@@ -174,4 +176,32 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (var k in o)
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+// 将数字转换成金额显示
+function toMoney(num) {
+    if (num) {
+        if (num == "0") {
+            return '0.00';
+        }
+        if (isNaN(num)) {
+            //alert('金额中含有不能识别的字符');
+            return;
+        }
+        num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+        num = num.toFixed(2); // 保留两位
+        //console.log(num)
+        num = parseFloat(num); // 转成数字
+        num = num.toLocaleString(); // 转成金额显示模式
+        // 判断是否有小数
+        if (num.indexOf('.') === -1) {
+            num = num + '.00';
+        } else {
+            //console.log(num.split('.')[1].length)
+            num = num.split('.')[1].length < 2 ? num + '0' : num;
+        }
+        return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+        return num = null;
+    }
 }

@@ -101,7 +101,7 @@ public class PersonUploadController {
         try {
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("Content-Disposition",
-                    "attachment;filename=" + new String((style.getXlsName() + ".xls").getBytes(), "iso-8859-1"));
+                    "attachment;filename=" + new String((style.getXlsName() + ".xlsx").getBytes(), "iso-8859-1"));
             OutputStream out = response.getOutputStream();
             ExportExcel.export(header, data, style, out);
         } catch (Exception e) {

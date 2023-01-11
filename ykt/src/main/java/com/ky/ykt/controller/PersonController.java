@@ -126,7 +126,7 @@ public class PersonController {
         personEntity1.setBankCardNo(personEntity.getBankCardNo());
         personEntity1.setIdCardNo(personEntity.getIdCardNo());
         String s = this.getDataCheckOne(personEntity1);
-        ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s.substring(77, s.length()));
+        ServiceCheckOne service1 = (ServiceCheckOne) xmlUtilToBean.xmlToBean(ServiceCheckOne.class, s);
         if (service1 != null && service1.getHead().getCallRes() != null && service1.getHead().getID() != null) {
             if (!service1.getBody().getResult().equals("1")) {
                 personEntity.setFailReason(service1.getBody().getErrorMsg());
@@ -135,7 +135,7 @@ public class PersonController {
                 if (personEntity.getId() != null && personEntity.getId().length() > 0) {
                     //ProjectDetailEntity projectDetailEntity = projectDetailMapper._get(personEntity.getProjectId());
                     //ProjectEntity projectEntity = projectMapper._get(projectDetailEntity.getProjectId());
-                    PersonUploadEntity personUploadEntity = personUploadMapper.queryPersonIdProject(personEntity.getId(), personEntity.getProjectId());
+                    PersonUploadEntity personUploadEntity = personUploadMapper.querypersonId(personEntity.getId());
                     if (personUploadEntity != null) {
                         //删除默认人员信息
                         personUploadMapper.deleteIdcardNo(personUploadEntity.getIdCardNo());
@@ -159,6 +159,8 @@ public class PersonController {
                         personUploadMapper._addEntity(personUploadEntity);
                     }
                     return personService.update(personEntity);
+
+
                 } else {
                     SysUserEntity user = (SysUserEntity) request.getSession().getAttribute("user");
                     //单个添加
@@ -351,18 +353,18 @@ public class PersonController {
             params.put("issuingUnit", user.getDepartmentId());
             if (params.get("status") != null) {
                 if (params.get("status").equals("2")) {
-                    ProjectTypeEntity projectTypeEntity = departmentMapper.queryProjectTypeOne(user.getDepartmentId(),projectTypeId);
+                    ProjectTypeEntity projectTypeEntity = departmentMapper.queryProjectTypeOne(user.getDepartmentId(), projectTypeId);
                     List<String> projectTypeList = new ArrayList<String>();
                     if (projectTypeEntity != null) {
-                            List<ProjectEntity> projectEntities = projectMapper.queryProjectType(projectTypeEntity.getId());
-                            if (projectEntities != null && projectEntities.size() > 0) {
-                                for (int j = 0; j < projectEntities.size(); j++) {
-                                    ProjectEntity projectEntity = projectEntities.get(j);
-                                    projectTypeList.add(projectEntity.getId());
-                                }
-                            } else {
-                                params.put("statusTwo", "");
+                        List<ProjectEntity> projectEntities = projectMapper.queryProjectType(projectTypeEntity.getId());
+                        if (projectEntities != null && projectEntities.size() > 0) {
+                            for (int j = 0; j < projectEntities.size(); j++) {
+                                ProjectEntity projectEntity = projectEntities.get(j);
+                                projectTypeList.add(projectEntity.getId());
                             }
+                        } else {
+                            params.put("statusTwo", "");
+                        }
                         params.put("statusTwo", projectTypeList);
                     } else {
                         params.put("statusTwo", "");
@@ -383,12 +385,21 @@ public class PersonController {
         }
         List<ProjectTypeEntity> projectTypeEntities = projectTypeMapper.queryByProjectTypeId(projectTypeId);
         List<PersonEntity> personEntities1 = personMapper._queryAll(params);
-        String projectDetailId = UUID.randomUUID().toString();
         BigDecimal amount = new BigDecimal("0");
+        Map<String, BigDecimal> map = new HashMap<>();
+        List<Map<String, BigDecimal>> mapArrayList = new ArrayList<Map<String, BigDecimal>>();
+        HashMap<String, BigDecimal> map1 = new HashMap<>();
+        if (!projectTypeEntities.isEmpty() && projectTypeEntities != null) {
+            for (PersonEntity personEntity : personEntities1) {
+                map.put(personEntity.getProjectId(), BigDecimal.ZERO);
+            }
+            mapArrayList.add(map);
+        }
         if (!projectTypeEntities.isEmpty() && projectTypeEntities != null) {
             for (PersonEntity personEntity : personEntities1) {
                 //对人员信息校验
                 //发送单个校验
+
                 String s = this.getDataCheckOne(personEntity);
                 logger.info("人员信息 {}", s);
                 if (StringUtils.isNotEmpty(s)) {
@@ -398,43 +409,64 @@ public class PersonController {
                             personEntity.setFailReason(service1.getBody().getErrorMsg());
                             return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, personEntity.getName() + "人员信息有误，请及时修改");
                         }
-                        amount = amount.add(new BigDecimal(personEntity.getGrantAmount()).setScale(2, BigDecimal.ROUND_HALF_UP));
-                        personService.doSubmitAudit(projectDetailId, personEntity.getId());
 
-                        params.put("personId",personEntity.getId());
-                        params.put("projectId",personEntity.getProjectId());
+                        //amount = amount.add(new BigDecimal(personEntity.getGrantAmount()).setScale(2, BigDecimal.ROUND_HALF_UP));
+
+                        personService.doSubmitAudit(personEntity.getProjectId() + "sy", personEntity.getId());
+                        params.put("personId", personEntity.getId());
+                        params.put("projectId", personEntity.getProjectId());
                         PersonReplacementEntity personReplacementEntity = personReplacementMapper.queryPersonIdtwo(params);
-                        personReplacementEntity.setProjectId(projectDetailId);
+                        personReplacementEntity.setProjectId(personEntity.getProjectId() + "sy");
                         personReplacementEntity.setStatus("4");
                         personReplacementMapper._updateEntity(personReplacementEntity);
+                        if (mapArrayList.isEmpty() && mapArrayList.size() == 0) {
+                            map1.put(personEntity.getProjectId(), new BigDecimal(personEntity.getGrantAmount()));
+                            mapArrayList.add(map1);
+                        } else {
+                            for (Map<String, BigDecimal> map2 : mapArrayList) {
+                                for (Map.Entry<String, BigDecimal> entry : map2.entrySet()) {
+                                    if (personEntity.getProjectId().equals(entry.getKey())) {
+                                        map2.put(personEntity.getProjectId(), entry.getValue().add(new BigDecimal(personEntity.getGrantAmount())));
+                                    }
+                                }
+                            }
+                        }
                     } else {
-                       return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "人员信息有误，请重新发送");
+                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "人员信息有误，请重新发送");
                     }
                 } else {
-                   return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "服务器异常，请稍后重试");
+                    return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "服务器异常，请稍后重试");
                 }
             }
         }
+
         logger.info("The PersonController doSubmitAudit success");
-        ProjectDetailEntity projectDetailEntity1 = projectDetailMapper._get(personEntities1.get(0).getProjectId());
-        projectDetailEntity1.setPaymentAmount(projectDetailEntity1.getPaymentAmount().subtract(amount).setScale(2, BigDecimal.ROUND_HALF_UP));
-        projectDetailMapper._updateEntity(projectDetailEntity1);
-        logger.info("update parent project PaymentAmount success {}", projectDetailEntity1.getPaymentAmount().subtract(amount).setScale(2, BigDecimal.ROUND_HALF_UP));
-        ProjectDetailEntity projectDetailEntity = new ProjectDetailEntity();
-        projectDetailEntity.setId(projectDetailId);
-        projectDetailEntity.setParentId(projectDetailEntity1.getId());
-        projectDetailEntity.setTotalAmount(amount);
-        projectDetailEntity.setPaymentAmount(amount);
-        projectDetailEntity.setProjectId(projectDetailEntity1.getProjectId());
-        projectDetailEntity.setProjectName(projectDetailEntity1.getProjectName());
-        projectDetailEntity.setStartTime(new Date());
-        projectDetailEntity.setOperUser(user.getId());
-        projectDetailEntity.setOperDepartment(user.getDepartmentId());
-        projectDetailEntity.setPaymentDepartment(user.getDepartmentId());
-        projectDetailEntity.setSurplusAmount(BigDecimal.ZERO);
-        projectDetailEntity.setState(0);
-        projectDetailMapper._addEntity(projectDetailEntity);
-        logger.info("Create new projectDetailEntity success {}", JSON.toJSONString(projectDetailEntity));
+        for (Map<String, BigDecimal> map3 : mapArrayList) {
+            for (Map.Entry<String, BigDecimal> entry : map3.entrySet()) {
+                System.out.println("key=" + entry.getKey() + "  value=" + entry.getValue());
+                ProjectDetailEntity projectDetailEntity1 = projectDetailMapper._get(entry.getKey());
+                //projectDetailEntity1.setPaymentAmount(entry.getValue().setScale(2, BigDecimal.ROUND_HALF_UP));
+                //projectDetailMapper._updateEntity(projectDetailEntity1);
+                logger.info("update parent project PaymentAmount success {}", entry.getValue().setScale(2, BigDecimal.ROUND_HALF_UP));
+                ProjectDetailEntity projectDetailEntity = new ProjectDetailEntity();
+                projectDetailEntity.setId(entry.getKey() + "sy");
+                projectDetailEntity.setParentId(projectDetailEntity1.getId());
+                projectDetailEntity.setTotalAmount(entry.getValue());
+                projectDetailEntity.setPaymentAmount(entry.getValue());
+                projectDetailEntity.setProjectId(projectDetailEntity1.getProjectId());
+                projectDetailEntity.setProjectName(projectDetailEntity1.getProjectName());
+                projectDetailEntity.setStartTime(new Date());
+                projectDetailEntity.setOperUser(user.getId());
+                projectDetailEntity.setOperDepartment(user.getDepartmentId());
+                projectDetailEntity.setPaymentDepartment(user.getDepartmentId());
+                projectDetailEntity.setSurplusAmount(BigDecimal.ZERO);
+                projectDetailEntity.setState(0);
+                projectDetailMapper._addEntity(projectDetailEntity);
+                logger.info("Create new projectDetailEntity success {}", JSON.toJSONString(projectDetailEntity));
+            }
+        }
+
+
         return new RestResult();
     }
 
@@ -628,6 +660,7 @@ public class PersonController {
                     }
                 }
                 //发送单个校验
+
                 String s = this.getDataCheckOne(personEntity);
                 logger.info("人员信息 {}", s);
                 if (StringUtils.isNotEmpty(s)) {
@@ -637,18 +670,10 @@ public class PersonController {
                             personEntity.setFailReason(service1.getBody().getErrorMsg());
                             stringBufferError.append("该表中第" + i + "行" + service1.getBody().getName() + "的" + service1.getBody().getErrorMsg() + "</br>");
                         }
-
-                        /* if (StringUtils.isEmpty(stringBufferError)) {*/
                         // 查询人员档案
                         List<PersonUploadEntity> personUploadEntityList =
                                 personUploadMapper.queryByIdCardNo(personEntity.getIdCardNo());
                         if (personUploadEntityList.isEmpty() || personUploadEntityList.size() == 0) {
-                /*
-              return new RestResult(
-                  RestResult.ERROR_CODE,
-                  RestResult.ERROR_MSG,
-                  "第" + i + "行，" + personEntity.getName() + "此人员不存在人员档案中，请补全档案信息，重新上传");
-                */
                             ProjectEntity projectEntity = projectMapper._get(projectId);
                             personEntity.setCounty(countyEntity.getId());
                             personEntity.setTown(townEntities.get(0).getId());
@@ -672,10 +697,6 @@ public class PersonController {
                             if (!personEntity.getIdCardNo().equals(personUploadEntityList.get(0).getIdCardNo()) || !personEntity.getName().equals(personUploadEntityList.get(0).getName())
                                     || !personEntity.getBankCardNo().equals(personUploadEntityList.get(0).getBankCardNo())) {
                                 stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
-                                    /*return new RestResult(
-                                            RestResult.ERROR_CODE,
-                                            RestResult.ERROR_MSG,
-                                            "第" + i + "行的信息中," + personEntity.getName() + "姓名/身份证/银行卡与档案中数据不匹配<br>");*/
                             }
                             ProjectEntity projectEntity = projectMapper._get(projectId);
                             personEntity.setCounty(personUploadEntityList.get(0).getCounty());
@@ -691,38 +712,17 @@ public class PersonController {
                             personEntity.setDepartmentId(user.getDepartmentId());
                             personEntity.setUserId(user.getId());
                             personEntity.setIssuingUnit(projectEntity.getPaymentDepartment());
-                            // personMapper._addEntity(personEntity);
                             // 去除名字之间的空格
                             personEntity.setName(personEntity.getName().replaceAll(" ", ""));
                             personEntityList.add(personEntity);
                         } else {
-                                /*return new RestResult(
-                                        RestResult.ERROR_CODE,
-                                        RestResult.ERROR_MSG,
-                                        "第" + i + "行的信息与档案中数据不匹配<br>");*/
                             stringBufferError.append("第" + i + "行的信息中,姓名/身份证/银行卡与档案中数据不匹配<br>");
                         }
-                            /*
-                        } else {
-                            return new RestResult(
-                                    RestResult.ERROR_CODE,
-                                    RestResult.ERROR_MSG,
-                                    stringBufferError);
-                        }
-                        */
                     } else {
-                       /* return new RestResult(
-                                RestResult.ERROR_CODE,
-                                RestResult.ERROR_MSG,
-                                "人员信息有误，请重新发送");*/
                         stringBufferError.append("第" + i + "行的信息中,人员信息有误<br>");
                     }
                 } else {
-                   /* return new RestResult(
-                            RestResult.ERROR_CODE,
-                            RestResult.ERROR_MSG,
-                            "服务器异常，请稍后重试");*/
-                    stringBufferError.append("服务器异常，请稍后重试<br>");
+                    stringBufferError.append("与省联交互出现问题，请联系管理员进行处理<br>");
                 }
             }
             logger.info("execute success {}", personEntities.size());
@@ -730,10 +730,18 @@ public class PersonController {
             logger.error("{}", e);
             personEntityList.clear();
             uploadFile.delete();
-            return new RestResult(
-                    RestResult.ERROR_CODE,
-                    RestResult.ERROR_MSG,
-                    "服务器异常,请稍后重试");
+            if (StringUtils.isEmpty(stringBufferError)) {
+                return new RestResult(
+                        RestResult.ERROR_CODE,
+                        RestResult.ERROR_MSG,
+                        "上传文件有误，请修改后在上传");
+            } else {
+                return new RestResult(
+                        RestResult.ERROR_CODE,
+                        RestResult.ERROR_MSG,
+                        stringBufferError);
+            }
+
         } finally {
             uploadFile.delete();
         }
@@ -797,36 +805,41 @@ public class PersonController {
                     map.put("idCardNo", personEntity.getIdCardNo());
                     map.put("departmentId", user.getDepartmentId());
                     PersonEntity personEntity1 = personMapper._queryAll(map).get(0);
-                    map.put("personId", personEntity1.getId());
-                    PersonReplacementEntity personReplacementEntity = personReplacementMapper.queryPersonId(map);
-                    if (personReplacementEntity == null) {
-                        PersonReplacementEntity pentity = personReplacementMapper.queryPersonIdtwo(map);
-                        if (pentity != null) {
+                    if (personEntity1 != null) {
+                        map.put("personId", personEntity1.getId());
+                        PersonReplacementEntity personReplacementEntity = personReplacementMapper.queryPersonId(map);
+                        if (personReplacementEntity == null) {
+                            PersonReplacementEntity pentity = personReplacementMapper.queryPersonIdtwo(map);
+                            if (pentity != null) {
+                                if (personEntity.getStatus().contains("成功")) {
+                                    personEntity1.setStatus("1");
+                                    personEntity1.setFailReason(" ");
+                                    pentity.setStatus("1");
+                                } else if (personEntity.getStatus().contains("失败")) {
+                                    personEntity1.setStatus("2");
+                                    personEntity1.setFailReason(personEntity.getFailReason());
+                                    pentity.setStatus("2");
+                                }
+                                personMapper._updateEntity(personEntity1);
+                                personReplacementMapper._updateEntity(pentity);
+                            }
+                        } else {
                             if (personEntity.getStatus().contains("成功")) {
                                 personEntity1.setStatus("1");
                                 personEntity1.setFailReason(" ");
-                                pentity.setStatus("1");
+                                personReplacementEntity.setStatus("1");
                             } else if (personEntity.getStatus().contains("失败")) {
                                 personEntity1.setStatus("2");
                                 personEntity1.setFailReason(personEntity.getFailReason());
-                                pentity.setStatus("2");
+                                personReplacementEntity.setStatus("2");
                             }
                             personMapper._updateEntity(personEntity1);
-                            personReplacementMapper._updateEntity(pentity);
+                            personReplacementMapper._updateEntity(personReplacementEntity);
                         }
                     } else {
-                        if (personEntity.getStatus().contains("成功")) {
-                            personEntity1.setStatus("1");
-                            personEntity1.setFailReason(" ");
-                            personReplacementEntity.setStatus("1");
-                        } else if (personEntity.getStatus().contains("失败")) {
-                            personEntity1.setStatus("2");
-                            personEntity1.setFailReason(personEntity.getFailReason());
-                            personReplacementEntity.setStatus("2");
-                        }
-                        personMapper._updateEntity(personEntity1);
-                        personReplacementMapper._updateEntity(personReplacementEntity);
+                        return new RestResult(RestResult.ERROR_CODE, RestResult.ERROR_MSG, "文件有错误，请修改后在上传");
                     }
+
                 }
             }
         } catch (Exception e) {

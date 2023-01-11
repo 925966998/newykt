@@ -4,6 +4,10 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -17,7 +21,7 @@ public class ExportExcel {
 	public static void export(String[] rowName, List<String[]> dataList,ExcelStyle style ,HttpServletResponse response) throws Exception {
 
 		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition", "attachment;filename=" + style.getXlsName() + ".xls");
+		response.setHeader("Content-disposition", "attachment;filename=" + style.getXlsName() + ".xlsx");
 
 		OutputStream out = response.getOutputStream();
 		export(rowName, dataList, style,out);
@@ -30,11 +34,15 @@ public class ExportExcel {
 		if (style == null) {
 			style = new ExcelStyle();
 		}
-		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet(style.getSheetName());
-		HSSFRow row = sheet.createRow((int) 0);
+		//HSSFWorkbook wb = new HSSFWorkbook();
+		XSSFWorkbook wb = new XSSFWorkbook();
+		//HSSFSheet sheet = wb.createSheet(style.getSheetName());
+		XSSFSheet sheet = wb.createSheet(style.getSheetName());
+		//HSSFRow row = sheet.createRow((int) 0);
+		XSSFRow row = sheet.createRow((int) 0);
 		for (int i = 0; i < rowName.length; i++) {
-			HSSFCell cell = row.createCell(i);
+			//HSSFCell cell = row.createCell(i);
+			XSSFCell cell = row.createCell(i);
 			cell.setCellValue(rowName[i]);
 			//cell.setCellStyle(getColumnTopStyle(wb));
 			sheet.setColumnWidth(i, 256 * style.getColumnWidth());

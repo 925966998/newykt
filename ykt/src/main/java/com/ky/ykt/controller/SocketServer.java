@@ -34,7 +34,7 @@ public class SocketServer {
         Socket socket = new Socket(host, port);
         socket.setSoTimeout(50000);
         // 建立连接后获得输出流
-        /*
+
         OutputStream outputStream = socket.getOutputStream();
         socket.getOutputStream().write(message.getBytes("UTF-8"));
         outputStream.flush();
@@ -45,8 +45,8 @@ public class SocketServer {
         while ((len = inputStream.read(bytes)) != -1) {
             sb.append(new String(bytes, 0, len, "UTF-8"));
         }
-        */
 
+        /*
         OutputStream outputStream = socket.getOutputStream();
         //约定的报文头长度
         int headLen = 8;
@@ -63,7 +63,6 @@ public class SocketServer {
             }
             curHeadLength += readLen;
         }
-
         int bodyLength = Integer.parseInt(new String(xmlLen))+69;
         char [] xml = new char[bodyLength];
         int curBodyLength = 0;
@@ -74,8 +73,8 @@ public class SocketServer {
             }
             curBodyLength += readLen2;
         }
-
         String sb = new String(xml).substring(68);
+        */
 
         System.out.println("get message from server: " + sb);
         outputStream.close();

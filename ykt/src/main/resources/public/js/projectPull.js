@@ -427,7 +427,8 @@ $("#table").datagrid({
                     return new Date(value).Format("yyyy-MM-dd HH:mm")
                 }
             }
-        }, {field: 'totalAmount', title: '总金额', width: 100, align: 'center'},
+        }, {field: 'totalAmount', title: '总金额', width: 100, align: 'center',
+            formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}}},
         {field: 'paymentAmount', title: '发放金额', width: 100, align: 'center',
             formatter: function (val, row) {if (val == 0) {return '0.00';} else {return toMoney(val);}},
         },
